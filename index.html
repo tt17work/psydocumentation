@@ -31,16 +31,23 @@
         .sub-section-exclude { margin-left: 10px; font-size: 0.9em; font-weight: normal; color: #666;}
         .report-output { margin-top: 30px; }
         .report-output textarea { width: 100%; height: 500px; font-family: monospace; font-size: 0.9em; }
-        button {
+        button#generateReportBtn {
             background-color: #007bff; color: white; padding: 12px 18px;
             border: none; border-radius: 4px; cursor: pointer; font-size: 1.1em; display: block; width: 100%; margin-top: 20px;
         }
-        button:hover { background-color: #0056b3; }
+        button#generateReportBtn:hover { background-color: #0056b3; }
+        button#copyReportBtn {
+            background-color: #28a745; color: white; padding: 10px 15px;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 1em; margin-top: 10px;
+        }
+        button#copyReportBtn:hover { background-color: #218838; }
+        #copyMessage { margin-left: 10px; color: green; font-style: italic; display: none; }
+
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .grid-item { }
         .sub-section { margin-left: 10px; border-left: 2px solid #eee; padding-left: 10px; }
         .form-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start; margin-bottom:15px;}
-        .form-row > div { flex: 1; min-width: 250px;} /* Allows stacking on smaller screens */
+        .form-row > div { flex: 1; min-width: 250px;} 
         .form-row label { margin-bottom: 3px; }
         
         .fine-motor-grid { 
@@ -63,32 +70,20 @@
         th { background-color: #f2f2f2; }
 
         @media (max-width: 768px) {
-            .form-row > div { min-width: 100%; } /* Stack elements in form-row */
-            .fine-motor-grid { grid-template-columns: auto repeat(2, 1fr); } /* Simplify fine motor grid */
+            .form-row > div { min-width: 100%; } 
+            .fine-motor-grid { grid-template-columns: auto repeat(2, 1fr); } 
             .mas-function-group div label { width: 100px; }
             .mas-function-group div input { width: calc(100% - 110px); }
             .checkbox-group label, .radio-group label { margin-right: 10px;}
         }
         @media (max-width: 480px) {
-            .fine-motor-grid {
-                grid-template-columns: 1fr; /* Stack all fine motor items */
-            }
-            .fine-motor-grid > span { /* RUL/LUL headers */
-                grid-column: 1 / -1; /* Span full width */
-                text-align: left;
-                margin-top: 10px;
-            }
-            .fine-motor-grid > span:not(:first-child):not(.limb-header) { /* Headers like Grasp, Opposition */
-                 font-weight: normal; margin-left: 15px;
-            }
-             .fine-motor-grid > .limb-header ~ label { margin-left: 15px;}
-
-            .inline-fields input[type="text"], .inline-fields input[type="number"], .inline-fields select {
-                width: 100%; margin-bottom: 8px;
-            }
-            .checkbox-group label, .radio-group label { display: block; } /* Stack checkboxes/radios for better tap targets */
+            .fine-motor-grid { grid-template-columns: 1fr; }
+            .fine-motor-grid > span { grid-column: 1 / -1; text-align: left; margin-top: 10px;}
+            .fine-motor-grid > span:not(:first-child):not(.limb-header) { font-weight: normal; margin-left: 15px;}
+            .fine-motor-grid > .limb-header ~ label { margin-left: 15px;}
+            .inline-fields input[type="text"], .inline-fields input[type="number"], .inline-fields select { width: 100%; margin-bottom: 8px;}
+            .checkbox-group label, .radio-group label { display: block; } 
         }
-
     </style>
 </head>
 <body>
@@ -838,7 +833,7 @@
         </h4>
         <div class="grid-container">
             <div>
-                <label>Work Habits/ Attitudes Percentile:</label> <input type="text" name="bwap_wha_percentile">
+                <label>Work Habits/ Attitudes Percentile:</label> <input type="text" id="bwap_wha_percentile" name="bwap_wha_percentile">
                 <label>Working Placement:</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" name="bwap_wha_placement" value="Day Care">Day Care</label>
@@ -850,7 +845,7 @@
                 </div>
             </div>
             <div>
-                <label>Interpersonal Relations Percentile:</label> <input type="text" name="bwap_ir_percentile">
+                <label>Interpersonal Relations Percentile:</label> <input type="text" id="bwap_ir_percentile" name="bwap_ir_percentile">
                 <label>Working Placement:</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" name="bwap_ir_placement" value="Day Care">Day Care</label>
@@ -862,7 +857,7 @@
                 </div>
             </div>
             <div>
-                <label>Cognitive Skills Percentile:</label> <input type="text" name="bwap_cs_percentile">
+                <label>Cognitive Skills Percentile:</label> <input type="text" id="bwap_cs_percentile" name="bwap_cs_percentile">
                 <label>Working Placement:</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" name="bwap_cs_placement" value="Day Care">Day Care</label>
@@ -874,7 +869,7 @@
                 </div>
             </div>
             <div>
-                <label>Work Performance Skills Percentile:</label> <input type="text" name="bwap_wps_percentile">
+                <label>Work Performance Skills Percentile:</label> <input type="text" id="bwap_wps_percentile" name="bwap_wps_percentile">
                 <label>Working Placement:</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" name="bwap_wps_placement" value="Day Care">Day Care</label>
@@ -886,7 +881,7 @@
                 </div>
             </div>
             <div>
-                <label>Broad Work Adjustment Percentile:</label> <input type="text" name="bwap_bwa_percentile">
+                <label>Broad Work Adjustment Percentile:</label> <input type="text" id="bwap_bwa_percentile" name="bwap_bwa_percentile">
                 <label>Working Placement:</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" name="bwap_bwa_placement" value="Day Care">Day Care</label>
@@ -920,11 +915,13 @@
         <textarea id="ot_plan_custom" name="ot_plan_custom"></textarea>
     </fieldset>
 
-    <button type="button" onclick="generateReport()">Generate Report</button>
+    <button type="button" id="generateReportBtn" onclick="generateReport()">Generate Report</button>
 
     <div class="report-output">
         <h3>Generated Report</h3>
         <textarea id="reportTextArea" readonly></textarea>
+        <button type="button" id="copyReportBtn" onclick="copyReport()">Copy Report</button>
+        <span id="copyMessage"></span>
     </div>
 </div>
 
@@ -963,7 +960,7 @@
                 if (!isNaN(total)) {
                     averageField.value = (total / 4).toFixed(2); 
                 } else {
-                    averageField.value = '';
+                    averageField.value = ''; // Clear if total is not a number
                 }
             }
             updateMasRankings();
@@ -976,27 +973,24 @@
             const totalVal = getVal(`mas_${func}_total`);
             return {
                 name: func,
-                total: (totalVal !== '' && !isNaN(parseFloat(totalVal))) ? parseFloat(totalVal) : -Infinity, // Treat empty or non-numeric as lowest
+                total: (totalVal !== '' && !isNaN(parseFloat(totalVal))) ? parseFloat(totalVal) : -Infinity, 
                 rankInputId: `mas_${func}_ranking`
             };
         });
 
-        // Filter out functions with no valid score for ranking
         let rankedScores = scoresData.filter(s => s.total !== -Infinity);
-        
-        // Sort by total score in descending order
         rankedScores.sort((a, b) => b.total - a.total);
 
-        // Assign ranks (dense ranking)
-        let currentRank = 1;
+        let currentRank = 0; // Start rank from 0 to handle dense ranking correctly
+        let lastScore = null;
         for (let i = 0; i < rankedScores.length; i++) {
-            if (i > 0 && rankedScores[i].total < rankedScores[i-1].total) {
-                currentRank++;
+            if (lastScore === null || rankedScores[i].total < lastScore) {
+                currentRank++; // Increment rank only if score is different from previous
             }
             document.getElementById(rankedScores[i].rankInputId).value = currentRank;
+            lastScore = rankedScores[i].total;
         }
 
-        // Clear ranks for those not included in ranking (i.e., -Infinity scores)
         scoresData.forEach(s => {
             if (s.total === -Infinity) {
                 document.getElementById(s.rankInputId).value = '';
@@ -1024,6 +1018,26 @@
         const radio = document.querySelector(`input[name="${name}"]:checked`);
         return radio ? radio.value : '';
     }
+
+    function copyReport() {
+        const reportTextArea = document.getElementById('reportTextArea');
+        reportTextArea.select();
+        reportTextArea.setSelectionRange(0, 99999); // For mobile devices
+        try {
+            document.execCommand('copy');
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.textContent = 'Text Copied!';
+            copyMessage.style.display = 'inline';
+            setTimeout(() => {
+                copyMessage.style.display = 'none';
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy text. Please copy manually.');
+        }
+        window.getSelection().removeAllRanges(); // Deselect
+    }
+
 
     function generateReport() {
         let report = "Documentation:\n\n";
@@ -1177,7 +1191,7 @@
                 spCats.forEach(cat => {
                     const score = getVal(`sp_${cat.key}_score`);
                     const interpretation = getCheckedValues(`sp_${cat.key}_interpretation`).join(', ');
-                    const scoreDisplay = (score !== null && score.trim() !== '') ? score : 'N/A'; // Use N/A if empty
+                    const scoreDisplay = (score !== null && score.trim() !== '') ? score : 'N/A';
                     if (scoreDisplay !== 'N/A' || interpretation) { 
                         spReportContent += `  - ${cat.name}: Score ${scoreDisplay}/75. Interpretation: ${interpretation || 'N/A'}\n`;
                     }
@@ -1208,7 +1222,7 @@
                     const ranking = getVal(`mas_${func}_ranking`);
                     if ((total !== null && total.trim() !== '') || (average !== null && average.trim() !== '' && average !== 'N/A') || (ranking !== null && ranking.trim() !== '')) {
                         masDataFound = true;
-                        masReportText += `  - ${func.charAt(0).toUpperCase() + func.slice(1)}: Total=${(total || 'N/A')}, Average=${(average || 'N/A')}, Ranking=${(ranking || 'N/A')}\n`;
+                        masReportText += `  - ${func.charAt(0).toUpperCase() + func.slice(1)}:\n    Total Score: ${(total || 'N/A')}\n    Average Score: ${(average || 'N/A')}\n    Relative Ranking: ${(ranking || 'N/A')}\n`;
                     }
                 });
                 if (masDataFound) {
@@ -1346,30 +1360,29 @@
             }
             if (!isChecked('exclude_bwap2')) {
                 report += "BWAP-2:\n";
-                const bwapDomains = [
-                    { key: 'wha', name: 'Work Habits/ Attitudes', percentile: getVal('bwap_wha_percentile'), placement: getCheckedValues('bwap_wha_placement') },
-                    { key: 'ir', name: 'Interpersonal Relations', percentile: getVal('bwap_ir_percentile'), placement: getCheckedValues('bwap_ir_placement') },
-                    { key: 'cs', name: 'Cognitive Skills', percentile: getVal('bwap_cs_percentile'), placement: getCheckedValues('bwap_cs_placement') },
-                    { key: 'wps', name: 'Work Performance Skills', percentile: getVal('bwap_wps_percentile'), placement: getCheckedValues('bwap_wps_placement') },
-                    { key: 'bwa', name: 'Broad Work Adjustment', percentile: getVal('bwap_bwa_percentile'), placement: getCheckedValues('bwap_bwa_placement') }
-                ];
-                let workLevels = new Set(); 
+                const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa']; // Keys for getVal
+                const bwapDomainNames = {
+                    'wha': 'Work Habits/ Attitudes',
+                    'ir': 'Interpersonal Relations',
+                    'cs': 'Cognitive Skills',
+                    'wps': 'Work Performance Skills',
+                    'bwa': 'Broad Work Adjustment'
+                };
                 let bwaContentGenerated = false;
-                bwapDomains.forEach(domain => {
-                    if (domain.percentile || domain.placement.length > 0) {
+                bwapDomainKeys.forEach(key => {
+                    const percentile = getVal(`bwap_${key}_percentile`);
+                    const placements = getCheckedValues(`bwap_${key}_placement`);
+                    if ((percentile && percentile.trim() !== '') || placements.length > 0) {
                         bwaContentGenerated = true;
-                        report += `  ${domain.name} percentile: ${domain.percentile || 'N/A'}. `;
-                        if (domain.placement.length > 0) {
-                            report += `Working Placement: ${domain.placement.join(', ')}.\n`;
-                            domain.placement.forEach(p => workLevels.add(p));
+                        report += `  ${bwapDomainNames[key]} percentile: ${percentile || 'N/A'}. `;
+                        if (placements.length > 0) {
+                            report += `Working Placement: ${placements.join(', ')}.\n`;
                         } else {
                             report += "\n";
                         }
                     }
                 });
-                if (bwaContentGenerated && workLevels.size > 0) {
-                    report += `Work level: ${Array.from(workLevels).join(' / ')}.\n`;
-                } else if (!bwaContentGenerated && !isChecked('exclude_bwap2')) { // Only show if BWAP-2 itself is not excluded
+                if (!bwaContentGenerated && !isChecked('exclude_bwap2')) {
                     report += "  BWAP-2 data not entered.\n"
                 }
                 report += formatMultiLine("BWAP-2 Remarks", getVal('bwap_remarks'));
@@ -1405,7 +1418,6 @@
 
         document.getElementById('reportTextArea').value = report;
     }
-    // Initial MAS ranking update in case there are default values (though unlikely here)
     updateMasRankings();
 </script>
 

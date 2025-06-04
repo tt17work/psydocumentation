@@ -55,7 +55,6 @@
         button:hover {
             background-color: #2980b9;
         }
-        /* Specific button styling if needed, but general is fine for now */
     </style>
 </head>
 <body>
@@ -66,30 +65,31 @@
         <h2>Progress note</h2>
         <div class="button-group">
             <button type="button" id="pn-ld">LD</button>
-            <!-- You can add an onclick attribute later for functionality, e.g., onclick="generatePnLd()" -->
+            <!-- Example: onclick="window.open('progress_ld.html', '_blank');" -->
         </div>
 
         <h2>DC Summary</h2>
         <div class="button-group">
-            <button type="button" id="dc-adult">Adult</button>
+            <button type="button" id="dc-adult" onclick="window.open('dcsumadult.html', '_blank');">Adult</button>
             <button type="button" id="dc-pg">PG</button>
             <button type="button" id="dc-ca">C&A</button>
             <button type="button" id="dc-ld">LD</button>
-            <!-- Add onclick attributes as needed, e.g., onclick="generateDcAdult()" -->
+            <!-- Add onclick attributes as needed for other buttons -->
+            <!-- Example: onclick="window.open('dcsumpg.html', '_blank');" for PG button -->
         </div>
     </div>
 
     <!--
+    If you prefer to keep JavaScript separate, you can do this:
     <script>
-        // Example JavaScript functions (you would define these)
-        // function generatePnLd() { alert("Generating Progress Note - LD"); }
-        // function generateDcAdult() { alert("Generating DC Summary - Adult"); }
-        // function generateDcPg() { alert("Generating DC Summary - PG"); }
-        // function generateDcCa() { alert("Generating DC Summary - C&A"); }
-        // function generateDcLd() { alert("Generating DC Summary - LD"); }
+        document.getElementById('dc-adult').addEventListener('click', function() {
+            window.open('dcsumadult.html', '_blank');
+        });
 
-        // You could also add event listeners here if you prefer
-        // document.getElementById('pn-ld').addEventListener('click', generatePnLd);
+        // Add event listeners for other buttons here if you choose this method
+        // document.getElementById('pn-ld').addEventListener('click', function() {
+        //     window.open('progress_ld.html', '_blank');
+        // });
         // etc.
     </script>
     -->

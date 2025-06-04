@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LD Assessment Form & Report Generator</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; font-size: 16px; }
-        .container { background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; font-size: 16px; }
+        .container { background-color: #fff; padding: 15px; margin: 10px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; margin-top:15px; margin-bottom: 25px; font-size: 1.8em; }
         h2, h3, h4, h5 { color: #333; margin-top: 20px; }
-        h5 { margin-top: 10px; margin-bottom: 5px; font-size: 1.05em; }
+        h4 { font-size: 1.2em; margin-bottom: 10px;}
+        h5 { margin-top: 15px; margin-bottom: 8px; font-size: 1.05em; }
         fieldset { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
         legend { font-weight: bold; color: #555; padding: 0 10px; font-size: 1.1em; }
         label { display: block; margin-bottom: 5px; font-weight: 500;}
@@ -59,27 +60,70 @@
         }
         .fine-motor-grid label { margin-bottom: 0; font-weight: normal; }
         .fine-motor-grid > span { font-weight: bold; }
+        .fm-header { text-align: center;}
+
 
         .mas-function-group { border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
-        .mas-function-group div { margin-bottom: 8px; }
-        .mas-function-group div label { display: inline-block; width: 130px; font-weight: normal; }
+        .mas-function-group div { margin-bottom: 8px; display: flex; flex-wrap: wrap; align-items: center;}
+        .mas-function-group div label { display: inline-block; width: 130px; font-weight: normal; margin-bottom:0; }
         .mas-function-group div input { width: 120px; display: inline-block; padding: 6px; font-size: 0.95em; margin-bottom: 0; }
         
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 0.95em;}
         th { background-color: #f2f2f2; }
 
+        /* Range & Contracture/Deformity Styling */
+        .limb-range-section .form-row { /* Reset for header only */
+            display: flex;
+            flex-wrap: nowrap; /* Prevent header from wrapping */
+            font-weight: bold;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+        .limb-range-section .form-row > div {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+        }
+         .limb-range-section .form-row > div:first-child { text-align: left; flex-basis: 100px; flex-grow: 0;}
+
+
+        .limb-data-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .limb-data-row > div {
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .limb-name { flex-basis: 100px; flex-grow: 0; font-weight: bold;}
+        .arom-group, .prom-group, .contracture-group { flex: 1; min-width: 150px; }
+        .functional-cb-label { font-weight: normal; display: inline-flex; align-items: center; margin-left:5px;}
+        .functional-cb-label input[type="checkbox"] { margin-right: 5px; width: auto;}
+
+
         @media (max-width: 768px) {
+            .container { margin: 5px; padding: 10px;}
             .form-row > div { min-width: 100%; } 
             .fine-motor-grid { grid-template-columns: auto repeat(2, 1fr); } 
-            .mas-function-group div label { width: 100px; }
-            .mas-function-group div input { width: calc(100% - 110px); }
+            .mas-function-group div label { width: 100%; margin-bottom: 3px;}
+            .mas-function-group div input { width: 100%; }
             .checkbox-group label, .radio-group label { margin-right: 10px;}
+
+            .limb-range-section .form-row { display: none; } /* Hide desktop header */
+            .limb-data-row { flex-direction: column; align-items: stretch; }
+            .limb-name { flex-basis: auto; margin-bottom: 10px; text-align: left; }
+            .arom-group, .prom-group, .contracture-group { min-width: 100%; margin-bottom: 10px;}
+            .arom-group input[type="text"], .prom-group input[type="text"] { width: 100%;}
+            .functional-cb-label { display: block; margin-left:0; margin-top: 5px;}
         }
         @media (max-width: 480px) {
             .fine-motor-grid { grid-template-columns: 1fr; }
             .fine-motor-grid > span { grid-column: 1 / -1; text-align: left; margin-top: 10px;}
-            .fine-motor-grid > span:not(:first-child):not(.limb-header) { font-weight: normal; margin-left: 15px;}
+            .fm-header { font-weight: normal !important; margin-left: 15px; display:block; text-align: left !important;}
             .fine-motor-grid > .limb-header ~ label { margin-left: 15px;}
             .inline-fields input[type="text"], .inline-fields input[type="number"], .inline-fields select { width: 100%; margin-bottom: 8px;}
             .checkbox-group label, .radio-group label { display: block; } 
@@ -304,40 +348,99 @@
         </div>
         <label for="general_other_observation">Other observation:</label>
         <textarea id="general_other_observation" name="general_other_observation"></textarea>
-        <h4>Range & Contracture/Deformity</h4>
-        <div class="form-row">
-            <div>Limb</div><div>AROM</div><div>Functional</div><div>PROM</div><div>Contracture/Deformity</div>
+        
+        <div class="limb-range-section">
+            <h4>Range & Contracture/Deformity</h4>
+            <div class="form-row"> <!-- Desktop Header -->
+                <div>Limb</div>
+                <div>AROM / Functional</div>
+                <div>PROM</div>
+                <div>Contracture/Deformity</div>
+            </div>
+            <!-- RUL -->
+            <div class="limb-data-row">
+                <div class="limb-name">RUL:</div>
+                <div class="arom-group">
+                    <label for="rul_arom">AROM:</label>
+                    <input type="text" id="rul_arom" name="rul_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="rul_arom_functional" name="rul_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="rul_prom">PROM:</label>
+                    <input type="text" id="rul_prom" name="rul_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="rul_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="rul_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- LUL -->
+            <div class="limb-data-row">
+                <div class="limb-name">LUL:</div>
+                <div class="arom-group">
+                    <label for="lul_arom">AROM:</label>
+                    <input type="text" id="lul_arom" name="lul_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="lul_arom_functional" name="lul_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="lul_prom">PROM:</label>
+                    <input type="text" id="lul_prom" name="lul_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="lul_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="lul_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- RLL -->
+            <div class="limb-data-row">
+                <div class="limb-name">RLL:</div>
+                <div class="arom-group">
+                    <label for="rll_arom">AROM:</label>
+                    <input type="text" id="rll_arom" name="rll_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="rll_arom_functional" name="rll_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="rll_prom">PROM:</label>
+                    <input type="text" id="rll_prom" name="rll_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="rll_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="rll_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- LLL -->
+            <div class="limb-data-row">
+                <div class="limb-name">LLL:</div>
+                <div class="arom-group">
+                    <label for="lll_arom">AROM:</label>
+                    <input type="text" id="lll_arom" name="lll_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="lll_arom_functional" name="lll_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="lll_prom">PROM:</label>
+                    <input type="text" id="lll_prom" name="lll_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="lll_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="lll_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-row">
-            <div>RUL:</div>
-            <div><input type="text" id="rul_arom" name="rul_arom"></div>
-            <div><input type="checkbox" id="rul_arom_functional" name="rul_arom_functional"></div>
-            <div><input type="text" id="rul_prom" name="rul_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="rul_contracture" value="Y">Y</label><label><input type="radio" name="rul_contracture" value="N" checked>N</label></div>
-        </div>
-        <div class="form-row">
-            <div>LUL:</div>
-            <div><input type="text" id="lul_arom" name="lul_arom"></div>
-            <div><input type="checkbox" id="lul_arom_functional" name="lul_arom_functional"></div>
-            <div><input type="text" id="lul_prom" name="lul_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="lul_contracture" value="Y">Y</label><label><input type="radio" name="lul_contracture" value="N" checked>N</label></div>
-        </div>
-        <div class="form-row">
-            <div>RLL:</div>
-            <div><input type="text" id="rll_arom" name="rll_arom"></div>
-            <div><input type="checkbox" id="rll_arom_functional" name="rll_arom_functional"></div>
-            <div><input type="text" id="rll_prom" name="rll_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="rll_contracture" value="Y">Y</label><label><input type="radio" name="rll_contracture" value="N" checked>N</label></div>
-        </div>
-        <div class="form-row">
-            <div>LLL:</div>
-            <div><input type="text" id="lll_arom" name="lll_arom"></div>
-            <div><input type="checkbox" id="lll_arom_functional" name="lll_arom_functional"></div>
-            <div><input type="text" id="lll_prom" name="lll_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="lll_contracture" value="Y">Y</label><label><input type="radio" name="lll_contracture" value="N" checked>N</label></div>
-        </div>
-         <label for="pa_contracture_details">Contracture/Deformity details (e.g. specific joints):</label>
+        <label for="pa_contracture_details">Contracture/Deformity details (e.g. specific joints):</label>
         <input type="text" id="pa_contracture_details" name="pa_contracture_details">
+
         <h4>Strength (MMT)</h4>
         <div class="form-row">
             <div><label for="rul_mmt">RUL MMT:</label><input type="text" id="rul_mmt" name="rul_mmt"></div>
@@ -960,7 +1063,7 @@
                 if (!isNaN(total)) {
                     averageField.value = (total / 4).toFixed(2); 
                 } else {
-                    averageField.value = ''; // Clear if total is not a number
+                    averageField.value = ''; 
                 }
             }
             updateMasRankings();
@@ -981,11 +1084,11 @@
         let rankedScores = scoresData.filter(s => s.total !== -Infinity);
         rankedScores.sort((a, b) => b.total - a.total);
 
-        let currentRank = 0; // Start rank from 0 to handle dense ranking correctly
+        let currentRank = 0; 
         let lastScore = null;
         for (let i = 0; i < rankedScores.length; i++) {
             if (lastScore === null || rankedScores[i].total < lastScore) {
-                currentRank++; // Increment rank only if score is different from previous
+                currentRank++; 
             }
             document.getElementById(rankedScores[i].rankInputId).value = currentRank;
             lastScore = rankedScores[i].total;
@@ -1022,7 +1125,7 @@
     function copyReport() {
         const reportTextArea = document.getElementById('reportTextArea');
         reportTextArea.select();
-        reportTextArea.setSelectionRange(0, 99999); // For mobile devices
+        reportTextArea.setSelectionRange(0, 99999); 
         try {
             document.execCommand('copy');
             const copyMessage = document.getElementById('copyMessage');
@@ -1035,7 +1138,7 @@
             console.error('Failed to copy text: ', err);
             alert('Failed to copy text. Please copy manually.');
         }
-        window.getSelection().removeAllRanges(); // Deselect
+        window.getSelection().removeAllRanges(); 
     }
 
 
@@ -1360,7 +1463,7 @@
             }
             if (!isChecked('exclude_bwap2')) {
                 report += "BWAP-2:\n";
-                const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa']; // Keys for getVal
+                const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa']; 
                 const bwapDomainNames = {
                     'wha': 'Work Habits/ Attitudes',
                     'ir': 'Interpersonal Relations',
@@ -1370,7 +1473,7 @@
                 };
                 let bwaContentGenerated = false;
                 bwapDomainKeys.forEach(key => {
-                    const percentile = getVal(`bwap_${key}_percentile`);
+                    const percentile = getVal(`bwap_${key}_percentile`); // Use getVal with the correct ID
                     const placements = getCheckedValues(`bwap_${key}_placement`);
                     if ((percentile && percentile.trim() !== '') || placements.length > 0) {
                         bwaContentGenerated = true;

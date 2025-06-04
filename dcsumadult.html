@@ -28,42 +28,7 @@
             margin-top: 0;
             margin-bottom: 20px;
         }
-        .navigation-area {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        .navigation-area .nav-row {
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .navigation-area .nav-label {
-            margin-right: 10px;
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #555;
-        }
-        .navigation-area button {
-            padding: 10px 15px;
-            margin: 5px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .navigation-area button:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-        }
-        .navigation-area button.active {
-            background-color: #2980b9;
-        }
+        /* Navigation area styles removed as the section is deleted */
 
         fieldset {
             border: 1px solid #ddd;
@@ -139,7 +104,7 @@
         }
         .action-buttons button:last-child{ margin-right: 0; }
         .action-buttons button#copyReportBtn { background-color: #f39c12; }
-        .action-buttons button#resetFormBtn { background-color: #e74c3c; } 
+        .action-buttons button#resetFormBtn { background-color: #e74c3c; }
 
 
         #generatedReport {
@@ -246,14 +211,12 @@
             body { padding: 5px; }
             .container { margin: 5px; }
             h1 { font-size: 1.3em; }
-            .navigation-area button { font-size: 0.9em; padding: 8px 10px; width: calc(50% - 10px); margin: 5px; }
-            .navigation-area .nav-label { font-size: 1em; }
+            /* Navigation area media queries removed */
             .action-buttons button { width: 100%; margin: 10px 0 0 0; margin-right: 0; }
             .inline-input, .small-input, .referral-date-input { width: 100% !important; margin-left: 0; margin-top: 5px; display: block; }
             .form-group .radio-group label input[type="text"],
-            .form-group .checkbox-group label input[type="text"] { margin-left: 0; } /* Already there, good */
-            .form-group > .inline-input.small-input { margin-top: 5px; margin-left:0; } /* Already there, good */
-            /* label for thoughtOtherChk to wrap text better */
+            .form-group .checkbox-group label input[type="text"] { margin-left: 0; }
+            .form-group > .inline-input.small-input { margin-top: 5px; margin-left:0; }
             #thoughtOtherLabel { flex-direction: column; align-items: flex-start !important; }
             #thoughtOtherLabel input { margin-bottom: 5px; }
         }
@@ -262,21 +225,7 @@
 <body>
 
     <div class="container">
-        <h1>Psy Documentation Generator</h1>
-
-        <div class="navigation-area">
-            <div class="nav-row">
-                <span class="nav-label">Progress:</span>
-                <button id="progressLDBtn" disabled>LD</button>
-            </div>
-            <div class="nav-row">
-                <span class="nav-label">DC Sum:</span>
-                <button id="dcAdultBtn" class="active">Adult</button>
-                <button id="dcPgBtn" disabled>PG</button>
-                <button id="dcCaBtn" disabled>C&A</button>
-                <button id="dcLdBtn" disabled>LD</button>
-            </div>
-        </div>
+        <h1>Adult Discharge Summary</h1>
 
         <form id="adultForm">
             <fieldset>
@@ -879,7 +828,7 @@
 
 
             generateReportBtn.addEventListener('click', function () {
-                let report = "Psy Documentation (Adult DC Sum)\n";
+                let report = "Psy Documentation (Adult DC Sum)\n"; // This line might also need to be changed if the overall report type changed
                 report += "==================================\n\n";
 
                 report += "1. Mental State & Insight\n\n";
@@ -992,9 +941,9 @@
                 report = addReportLine(report, "Daytime engagement", daytimeParts, true);
                 report = addReportLine(report, "Recommendation", getTextValue('dischargeDaytimeReco'));
 
-                report = addReportLine(report, "Others (PCP related)", getCheckboxValues('dischargeOthersPCP')); // Label updated
-                report = addReportLine(report, "Other recommendations", getCheckboxValues('dischargeOthersReco')); // Label updated
-                report = addReportLine(report, "Others (discharge plan specify)", getTextValue('dischargePlanOthersSpecify')); // Label updated
+                report = addReportLine(report, "Others (PCP related)", getCheckboxValues('dischargeOthersPCP'));
+                report = addReportLine(report, "Other recommendations", getCheckboxValues('dischargeOthersReco'));
+                report = addReportLine(report, "Others (discharge plan specify)", getTextValue('dischargePlanOthersSpecify'));
 
                 generatedReportTextarea.value = report.trim(); 
             });
@@ -1030,14 +979,12 @@
                         radio.checked = false; 
                     });
                 });
-                // Reset "Thought" section states correctly
-                if (thoughtNilCheckbox) { // Check if element exists
-                     handleThoughtExclusiveChecks(); // This will reset based on the now unchecked Nil/Other boxes
+                if (thoughtNilCheckbox) {
+                     handleThoughtExclusiveChecks();
                 }
                  alert('Form has been reset.');
             });
             
-            // --- Initial UI State Setup ---
             if(workOverallNilRadio) {
                 updateOverallNilEffect(workOverallNilRadio.checked);
             }
@@ -1048,7 +995,7 @@
                     ratingRadios.forEach(radio => radio.disabled = !vCheckbox.checked);
                 }
             });
-            if (thoughtNilCheckbox) { // Initial setup for thought section
+            if (thoughtNilCheckbox) {
                 handleThoughtExclusiveChecks();
             }
         });

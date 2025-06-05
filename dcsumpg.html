@@ -61,7 +61,6 @@
     <form id="dischargeForm">
 
         <h2>1. Mental State & Insight</h2>
-        <!-- Section 1 content remains the same -->
         <div class="input-group radio-group">
             <span class="section-title">Overall impression:</span>
             <label><input type="radio" name="ms_overall_impression" value="Stable"> Stable</label>
@@ -410,13 +409,18 @@
             <label for="dp_recommendation_functional">Recommendation:</label>
             <input type="text" id="dp_recommendation_functional" name="dp_recommendation_functional" class="full-width" placeholder="continue functional training in “name of the organization, post etc.”">
         </div>
-        <div class="input-group checkbox-group">
+        <div class="input-group">
             <span class="section-title">Daytime engagement:</span>
-            <label><input type="checkbox" name="dp_daytime_engagement" value="ICCMW"> ICCMW</label>
-            <label><input type="checkbox" name="dp_daytime_engagement" value="NEC"> NEC</label>
-            <label><input type="checkbox" name="dp_daytime_engagement" value="Day care centre"> Day care centre</label>
-            <label><input type="checkbox" name="dp_daytime_engagement_pgdh_cb" value="PGDH referred on"> PGDH referred on</label>
-            <input type="date" id="dp_daytime_engagement_pgdh_date" name="dp_daytime_engagement_pgdh_date" class="inline-text">
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="dp_daytime_engagement" value="ICCMW"> ICCMW</label>
+                <label><input type="checkbox" name="dp_daytime_engagement" value="NEC"> NEC</label>
+                <label><input type="checkbox" name="dp_daytime_engagement" value="Day care centre"> Day care centre</label>
+                <label><input type="checkbox" name="dp_daytime_engagement" value="PGDH"> PGDH</label>
+            </div>
+            <div style="margin-top: 5px;">
+                <label for="dp_daytime_engagement_referred_on_date" style="display: inline-block; font-weight:normal; margin-right:5px;">Referred on:</label>
+                <input type="date" id="dp_daytime_engagement_referred_on_date" name="dp_daytime_engagement_referred_on_date" class="inline-text">
+            </div>
         </div>
         <div class="input-group">
             <label for="dp_recommendation_daytime">Recommendation:</label>
@@ -459,26 +463,25 @@
         }
     }
 
-    // HK-MoCA auto-sum and detail string listener
     const hkmocaDetailStringInput = document.getElementById('ar_hkmoca_detail_string');
     const hkmocaScoreInput = document.getElementById('ar_hkmoca_score');
 
     if (hkmocaDetailStringInput && hkmocaScoreInput) {
         hkmocaDetailStringInput.addEventListener('input', function(event) {
             let value = event.target.value;
-            value = value.replace(/[^0-9]/g, ''); // Allow only numbers
+            value = value.replace(/[^0-9]/g, ''); 
 
-            if (value.length > 7) { // Limit to 7 digits
+            if (value.length > 7) { 
                 value = value.substring(0, 7);
             }
-            event.target.value = value;
+            event.target.value = value; 
 
             if (value.length === 7) {
-                const digits = value.split('').map(Number);
+                const digits = value.split('').map(Number); 
                 const sum = digits.reduce((acc, digit) => acc + digit, 0);
                 hkmocaScoreInput.value = sum;
             } else {
-                hkmocaScoreInput.value = ''; // Clear score if not 7 digits
+                hkmocaScoreInput.value = ''; 
             }
         });
     }
@@ -586,7 +589,7 @@
         }
 
         let hkmocaLine = "";
-        let hkmocaScore = getTextValue('ar_hkmoca_score'); // Read from the auto-populated field
+        let hkmocaScore = getTextValue('ar_hkmoca_score');
         let hkmocaDetailStr = getTextValue('ar_hkmoca_detail_string');
         let hkmocaDetailsFilled = hkmocaDetailStr.length === 7;
 
@@ -596,13 +599,12 @@
         let hkmoca5Score = getTextValue('ar_hkmoca5_score');
         let amtScore = getTextValue('ar_amt_score');
 
-        if (hkmocaScore) hkmocaLine += `HK-MoCA ${hkmocaScore}/30 `; // Use the auto-calculated score
+        if (hkmocaScore) hkmocaLine += `HK-MoCA ${hkmocaScore}/30 `;
         if (hkmocaDetailsFilled) {
              hkmocaLine += `(${hkmocaDetailStr[0]}-${hkmocaDetailStr[1]}-${hkmocaDetailStr[2]}-${hkmocaDetailStr[3]}-${hkmocaDetailStr[4]}-${hkmocaDetailStr[5]}-${hkmocaDetailStr[6]})`;
-        } else if (hkmocaDetailStr.length > 0) { // Partial input
+        } else if (hkmocaDetailStr.length > 0) { 
              hkmocaLine += `(${hkmocaDetailStr})`;
         }
-
 
         if (cutoffOp && cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffOp}${cutoffValSelect} percentile cutoff`;
         else if (cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffValSelect} percentile cutoff`;
@@ -767,22 +769,18 @@
         section4Content += formatReportLine("Residential", residential);
         section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_functional'));
 
-        let daytimeEngValues = getSelectedCheckboxValues('dp_daytime_engagement');
-        if (form.querySelector('input[name="dp_daytime_engagement_pgdh_cb"]:checked')) {
-            const pgdhDate = getTextValue('dp_daytime_engagement_pgdh_date');
-            let pgdhText = "PGDH referred on";
-            if (pgdhDate) pgdhText += ` ${pgdhDate}`;
-            else pgdhText += " _____"; 
+        let daytimeEngValuesArray = [];
+        form.querySelectorAll('input[name="dp_daytime_engagement"]:checked').forEach(cb => {
+            daytimeEngValuesArray.push(cb.value);
+        });
+        let daytimeEngStr = daytimeEngValuesArray.join(', ');
+        const referredOnDate = getTextValue('dp_daytime_engagement_referred_on_date');
 
-            let currentDaytime = daytimeEngValues.split(', ').filter(val => val !== "PGDH referred on").join(', ');
-
-            if (currentDaytime) {
-                daytimeEngValues = `${currentDaytime}, ${pgdhText}`;
-            } else {
-                daytimeEngValues = pgdhText;
-            }
+        if (daytimeEngStr && referredOnDate) {
+            daytimeEngStr += `, referred on ${referredOnDate || '_____'}`;
         }
-        section4Content += formatReportLine("Daytime engagement", daytimeEngValues);
+        section4Content += formatReportLine("Daytime engagement", daytimeEngStr);
+        
         section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_daytime'));
         
         let communitySupportPrimaryValues = getSelectedCheckboxValues('dp_community_support_primary');
@@ -834,7 +832,7 @@
         if (document.getElementById('ar_carer_yes_details')) {
              document.getElementById('ar_carer_yes_details').style.display = 'none';
         }
-        if (hkmocaScoreInput) { // Also clear the auto-summed HK-MoCA score
+        if (hkmocaScoreInput) { 
             hkmocaScoreInput.value = '';
         }
     });

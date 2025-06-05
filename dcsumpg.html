@@ -178,15 +178,9 @@
         <div class="input-group">
             <span class="section-title">Cognitive:</span>
             <div class="sub-item">
-                HK-MoCA <input type="text" id="ar_hkmoca_score" name="ar_hkmoca_score" class="inline-text" style="width:40px;"> /30
+                HK-MoCA <input type="text" id="ar_hkmoca_score" name="ar_hkmoca_score" class="inline-text" style="width:40px;" readonly> /30
                 (
-                  <input type="text" id="ar_hkmoca_detail_a" name="ar_hkmoca_detail_a" class="inline-text" style="width:25px;" placeholder="a"> -
-                  <input type="text" id="ar_hkmoca_detail_b" name="ar_hkmoca_detail_b" class="inline-text" style="width:25px;" placeholder="b"> -
-                  <input type="text" id="ar_hkmoca_detail_c" name="ar_hkmoca_detail_c" class="inline-text" style="width:25px;" placeholder="c"> -
-                  <input type="text" id="ar_hkmoca_detail_d" name="ar_hkmoca_detail_d" class="inline-text" style="width:25px;" placeholder="d"> -
-                  <input type="text" id="ar_hkmoca_detail_e" name="ar_hkmoca_detail_e" class="inline-text" style="width:25px;" placeholder="e"> -
-                  <input type="text" id="ar_hkmoca_detail_f" name="ar_hkmoca_detail_f" class="inline-text" style="width:25px;" placeholder="f"> -
-                  <input type="text" id="ar_hkmoca_detail_g" name="ar_hkmoca_detail_g" class="inline-text" style="width:25px;" placeholder="g">
+                  <input type="text" id="ar_hkmoca_detail_string" name="ar_hkmoca_detail_string" class="inline-text" style="width:100px;" placeholder="e.g. 2322425" maxlength="7">
                 ),
                 <select id="ar_hkmoca_cutoff_operator" name="ar_hkmoca_cutoff_operator" class="inline-text">
                     <option value="">--</option>
@@ -461,9 +455,34 @@
         const detailsInput = document.getElementById('ar_carer_yes_details');
         detailsInput.style.display = show ? 'inline-block' : 'none';
         if (!show) {
-            detailsInput.value = ''; // Clear if hiding
+            detailsInput.value = ''; 
         }
     }
+
+    // HK-MoCA auto-sum and detail string listener
+    const hkmocaDetailStringInput = document.getElementById('ar_hkmoca_detail_string');
+    const hkmocaScoreInput = document.getElementById('ar_hkmoca_score');
+
+    if (hkmocaDetailStringInput && hkmocaScoreInput) {
+        hkmocaDetailStringInput.addEventListener('input', function(event) {
+            let value = event.target.value;
+            value = value.replace(/[^0-9]/g, ''); // Allow only numbers
+
+            if (value.length > 7) { // Limit to 7 digits
+                value = value.substring(0, 7);
+            }
+            event.target.value = value;
+
+            if (value.length === 7) {
+                const digits = value.split('').map(Number);
+                const sum = digits.reduce((acc, digit) => acc + digit, 0);
+                hkmocaScoreInput.value = sum;
+            } else {
+                hkmocaScoreInput.value = ''; // Clear score if not 7 digits
+            }
+        });
+    }
+
 
     document.getElementById('generateReportButton').addEventListener('click', function() {
         let overallReport = "";
@@ -567,28 +586,26 @@
         }
 
         let hkmocaLine = "";
-        let hkmocaScore = getTextValue('ar_hkmoca_score');
-        let hkmocaDetailA = getTextValue('ar_hkmoca_detail_a');
-        let hkmocaDetailB = getTextValue('ar_hkmoca_detail_b');
-        let hkmocaDetailC = getTextValue('ar_hkmoca_detail_c');
-        let hkmocaDetailD = getTextValue('ar_hkmoca_detail_d');
-        let hkmocaDetailE = getTextValue('ar_hkmoca_detail_e');
-        let hkmocaDetailF = getTextValue('ar_hkmoca_detail_f');
-        let hkmocaDetailG = getTextValue('ar_hkmoca_detail_g');
-        let hkmocaDetailsFilled = [hkmocaDetailA,hkmocaDetailB,hkmocaDetailC,hkmocaDetailD,hkmocaDetailE,hkmocaDetailF,hkmocaDetailG].some(d => d !== "");
+        let hkmocaScore = getTextValue('ar_hkmoca_score'); // Read from the auto-populated field
+        let hkmocaDetailStr = getTextValue('ar_hkmoca_detail_string');
+        let hkmocaDetailsFilled = hkmocaDetailStr.length === 7;
 
         let cutoffOp = getSelectValue('ar_hkmoca_cutoff_operator');
-        let cutoffValSelect = getSelectValue('ar_hkmoca_cutoff_value_select'); // From select
+        let cutoffValSelect = getSelectValue('ar_hkmoca_cutoff_value_select');
         let eduLevel = getTextValue('ar_hkmoca_education');
         let hkmoca5Score = getTextValue('ar_hkmoca5_score');
         let amtScore = getTextValue('ar_amt_score');
 
-        if (hkmocaScore) hkmocaLine += `HK-MoCA ${hkmocaScore}/30 `;
+        if (hkmocaScore) hkmocaLine += `HK-MoCA ${hkmocaScore}/30 `; // Use the auto-calculated score
         if (hkmocaDetailsFilled) {
-            hkmocaLine += `(${hkmocaDetailA || '-'}-${hkmocaDetailB || '-'}-${hkmocaDetailC || '-'}-${hkmocaDetailD || '-'}-${hkmocaDetailE || '-'}-${hkmocaDetailF || '-'}-${hkmocaDetailG || '-'})`;
+             hkmocaLine += `(${hkmocaDetailStr[0]}-${hkmocaDetailStr[1]}-${hkmocaDetailStr[2]}-${hkmocaDetailStr[3]}-${hkmocaDetailStr[4]}-${hkmocaDetailStr[5]}-${hkmocaDetailStr[6]})`;
+        } else if (hkmocaDetailStr.length > 0) { // Partial input
+             hkmocaLine += `(${hkmocaDetailStr})`;
         }
-        if (cutoffOp && cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffOp}${cutoffValSelect} percentile cutoff`; // Corrected label
-        else if (cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffValSelect} percentile cutoff`; // Corrected label
+
+
+        if (cutoffOp && cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffOp}${cutoffValSelect} percentile cutoff`;
+        else if (cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffValSelect} percentile cutoff`;
         
         if (eduLevel) hkmocaLine += (hkmocaLine ? ", " : "") + `education level: ${eduLevel}`;
         if (hkmoca5Score) hkmocaLine += (hkmocaLine ? " / " : "") + `HK-MoCA 5 ${hkmoca5Score}/30`;
@@ -596,13 +613,14 @@
         
         let hkmocaSubScoreLine = "";
         if (hkmocaDetailsFilled) {
-            if (hkmocaDetailA) hkmocaSubScoreLine += `Visuospatial/EF: ${hkmocaDetailA}`;
-            if (hkmocaDetailB) hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Naming: ${hkmocaDetailB}`;
-            if (hkmocaDetailC) hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Attention: ${hkmocaDetailC}`;
-            if (hkmocaDetailD) hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Language: ${hkmocaDetailD}`;
-            if (hkmocaDetailE) hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Abstraction: ${hkmocaDetailE}`;
-            if (hkmocaDetailF) hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Delayed recall: ${hkmocaDetailF}`;
-            if (hkmocaDetailG) hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Orientation: ${hkmocaDetailG}`;
+            const digits = hkmocaDetailStr.split('');
+            hkmocaSubScoreLine += `Visuospatial/EF: ${digits[0] || '-'}`;
+            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Naming: ${digits[1] || '-'}`;
+            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Attention: ${digits[2] || '-'}`;
+            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Language: ${digits[3] || '-'}`;
+            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Abstraction: ${digits[4] || '-'}`;
+            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Delayed recall: ${digits[5] || '-'}`;
+            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Orientation: ${digits[6] || '-'}`;
         }
 
         if (hkmocaLine.trim()) {
@@ -815,6 +833,9 @@
         document.getElementById('copyReportButton').style.display = 'none';
         if (document.getElementById('ar_carer_yes_details')) {
              document.getElementById('ar_carer_yes_details').style.display = 'none';
+        }
+        if (hkmocaScoreInput) { // Also clear the auto-summed HK-MoCA score
+            hkmocaScoreInput.value = '';
         }
     });
 </script>

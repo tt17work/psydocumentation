@@ -13,7 +13,7 @@
         .input-group { margin-bottom: 15px; }
         .input-group > label, .section-title { font-weight: bold; display: block; margin-bottom: 5px; }
         .input-group .sub-item label, .checkbox-group label, .radio-group label { font-weight: normal; display: inline-block; margin-right: 10px; margin-bottom: 5px; }
-        .input-group input[type="text"], .input-group textarea, .input-group input[type="number"], .input-group input[type="date"], .input-group select {
+        .input-group input[type="text"], .input-group input[type="number"], .input-group textarea, .input-group input[type="date"], .input-group select {
             padding: 8px;
             margin-top: 5px;
             border: 1px solid #ccc;
@@ -21,7 +21,9 @@
             box-sizing: border-box;
         }
         .input-group input[type="text"].full-width, .input-group textarea.full-width { width: 100%; }
-        .input-group input[type="text"].inline-text, .input-group select.inline-text { width: auto; display: inline-block; margin-left: 5px; vertical-align: middle; }
+        .input-group input[type="text"].inline-text, .input-group input[type="number"].inline-text, .input-group select.inline-text {
+            width: auto; display: inline-block; margin-left: 5px; vertical-align: middle;
+        }
         .input-group textarea { height: 60px; resize: vertical; }
         .checkbox-group input[type="checkbox"], .radio-group input[type="radio"] { margin-right: 5px; vertical-align: middle; }
         button {
@@ -52,6 +54,8 @@
         .sub-item { margin-left: 0px; margin-bottom: 10px; padding-left: 10px; border-left: 2px solid #eee; }
         .field-separator { margin: 0 5px; }
         .bold-title { font-weight: bold; }
+        .dass-details { margin-left: 10px; display: inline-block; } /* For DASS sub-scores */
+        .dass-details label { margin-left: 10px; font-weight:normal !important;}
     </style>
 </head>
 <body>
@@ -135,6 +139,9 @@
                 <label><input type="radio" name="ms_cognitive_orientation" value="Disoriented"> Disoriented</label>
                 <span class="field-separator">/</span>
                 <label><input type="radio" name="ms_cognitive_memory" value="Good memory"> Good memory</label>
+                <label><input type="radio" name="ms_cognitive_memory" value="Satisfactory memory"> Satisfactory memory</label>
+                <label><input type="radio" name="ms_cognitive_memory" value="Acceptable memory"> Acceptable memory</label>
+                <label><input type="radio" name="ms_cognitive_memory" value="Fair memory"> Fair memory</label>
                 <label><input type="radio" name="ms_cognitive_memory" value="Poor memory"> Poor memory</label>
             </div>
         </div>
@@ -165,8 +172,16 @@
         <div class="input-group">
             <span class="section-title bold-title">Mood:</span>
             <div class="sub-item">
-                <label for="ar_mood_dass21" style="display: inline-block; font-weight:normal;">DASS-21:</label>
-                <input type="text" id="ar_mood_dass21" name="ar_mood_dass21" class="inline-text" style="width: 100px;">
+                <label for="ar_mood_dass21_sum" style="display: inline-block; font-weight:normal;">DASS-21:</label>
+                <input type="text" id="ar_mood_dass21_sum" name="ar_mood_dass21_sum" class="inline-text" style="width: 60px;" readonly>
+                <div class="dass-details">
+                    <label for="ar_mood_dass21_depression">Depression:</label>
+                    <input type="number" id="ar_mood_dass21_depression" name="ar_mood_dass21_depression" class="inline-text dass21-subscore" style="width: 50px;">
+                    <label for="ar_mood_dass21_anxiety">Anxiety:</label>
+                    <input type="number" id="ar_mood_dass21_anxiety" name="ar_mood_dass21_anxiety" class="inline-text dass21-subscore" style="width: 50px;">
+                    <label for="ar_mood_dass21_stress">Stress:</label>
+                    <input type="number" id="ar_mood_dass21_stress" name="ar_mood_dass21_stress" class="inline-text dass21-subscore" style="width: 50px;">
+                </div>
             </div>
             <div class="sub-item">
                 <label for="ar_mood_gds" style="display: inline-block; font-weight:normal;">GDS:</label>
@@ -463,13 +478,29 @@
         }
     }
 
+    // DASS-21 Sum Calculation
+    function updateDass21Sum() {
+        const depressionScore = parseFloat(document.getElementById('ar_mood_dass21_depression').value) || 0;
+        const anxietyScore = parseFloat(document.getElementById('ar_mood_dass21_anxiety').value) || 0;
+        const stressScore = parseFloat(document.getElementById('ar_mood_dass21_stress').value) || 0;
+        const sum = depressionScore + anxietyScore + stressScore;
+        document.getElementById('ar_mood_dass21_sum').value = sum;
+    }
+
+    document.querySelectorAll('.dass21-subscore').forEach(input => {
+        input.addEventListener('input', updateDass21Sum);
+    });
+
+
+    // HK-MoCA Score from Detail String Calculation
     const hkmocaDetailStringInput = document.getElementById('ar_hkmoca_detail_string');
     const hkmocaScoreInput = document.getElementById('ar_hkmoca_score');
 
     if (hkmocaDetailStringInput && hkmocaScoreInput) {
         hkmocaDetailStringInput.addEventListener('input', function(event) {
             let value = event.target.value;
-            value = value.replace(/[^0-9]/g, ''); 
+            // Allow only digits that are valid for HK-MoCA subscores (e.g., 0-5, adjust if needed)
+            value = value.replace(/[^0-5]/g, ''); 
 
             if (value.length > 7) { 
                 value = value.substring(0, 7);
@@ -579,14 +610,44 @@
         // --- Section 2: Assessment Results ---
         let section2Content = "";
 
-        let moodDass21 = getTextValue('ar_mood_dass21');
+        // DASS-21 Report - Updated for your provided HTML structure
+        let moodDass21SumFromHTML = getTextValue('ar_mood_dass21_sum'); // This is the readonly sum field
+        let moodDass21Dep = getTextValue('ar_mood_dass21_depression');
+        let moodDass21Anx = getTextValue('ar_mood_dass21_anxiety');
+        let moodDass21Str = getTextValue('ar_mood_dass21_stress');
+        let dass21ReportString = "";
+
+        if (moodDass21SumFromHTML || moodDass21Dep || moodDass21Anx || moodDass21Str) { 
+            dass21ReportString = `${moodDass21SumFromHTML || 'N/A'}`; 
+            let breakdown = [];
+            if (moodDass21Dep) breakdown.push(`Depression: ${moodDass21Dep}`);
+            if (moodDass21Anx) breakdown.push(`Anxiety: ${moodDass21Anx}`);
+            if (moodDass21Str) breakdown.push(`Stress: ${moodDass21Str}`);
+            if (breakdown.length > 0) {
+                dass21ReportString += ` (${breakdown.join(', ')})`;
+            }
+        }
+        
+        // Note: Your provided HTML for DASS-21 has the main DASS-21 text box as id="ar_mood_dass21"
+        // I'm assuming you meant for that to be the GDS and the new sum field is ar_mood_dass21_sum
+        // If ar_mood_dass21 was intended to be the sum, the HTML and JS need a slight adjustment.
+        // For now, I'll proceed assuming ar_mood_dass21_sum is the primary sum display.
+        // And the old ar_mood_dass21 is now the GDS or was removed.
+        // The HTML you provided for Mood was:
+        // <label for="ar_mood_dass21"...>DASS-21:</label><input id="ar_mood_dass21"...>
+        // <label for="ar_mood_gds"...>GDS:</label><input id="ar_mood_gds"...>
+        // I've added the sum and sub-fields based on your request on top of this structure.
+        // If ar_mood_dass21 in your HTML *was* meant for the sum, then that ID should be ar_mood_dass21_sum
+        // and the GDS field is ar_mood_gds.
+
         let moodGds = getTextValue('ar_mood_gds');
         let moodSubSectionContent = "";
-        moodSubSectionContent += formatReportLine("  DASS-21", moodDass21); 
+        moodSubSectionContent += formatReportLine("  DASS-21", dass21ReportString); 
         moodSubSectionContent += formatReportLine("  GDS", moodGds);       
         if (moodSubSectionContent) {
             section2Content += "Mood:\n" + moodSubSectionContent;
         }
+
 
         let hkmocaLine = "";
         let hkmocaScore = getTextValue('ar_hkmoca_score');
@@ -603,7 +664,7 @@
         if (hkmocaDetailsFilled) {
              hkmocaLine += `(${hkmocaDetailStr[0]}-${hkmocaDetailStr[1]}-${hkmocaDetailStr[2]}-${hkmocaDetailStr[3]}-${hkmocaDetailStr[4]}-${hkmocaDetailStr[5]}-${hkmocaDetailStr[6]})`;
         } else if (hkmocaDetailStr.length > 0) { 
-             hkmocaLine += `(${hkmocaDetailStr})`;
+             hkmocaLine += `(${hkmocaDetailStr.split('').join('-')})`;
         }
 
         if (cutoffOp && cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffOp}${cutoffValSelect} percentile cutoff`;
@@ -614,7 +675,7 @@
         if (amtScore) hkmocaLine += (hkmocaLine ? " / " : "") + `AMT ${amtScore}/10`;
         
         let hkmocaSubScoreLine = "";
-        if (hkmocaDetailsFilled) {
+        if (hkmocaDetailStr.length > 0) {
             const digits = hkmocaDetailStr.split('');
             hkmocaSubScoreLine += `Visuospatial/EF: ${digits[0] || '-'}`;
             hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Naming: ${digits[1] || '-'}`;
@@ -776,8 +837,12 @@
         let daytimeEngStr = daytimeEngValuesArray.join(', ');
         const referredOnDate = getTextValue('dp_daytime_engagement_referred_on_date');
 
-        if (daytimeEngStr && referredOnDate) {
-            daytimeEngStr += `, referred on ${referredOnDate || '_____'}`;
+        if (referredOnDate) { 
+            if (daytimeEngStr) {
+                daytimeEngStr += `, referred on ${referredOnDate}`;
+            } else {
+                daytimeEngStr = `Referred on ${referredOnDate}`; 
+            }
         }
         section4Content += formatReportLine("Daytime engagement", daytimeEngStr);
         
@@ -834,6 +899,10 @@
         }
         if (hkmocaScoreInput) { 
             hkmocaScoreInput.value = '';
+        }
+        // Also reset DASS-21 sum on form reset
+        if(document.getElementById('ar_mood_dass21_sum')) {
+            document.getElementById('ar_mood_dass21_sum').value = '';
         }
     });
 </script>

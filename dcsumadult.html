@@ -577,7 +577,7 @@
                     <input type="text" id="interventionCaregiverTraining" name="interventionCaregiverTraining">
                 </div>
                 <div class="form-group">
-                    <label for="interventionOthers">Others, please specify e.g.,</label>
+                    <label for="interventionOthers">Others:</label>
                     <textarea id="interventionOthers" name="interventionOthers"></textarea>
                 </div>
             </fieldset>
@@ -828,9 +828,8 @@
 
 
             generateReportBtn.addEventListener('click', function () {
-                let report = "Psy Documentation (Adult DC Sum)\n"; // This line might also need to be changed if the overall report type changed
-                report += "==================================\n\n";
-
+                let report = ""; 
+                
                 report += "1. Mental State & Insight\n\n";
                 report = addReportLine(report, "Overall impression", getRadioValue('overallImpression'));
                 report = addReportLine(report, "Mood", getRadioValue('mood'));
@@ -918,7 +917,7 @@
                 report = addReportLine(report, "Physical Training", getCheckboxValues('interventionPhysical'));
                 report = addReportLine(report, "Aids Prescription and Training", getCheckboxValues('interventionAids'));
                 report = addReportLine(report, "Caregiver Training on", getTextValue('interventionCaregiverTraining'));
-                report = addReportLine(report, "Others, please specify", getTextValue('interventionOthers'));
+                report = addReportLine(report, "Others", getTextValue('interventionOthers')); // Changed label here
                 report += "\n";
 
                 report += "4. Discharged Plan and Recommendations\n\n";

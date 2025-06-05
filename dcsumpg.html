@@ -190,7 +190,7 @@
                 ),
                 <select id="ar_hkmoca_cutoff_operator" name="ar_hkmoca_cutoff_operator" class="inline-text">
                     <option value="">--</option>
-                    <option value=">">&gt;</option>
+                    <option value=">">></option>
                     <option value="≤">≤</option>
                 </select>
                 <select id="ar_hkmoca_cutoff_value_select" name="ar_hkmoca_cutoff_value_select" class="inline-text">
@@ -587,8 +587,8 @@
         if (hkmocaDetailsFilled) {
             hkmocaLine += `(${hkmocaDetailA || '-'}-${hkmocaDetailB || '-'}-${hkmocaDetailC || '-'}-${hkmocaDetailD || '-'}-${hkmocaDetailE || '-'}-${hkmocaDetailF || '-'}-${hkmocaDetailG || '-'})`;
         }
-        if (cutoffOp && cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffOp}${cutoffValSelect} cutoff`;
-        else if (cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffValSelect} cutoff`;
+        if (cutoffOp && cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffOp}${cutoffValSelect} percentile cutoff`; // Corrected label
+        else if (cutoffValSelect) hkmocaLine += (hkmocaLine ? ", " : "") + `${cutoffValSelect} percentile cutoff`; // Corrected label
         
         if (eduLevel) hkmocaLine += (hkmocaLine ? ", " : "") + `education level: ${eduLevel}`;
         if (hkmoca5Score) hkmocaLine += (hkmocaLine ? " / " : "") + `HK-MoCA 5 ${hkmoca5Score}/30`;
@@ -697,7 +697,7 @@
         section2Content += formatReportLine("Domestic", domesticReport);
         section2Content += formatReportLine("Others", getTextValue('ar_domestic_others')); 
 
-        section2Content += formatReportLine("Comments", getTextValue('ar_section2_comments')); // Changed label
+        section2Content += formatReportLine("Comments", getTextValue('ar_section2_comments'));
 
         let carerExists = getRadioValue('ar_carer_exists');
         let carerReport = "";
@@ -728,7 +728,7 @@
         section3Content += formatReportLine("Caregiver Training on", getTextValue('ip_caregiver_training'));
         let ipOthersText = getTextValue('ip_others');
         if (ipOthersText) { 
-             section3Content += formatReportLine("Others", ipOthersText); // Label changed
+             section3Content += formatReportLine("Others", ipOthersText);
         }
         
         if (section3Content) {
@@ -747,7 +747,7 @@
             }
         }
         section4Content += formatReportLine("Residential", residential);
-        section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_functional')); // Label changed
+        section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_functional'));
 
         let daytimeEngValues = getSelectedCheckboxValues('dp_daytime_engagement');
         if (form.querySelector('input[name="dp_daytime_engagement_pgdh_cb"]:checked')) {
@@ -765,9 +765,8 @@
             }
         }
         section4Content += formatReportLine("Daytime engagement", daytimeEngValues);
-        section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_daytime')); // Label changed
-
-        // Community Support
+        section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_daytime'));
+        
         let communitySupportPrimaryValues = getSelectedCheckboxValues('dp_community_support_primary');
         if (form.querySelector('input[name="dp_community_support_primary_other_cb"]:checked')) {
             const otherPrimarySupportText = getTextValue('dp_community_support_primary_other_text');

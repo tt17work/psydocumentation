@@ -323,6 +323,9 @@
                         <label><input type="checkbox" name="cognitiveState" value="Oriented"> Oriented</label>
                         <label><input type="checkbox" name="cognitiveState" value="Disoriented"> Disoriented</label>
                         <label><input type="checkbox" name="cognitiveState" value="Good memory"> Good memory</label>
+                        <label><input type="checkbox" name="cognitiveState" value="Satisfactory memory"> Satisfactory memory</label>
+                        <label><input type="checkbox" name="cognitiveState" value="Acceptable memory"> Acceptable memory</label>
+                        <label><input type="checkbox" name="cognitiveState" value="Fair memory"> Fair memory</label>
                         <label><input type="checkbox" name="cognitiveState" value="Poor memory"> Poor memory</label>
                     </div>
                 </div>
@@ -577,7 +580,7 @@
                     <input type="text" id="interventionCaregiverTraining" name="interventionCaregiverTraining">
                 </div>
                 <div class="form-group">
-                    <label for="interventionOthers">Others:</label>
+                    <label for="interventionOthers">Others, please specify e.g.,</label>
                     <textarea id="interventionOthers" name="interventionOthers"></textarea>
                 </div>
             </fieldset>
@@ -828,7 +831,7 @@
 
 
             generateReportBtn.addEventListener('click', function () {
-                let report = ""; 
+                let report = ""; // Initialize report as empty string
                 
                 report += "1. Mental State & Insight\n\n";
                 report = addReportLine(report, "Overall impression", getRadioValue('overallImpression'));
@@ -917,7 +920,7 @@
                 report = addReportLine(report, "Physical Training", getCheckboxValues('interventionPhysical'));
                 report = addReportLine(report, "Aids Prescription and Training", getCheckboxValues('interventionAids'));
                 report = addReportLine(report, "Caregiver Training on", getTextValue('interventionCaregiverTraining'));
-                report = addReportLine(report, "Others", getTextValue('interventionOthers')); // Changed label here
+                report = addReportLine(report, "Others, please specify", getTextValue('interventionOthers'));
                 report += "\n";
 
                 report += "4. Discharged Plan and Recommendations\n\n";

@@ -10,7 +10,20 @@
             margin: 20px;
             background-color: #f4f4f4;
             color: #333;
-            text-align: center; /* Center the main heading */
+            text-align: center; /* Center the main headings */
+        }
+        .super-title {
+            font-size: 2.8em; /* Larger font size for OccuDocu */
+            font-weight: bold;
+            color: #16a085; /* A slightly different color for distinction */
+            margin-bottom: 5px; /* Space below OccuDocu */
+            line-height: 1.1; /* Adjust line height if emojis cause spacing issues */
+        }
+        h1 {
+            font-size: 2em; /* Font size for PSY OT Documentation Generator */
+            color: #2c3e50;
+            margin-top: 0; /* Remove top margin if super-title provides enough space */
+            margin-bottom: 30px;
         }
         .container {
             max-width: 600px;
@@ -20,10 +33,6 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: left; /* Align content within sections to the left */
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 30px;
         }
         h2 {
             color: #34495e;
@@ -47,7 +56,7 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            margin: 4px 0; /* Adjusted margin, gap will handle spacing */
+            margin: 4px 0;
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s ease;
@@ -59,6 +68,7 @@
 </head>
 <body>
 
+    <p class="super-title">OccuDocu✍🏻📝</p>
     <h1>PSY OT Documentation Generator</h1>
 
     <div class="container">

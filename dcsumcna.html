@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C&A Discharge Summary</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #0056b3; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 30px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .input-group { margin-bottom: 15px; }
+        .input-group > label, .section-title { font-weight: bold; display: block; margin-bottom: 5px; }
+        .input-group .sub-item label, .checkbox-group label, .radio-group label { font-weight: normal; display: inline-block; margin-right: 10px; margin-bottom: 5px; }
+        .input-group input[type="text"], .input-group textarea, .input-group input[type="number"], .input-group input[type="date"], .input-group select {
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .input-group input[type="text"].full-width, .input-group textarea.full-width { width: 100%; }
+        .input-group input[type="text"].inline-text, .input-group select.inline-text { width: auto; display: inline-block; margin-left: 5px; vertical-align: middle; }
+        .input-group textarea { height: 60px; resize: vertical; }
+        .checkbox-group input[type="checkbox"], .radio-group input[type="radio"] { margin-right: 5px; vertical-align: middle; }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        button:hover { background-color: #0056b3; }
+        button#resetFormButton { background-color: #dc3545; }
+        button#resetFormButton:hover { background-color: #c82333; }
+        #reportOutputContainer { margin-top: 30px; }
+        #reportOutput {
+            padding: 15px;
+            border: 1px dashed #ccc;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        #copyReportButton { display: none; background-color: #28a745; }
+        #copyReportButton:hover { background-color: #1e7e34; }
+        .sub-item { margin-left: 0px; margin-bottom: 10px; padding-left: 10px; border-left: 2px solid #eee; }
+        .field-separator { margin: 0 5px; }
+        .bold-title { font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>C&A Discharge Summary</h1>
+    <form id="dischargeForm">
+
+        <h2>1. Mental State & Insight</h2>
+        <div class="input-group radio-group">
+            <span class="section-title">Overall impression:</span>
+            <label><input type="radio" name="ms_overall_impression" value="Stable"> Stable</label>
+            <label><input type="radio" name="ms_overall_impression" value="Unstable"> Unstable</label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">Mood:</span>
+            <label><input type="radio" name="ms_mood" value="Neutral"> Neutral</label>
+            <label><input type="radio" name="ms_mood" value="Depressed"> Depressed</label>
+            <label><input type="radio" name="ms_mood" value="Dysthymic"> Dysthymic</label>
+            <label><input type="radio" name="ms_mood" value="Euthymic"> Euthymic</label>
+            <label><input type="radio" name="ms_mood" value="Elated"> Elated</label>
+            <label><input type="radio" name="ms_mood" value="Irritable"> Irritable</label>
+            <label><input type="radio" name="ms_mood" value="Anxious"> Anxious</label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">Affect:</span>
+            <label><input type="radio" name="ms_affect" value="Congruent"> Congruent</label>
+            <label><input type="radio" name="ms_affect" value="Labile"> Labile</label>
+            <label><input type="radio" name="ms_affect" value="Shallow"> Shallow</label>
+            <label><input type="radio" name="ms_affect" value="Blunted"> Blunted</label>
+            <label><input type="radio" name="ms_affect" value="Restricted"> Restricted</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Speech:</span>
+            <label><input type="checkbox" name="ms_speech" value="Relevant"> Relevant</label>
+            <label><input type="checkbox" name="ms_speech" value="Coherent"> Coherent</label>
+            <label><input type="checkbox" name="ms_speech" value="Spontaneous"> Spontaneous</label>
+            <label><input type="checkbox" name="ms_speech" value="Pressured"> Pressured</label>
+            <label><input type="checkbox" name="ms_speech" value="Slurred"> Slurred</label>
+            <label><input type="checkbox" name="ms_speech" value="Circumstantial"> Circumstantial</label>
+            <label><input type="checkbox" name="ms_speech" value="Tangential"> Tangential</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Hallucination:</span>
+            <label><input type="checkbox" name="ms_hallucination" value="Auditory"> Auditory</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Visual"> Visual</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Olfactory"> Olfactory</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Tactile"> Tactile</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Gustatory"> Gustatory</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Thought:</span>
+            <label><input type="checkbox" name="ms_thought" value="Persecutory"> Persecutory</label>
+            <label><input type="checkbox" name="ms_thought" value="Delusional"> Delusional</label>
+            <label><input type="checkbox" name="ms_thought" value="Somatic"> Somatic</label>
+            <label><input type="checkbox" name="ms_thought" value="Grandiose"> Grandiose</label>
+            <label><input type="checkbox" name="ms_thought" value="Idea of reference"> Idea of reference</label>
+            <label><input type="checkbox" name="ms_thought" value="Thought broadcasting"> Thought broadcasting</label>
+            <label><input type="checkbox" name="ms_thought" value="Being control"> Being control</label>
+            <label><input type="checkbox" name="ms_thought_other_cb" value="Other"> Other, please specify</label>
+            <input type="text" id="ms_thought_other_text" name="ms_thought_other_text" class="inline-text" placeholder="Specify other thought">
+            <label><input type="checkbox" name="ms_thought" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Behavior:</span>
+            <label><input type="checkbox" name="ms_behavior" value="Normal"> Normal</label>
+            <label><input type="checkbox" name="ms_behavior" value="Bizarre"> Bizarre</label>
+            <label><input type="checkbox" name="ms_behavior" value="Self-muttering"> Self-muttering</label>
+            <label><input type="checkbox" name="ms_behavior" value="Self-giggling"> Self-giggling</label>
+            <label><input type="checkbox" name="ms_behavior" value="Disturbing"> Disturbing</label>
+            <label><input type="checkbox" name="ms_behavior" value="Disorganized"> Disorganized</label>
+            <label><input type="checkbox" name="ms_behavior" value="Disinhibited"> Disinhibited</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Risk:</span>
+            <label><input type="checkbox" name="ms_risk" value="Suicidal"> Suicidal</label>
+            <label><input type="checkbox" name="ms_risk" value="Homicidal"> Homicidal</label>
+            <label><input type="checkbox" name="ms_risk" value="Self-harm"> Self-harm</label>
+            <label><input type="checkbox" name="ms_risk" value="Self-neglect"> Self-neglect</label>
+            <label><input type="checkbox" name="ms_risk" value="Violent"> Violent</label>
+            <label><input type="checkbox" name="ms_risk" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">Insight:</span>
+            <label><input type="radio" name="ms_insight" value="Full"> Full</label>
+            <label><input type="radio" name="ms_insight" value="Partial"> Partial</label>
+            <label><input type="radio" name="ms_insight" value="Limited"> Limited</label>
+            <label><input type="radio" name="ms_insight" value="Poor"> Poor</label>
+        </div>
+
+        <h2>2. Assessment Results</h2>
+        <div class="input-group radio-group">
+            <span class="section-title">ADL:</span>
+            <label><input type="radio" name="ar_adl" value="Independent"> Independent</label>
+            <label><input type="radio" name="ar_adl" value="Standby assistance"> Standby assistance</label>
+            <label><input type="radio" name="ar_adl" value="Minimal assistance"> Minimal assistance</label>
+            <label><input type="radio" name="ar_adl" value="Moderate"> Moderate</label>
+            <label><input type="radio" name="ar_adl" value="Maximal assistance"> Maximal assistance</label>
+            <label><input type="radio" name="ar_adl" value="Dependent"> Dependent</label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">IADL:</span>
+            <label><input type="radio" name="ar_iadl" value="Independent living"> Independent living</label>
+            <label><input type="radio" name="ar_iadl" value="Supervised living"> Supervised living</label>
+        </div>
+
+        <h2>3. Interventions Provided</h2>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Work rehabilitation:</span>
+            <label><input type="checkbox" name="ip_work_rehab" value="Concentration training"> Concentration training</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Job analysis"> Job analysis</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Job site visit"> Job site visit</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Job exploration"> Job exploration</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Prevocational training"> Prevocational training</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Returning to work program"> Returning to work program</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Work capacity evaluation"> Work capacity evaluation</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Work hardening"> Work hardening</label>
+            <label><input type="checkbox" name="ip_work_rehab" value="Nil"> Nil</label>
+        </div>
+         <div class="input-group checkbox-group">
+            <span class="section-title">Self-management Training:</span>
+            <label><input type="checkbox" name="ip_self_management" value="ADL Assessment & training"> ADL Assessment & training</label>
+            <label><input type="checkbox" name="ip_self_management" value="IADL Assessment & training"> IADL Assessment & training</label>
+            <label><input type="checkbox" name="ip_self_management" value="Community re-integration"> Community re-integration</label>
+            <label><input type="checkbox" name="ip_self_management" value="Illness management"> Illness management</label>
+            <label><input type="checkbox" name="ip_self_management" value="Relaxation training"> Relaxation training</label>
+            <label><input type="checkbox" name="ip_self_management" value="Stress management"> Stress management</label>
+            <label><input type="checkbox" name="ip_self_management" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Interpersonal Skills Training:</span>
+            <label><input type="checkbox" name="ip_interpersonal_skills" value="Communication skills training"> Communication skills training</label>
+            <label><input type="checkbox" name="ip_interpersonal_skills" value="Social skills training"> Social skills training</label>
+            <label><input type="checkbox" name="ip_interpersonal_skills" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Life Coaching:</span>
+            <label><input type="checkbox" name="ip_life_coaching" value="Counseling"> Counseling</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Cognitive behavioral therapy"> Cognitive behavioral therapy</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Health Qi-gong"> Health Qi-gong</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Lifestyle re-design"> Lifestyle re-design</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Motivational interviewing"> Motivational interviewing</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Wellness program"> Wellness program</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Behavioral Management Training:</span>
+            <label><input type="checkbox" name="ip_behavioral_management" value="Impulse control"> Impulse control</label>
+            <label><input type="checkbox" name="ip_behavioral_management" value="Temper management"> Temper management</label>
+            <label><input type="checkbox" name="ip_behavioral_management" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Sensory Based Intervention:</span>
+            <label><input type="checkbox" name="ip_sensory_intervention" value="Desensitization"> Desensitization</label>
+            <label><input type="checkbox" name="ip_sensory_intervention" value="Sensory integration"> Sensory integration</label>
+            <label><input type="checkbox" name="ip_sensory_intervention" value="Sensory re-education"> Sensory re-education</label>
+            <label><input type="checkbox" name="ip_sensory_intervention" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Physical Training:</span>
+            <label><input type="checkbox" name="ip_physical_training" value="Gross motor training"> Gross motor training</label>
+            <label><input type="checkbox" name="ip_physical_training" value="Fine motor training"> Fine motor training</label>
+            <label><input type="checkbox" name="ip_physical_training" value="UL functional training"> UL functional training</label>
+            <label><input type="checkbox" name="ip_physical_training" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Aids Prescription and Training:</span>
+            <label><input type="checkbox" name="ip_aids_prescription" value="Aids prescription & training"> Aids prescription & training</label>
+            <label><input type="checkbox" name="ip_aids_prescription" value="Pressure relieving devices"> Pressure relieving devices</label>
+            <label><input type="checkbox" name="ip_aids_prescription" value="Pressure therapy (garment)"> Pressure therapy (garment)</label>
+            <label><input type="checkbox" name="ip_aids_prescription" value="Seating assessment & prescription"> Seating assessment & prescription</label>
+            <label><input type="checkbox" name="ip_aids_prescription" value="Splintage"> Splintage</label>
+            <label><input type="checkbox" name="ip_aids_prescription" value="Wheelchair prescription & training"> Wheelchair prescription & training</label>
+            <label><input type="checkbox" name="ip_aids_prescription" value="Nil"> Nil</label>
+        </div>
+
+
+        <h2>4. Discharged Plan and Recommendations</h2>
+        <div class="input-group radio-group">
+            <span class="section-title">Residential:</span>
+            <label><input type="radio" name="dp_residential" value="Home"> Home</label>
+            <label><input type="radio" name="dp_residential" value="Boarding school"> Boarding school</label>
+            <label><input type="radio" name="dp_residential" value="Foster home"> Foster home</label>
+            <label><input type="radio" name="dp_residential" value="Small group homes"> Small group homes</label>
+            <label><input type="radio" name="dp_residential" value="Children’s homes"> Children’s homes</label>
+            <label><input type="radio" name="dp_residential" value="Boys’ / Girls’ home"> Boys’ / Girls’ home</label>
+            <label><input type="radio" name="dp_residential" value="Boys’ / Girls’ hostel"> Boys’ / Girls’ hostel</label>
+            <label><input type="radio" name="dp_residential" value="Other hospital"> Other hospital</label>
+            <label><input type="radio" name="dp_residential" value="MD hostel Subvented or BP- HWH"> MD hostel Subvented or BP- HWH</label>
+            <label><input type="radio" name="dp_residential" value="Others"> Others:</label>
+            <input type="text" id="dp_residential_other_text" name="dp_residential_other_text" class="inline-text" placeholder="Specify other residential">
+        </div>
+        <div class="input-group">
+            <label for="dp_recommendation_functional">Recommendation:</label>
+            <input type="text" id="dp_recommendation_functional" name="dp_recommendation_functional" class="full-width" placeholder="continue functional training in “name of the organization, post etc.”">
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">Vocational:</span>
+            <label><input type="radio" name="dp_vocational" value="Mainstream school"> Mainstream school</label>
+            <label><input type="radio" name="dp_vocational" value="Special school"> Special school</label>
+            <label><input type="radio" name="dp_vocational" value="VTC"> VTC</label>
+            <label><input type="radio" name="dp_vocational" value="Teen才再現計劃 (Youth College)"> Teen才再現計劃 (Youth College)</label>
+        </div>
+        <div class="input-group">
+            <label for="dp_recommendation_vocational">Recommendation:</label>
+            <input type="text" id="dp_recommendation_vocational" name="dp_recommendation_vocational" class="full-width" placeholder="continue vocational rehabilitation in “name of the organization, post etc.”">
+        </div>
+
+        <button type="button" id="generateReportButton">Generate Report</button>
+        <button type="button" id="resetFormButton">Reset Form</button>
+    </form>
+
+    <div id="reportOutputContainer" style="display:none;">
+        <h2>Generated Report</h2>
+        <pre id="reportOutput"></pre>
+        <button type="button" id="copyReportButton">Copy Report</button>
+    </div>
+
+</div>
+
+<script>
+    document.getElementById('generateReportButton').addEventListener('click', function() {
+        let overallReport = "";
+        const form = document.getElementById('dischargeForm');
+
+        function getRadioValue(name) {
+            const radio = form.querySelector(`input[name="${name}"]:checked`);
+            return radio ? radio.value : "";
+        }
+        
+        function getSelectedCheckboxValues(name, joiner = ' / ') {
+            const checkboxes = form.querySelectorAll(`input[name="${name}"]:checked`);
+            const values = Array.from(checkboxes).map(cb => cb.value);
+            return values.join(joiner);
+        }
+
+        function getTextValue(id) {
+            const element = form.querySelector(`#${id}`);
+            return element ? element.value.trim() : "";
+        }
+        
+        function formatReportLine(label, value) {
+            if (value && String(value).trim() !== "") {
+                return `${label}: ${String(value).trim()}\n`;
+            }
+            return "";
+        }
+
+        // --- Section 1: Mental State & Insight ---
+        let section1Content = "";
+        section1Content += formatReportLine("Overall impression", getRadioValue('ms_overall_impression'));
+        section1Content += formatReportLine("Mood", getRadioValue('ms_mood'));
+        section1Content += formatReportLine("Affect", getRadioValue('ms_affect'));
+        section1Content += formatReportLine("Speech", getSelectedCheckboxValues('ms_speech'));
+        section1Content += formatReportLine("Hallucination", getSelectedCheckboxValues('ms_hallucination'));
+        
+        let thoughtValues = [];
+        form.querySelectorAll('input[name="ms_thought"]:checked').forEach(cb => {
+            if (cb.value !== "Other") { // Exclude the "Other" checkbox value itself
+                 thoughtValues.push(cb.value);
+            }
+        });
+        
+        let thoughtStr = thoughtValues.join(' / ');
+        
+        if (form.querySelector('input[name="ms_thought_other_cb"]:checked')) {
+            const otherText = getTextValue('ms_thought_other_text');
+            let otherSpecifyStr = `Other, please specify ${otherText || '_________'}`;
+            if (thoughtStr) {
+                thoughtStr += ` / ${otherSpecifyStr}`;
+            } else {
+                thoughtStr = otherSpecifyStr;
+            }
+        }
+        section1Content += formatReportLine("Thought", thoughtStr);
+
+        section1Content += formatReportLine("Behavior", getSelectedCheckboxValues('ms_behavior'));
+        section1Content += formatReportLine("Risk", getSelectedCheckboxValues('ms_risk'));
+        section1Content += formatReportLine("Insight", getRadioValue('ms_insight'));
+
+        if (section1Content.trim()) {
+            overallReport += "1. Mental State & Insight\n\n" + section1Content.trim() + "\n\n";
+        }
+
+        // --- Section 2: Assessment Results ---
+        let section2Content = "";
+        section2Content += formatReportLine("ADL", getRadioValue('ar_adl'));
+        section2Content += formatReportLine("IADL", getRadioValue('ar_iadl'));
+        
+        if (section2Content.trim()) {
+            overallReport += "2. Assessment Results\n\n" + section2Content.trim() + "\n\n";
+        }
+
+        // --- Section 3: Interventions Provided ---
+        let section3Content = "";
+        section3Content += formatReportLine("Work rehabilitation", getSelectedCheckboxValues('ip_work_rehab'));
+        section3Content += formatReportLine("Self-management Training", getSelectedCheckboxValues('ip_self_management'));
+        section3Content += formatReportLine("Interpersonal Skills Training", getSelectedCheckboxValues('ip_interpersonal_skills'));
+        section3Content += formatReportLine("Life Coaching", getSelectedCheckboxValues('ip_life_coaching'));
+        section3Content += formatReportLine("Behavioral Management Training", getSelectedCheckboxValues('ip_behavioral_management'));
+        section3Content += formatReportLine("Sensory Based Intervention", getSelectedCheckboxValues('ip_sensory_intervention'));
+        section3Content += formatReportLine("Physical Training", getSelectedCheckboxValues('ip_physical_training'));
+        section3Content += formatReportLine("Aids Prescription and Training", getSelectedCheckboxValues('ip_aids_prescription'));
+        
+        if (section3Content.trim()) {
+            overallReport += "3. Interventions Provided\n\n" + section3Content.trim() + "\n\n";
+        }
+
+        // --- Section 4: Discharged Plan and Recommendations ---
+        let section4Content = "";
+        let residential = getRadioValue('dp_residential');
+        if (residential === "Others") {
+            const otherResidentialText = getTextValue('dp_residential_other_text');
+            residential = `Others: ${otherResidentialText || '_________'}`;
+        }
+        section4Content += formatReportLine("Residential", residential);
+        section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_functional'));
+        section4Content += formatReportLine("Vocational", getRadioValue('dp_vocational'));
+        section4Content += formatReportLine("Recommendation", getTextValue('dp_recommendation_vocational'));
+
+        if (section4Content.trim()) {
+            overallReport += "4. Discharged Plan and Recommendations\n\n" + section4Content.trim();
+        }
+
+        overallReport = overallReport.trim(); 
+        if (overallReport === "") {
+            overallReport = "No data entered.";
+        } else {
+            overallReport += "\n"; 
+        }
+
+
+        document.getElementById('reportOutput').textContent = overallReport;
+        document.getElementById('reportOutputContainer').style.display = 'block';
+        document.getElementById('copyReportButton').style.display = 'inline-block';
+    });
+
+    document.getElementById('copyReportButton').addEventListener('click', function() {
+        const reportText = document.getElementById('reportOutput').textContent;
+        navigator.clipboard.writeText(reportText).then(function() {
+            alert('Report copied to clipboard!');
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+            alert('Could not copy text. See console for error.');
+        });
+    });
+
+    document.getElementById('resetFormButton').addEventListener('click', function() {
+        document.getElementById('dischargeForm').reset();
+        document.getElementById('reportOutput').textContent = '';
+        document.getElementById('reportOutputContainer').style.display = 'none';
+        document.getElementById('copyReportButton').style.display = 'none';
+    });
+</script>
+
+</body>
+</html>

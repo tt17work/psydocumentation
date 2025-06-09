@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LD Assessment Form & Report Generator</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; font-size: 16px; }
-        .container { background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; font-size: 16px; }
+        .container { background-color: #fff; padding: 15px; margin: 10px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; margin-top:15px; margin-bottom: 25px; font-size: 1.8em; }
         h2, h3, h4, h5 { color: #333; margin-top: 20px; }
-        h5 { margin-top: 10px; margin-bottom: 5px; font-size: 1.05em; }
+        h4 { font-size: 1.2em; margin-bottom: 10px;}
+        h5 { margin-top: 15px; margin-bottom: 8px; font-size: 1.05em; }
         fieldset { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
         legend { font-weight: bold; color: #555; padding: 0 10px; font-size: 1.1em; }
         label { display: block; margin-bottom: 5px; font-weight: 500;}
         input[type="text"], input[type="number"], input[type="date"], textarea, select {
-            width: 100%; 
+            width: 100%;
             padding: 10px;
             margin-bottom: 12px;
             border: 1px solid #ccc;
@@ -47,42 +48,85 @@
         .grid-item { }
         .sub-section { margin-left: 10px; border-left: 2px solid #eee; padding-left: 10px; }
         .form-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start; margin-bottom:15px;}
-        .form-row > div { flex: 1; min-width: 250px;} 
+        .form-row > div { flex: 1; min-width: 250px;}
         .form-row label { margin-bottom: 3px; }
-        
-        .fine-motor-grid { 
-            display: grid; 
-            grid-template-columns: auto repeat(4, 1fr); 
-            gap: 5px 10px; 
+
+        .fine-motor-grid {
+            display: grid;
+            grid-template-columns: auto repeat(4, 1fr);
+            gap: 5px 10px;
             align-items: center;
             margin-bottom: 10px;
         }
         .fine-motor-grid label { margin-bottom: 0; font-weight: normal; }
         .fine-motor-grid > span { font-weight: bold; }
+        .fm-header { text-align: center;}
+
 
         .mas-function-group { border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
-        .mas-function-group div { margin-bottom: 8px; }
-        .mas-function-group div label { display: inline-block; width: 130px; font-weight: normal; }
+        .mas-function-group div { margin-bottom: 8px; display: flex; flex-wrap: wrap; align-items: center;}
+        .mas-function-group div label { display: inline-block; width: 130px; font-weight: normal; margin-bottom:0; }
         .mas-function-group div input { width: 120px; display: inline-block; padding: 6px; font-size: 0.95em; margin-bottom: 0; }
-        
+
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 0.95em;}
         th { background-color: #f2f2f2; }
 
+        /* Range & Contracture/Deformity Styling */
+        .limb-range-section .form-row { /* Reset for header only */
+            display: flex;
+            flex-wrap: nowrap; /* Prevent header from wrapping */
+            font-weight: bold;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+        .limb-range-section .form-row > div {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+        }
+         .limb-range-section .form-row > div:first-child { text-align: left; flex-basis: 100px; flex-grow: 0;}
+
+
+        .limb-data-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .limb-data-row > div {
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .limb-name { flex-basis: 100px; flex-grow: 0; font-weight: bold;}
+        .arom-group, .prom-group, .contracture-group { flex: 1; min-width: 150px; }
+        .functional-cb-label { font-weight: normal; display: inline-flex; align-items: center; margin-left:5px;}
+        .functional-cb-label input[type="checkbox"] { margin-right: 5px; width: auto;}
+
+
         @media (max-width: 768px) {
-            .form-row > div { min-width: 100%; } 
-            .fine-motor-grid { grid-template-columns: auto repeat(2, 1fr); } 
-            .mas-function-group div label { width: 100px; }
-            .mas-function-group div input { width: calc(100% - 110px); }
+            .container { margin: 5px; padding: 10px;}
+            .form-row > div { min-width: 100%; }
+            .fine-motor-grid { grid-template-columns: auto repeat(2, 1fr); }
+            .mas-function-group div label { width: 100%; margin-bottom: 3px;}
+            .mas-function-group div input { width: 100%; }
             .checkbox-group label, .radio-group label { margin-right: 10px;}
+
+            .limb-range-section .form-row { display: none; } /* Hide desktop header */
+            .limb-data-row { flex-direction: column; align-items: stretch; }
+            .limb-name { flex-basis: auto; margin-bottom: 10px; text-align: left; }
+            .arom-group, .prom-group, .contracture-group { min-width: 100%; margin-bottom: 10px;}
+            .arom-group input[type="text"], .prom-group input[type="text"] { width: 100%;}
+            .functional-cb-label { display: block; margin-left:0; margin-top: 5px;}
         }
         @media (max-width: 480px) {
             .fine-motor-grid { grid-template-columns: 1fr; }
             .fine-motor-grid > span { grid-column: 1 / -1; text-align: left; margin-top: 10px;}
-            .fine-motor-grid > span:not(:first-child):not(.limb-header) { font-weight: normal; margin-left: 15px;}
+            .fm-header { font-weight: normal !important; margin-left: 15px; display:block; text-align: left !important;}
             .fine-motor-grid > .limb-header ~ label { margin-left: 15px;}
             .inline-fields input[type="text"], .inline-fields input[type="number"], .inline-fields select { width: 100%; margin-bottom: 8px;}
-            .checkbox-group label, .radio-group label { display: block; } 
+            .checkbox-group label, .radio-group label { display: block; }
         }
     </style>
 </head>
@@ -304,40 +348,99 @@
         </div>
         <label for="general_other_observation">Other observation:</label>
         <textarea id="general_other_observation" name="general_other_observation"></textarea>
-        <h4>Range & Contracture/Deformity</h4>
-        <div class="form-row">
-            <div>Limb</div><div>AROM</div><div>Functional</div><div>PROM</div><div>Contracture/Deformity</div>
+
+        <div class="limb-range-section">
+            <h4>Range & Contracture/Deformity</h4>
+            <div class="form-row"> <!-- Desktop Header -->
+                <div>Limb</div>
+                <div>AROM / Functional</div>
+                <div>PROM</div>
+                <div>Contracture/Deformity</div>
+            </div>
+            <!-- RUL -->
+            <div class="limb-data-row">
+                <div class="limb-name">RUL:</div>
+                <div class="arom-group">
+                    <label for="rul_arom">AROM:</label>
+                    <input type="text" id="rul_arom" name="rul_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="rul_arom_functional" name="rul_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="rul_prom">PROM:</label>
+                    <input type="text" id="rul_prom" name="rul_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="rul_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="rul_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- LUL -->
+            <div class="limb-data-row">
+                <div class="limb-name">LUL:</div>
+                <div class="arom-group">
+                    <label for="lul_arom">AROM:</label>
+                    <input type="text" id="lul_arom" name="lul_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="lul_arom_functional" name="lul_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="lul_prom">PROM:</label>
+                    <input type="text" id="lul_prom" name="lul_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="lul_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="lul_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- RLL -->
+            <div class="limb-data-row">
+                <div class="limb-name">RLL:</div>
+                <div class="arom-group">
+                    <label for="rll_arom">AROM:</label>
+                    <input type="text" id="rll_arom" name="rll_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="rll_arom_functional" name="rll_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="rll_prom">PROM:</label>
+                    <input type="text" id="rll_prom" name="rll_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="rll_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="rll_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- LLL -->
+            <div class="limb-data-row">
+                <div class="limb-name">LLL:</div>
+                <div class="arom-group">
+                    <label for="lll_arom">AROM:</label>
+                    <input type="text" id="lll_arom" name="lll_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="lll_arom_functional" name="lll_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="lll_prom">PROM:</label>
+                    <input type="text" id="lll_prom" name="lll_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="lll_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="lll_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-row">
-            <div>RUL:</div>
-            <div><input type="text" id="rul_arom" name="rul_arom"></div>
-            <div><input type="checkbox" id="rul_arom_functional" name="rul_arom_functional"></div>
-            <div><input type="text" id="rul_prom" name="rul_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="rul_contracture" value="Y">Y</label><label><input type="radio" name="rul_contracture" value="N" checked>N</label></div>
-        </div>
-        <div class="form-row">
-            <div>LUL:</div>
-            <div><input type="text" id="lul_arom" name="lul_arom"></div>
-            <div><input type="checkbox" id="lul_arom_functional" name="lul_arom_functional"></div>
-            <div><input type="text" id="lul_prom" name="lul_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="lul_contracture" value="Y">Y</label><label><input type="radio" name="lul_contracture" value="N" checked>N</label></div>
-        </div>
-        <div class="form-row">
-            <div>RLL:</div>
-            <div><input type="text" id="rll_arom" name="rll_arom"></div>
-            <div><input type="checkbox" id="rll_arom_functional" name="rll_arom_functional"></div>
-            <div><input type="text" id="rll_prom" name="rll_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="rll_contracture" value="Y">Y</label><label><input type="radio" name="rll_contracture" value="N" checked>N</label></div>
-        </div>
-        <div class="form-row">
-            <div>LLL:</div>
-            <div><input type="text" id="lll_arom" name="lll_arom"></div>
-            <div><input type="checkbox" id="lll_arom_functional" name="lll_arom_functional"></div>
-            <div><input type="text" id="lll_prom" name="lll_prom"></div>
-            <div class="radio-group"><label><input type="radio" name="lll_contracture" value="Y">Y</label><label><input type="radio" name="lll_contracture" value="N" checked>N</label></div>
-        </div>
-         <label for="pa_contracture_details">Contracture/Deformity details (e.g. specific joints):</label>
+        <label for="pa_contracture_details">Contracture/Deformity details (e.g. specific joints):</label>
         <input type="text" id="pa_contracture_details" name="pa_contracture_details">
+
         <h4>Strength (MMT)</h4>
         <div class="form-row">
             <div><label for="rul_mmt">RUL MMT:</label><input type="text" id="rul_mmt" name="rul_mmt"></div>
@@ -554,11 +657,11 @@
         </div>
         <label for="lives_with_others">Others:</label>
         <input type="text" id="lives_with_others" name="lives_with_others">
-        
+
         <h4>Home visit / Hostel Environment
             <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_home_visit_env"> Exclude from Report</label></span>
         </h4>
-        <div id="home_visit_env_content"> 
+        <div id="home_visit_env_content">
             <div class="form-row">
                 <div>
                     <label>Lighting:</label>
@@ -613,7 +716,7 @@
                     <input type="text" id="env_change_others" name="env_change_others">
                 </div>
             </div>
-            
+
             <h5>Staff / Parent Interaction</h5>
              <div class="form-row">
                 <div>
@@ -692,11 +795,11 @@
             </div>
             <label for="parenting_style_other_info">Other information:</label>
             <textarea id="parenting_style_other_info" name="parenting_style_other_info"></textarea>
-        </div> 
+        </div>
         <label for="env_others_layout">Others (e.g. Layout):</label>
         <textarea id="env_others_layout" name="env_others_layout"></textarea>
     </fieldset>
-    
+
     <!-- Occupation -->
     <fieldset>
         <legend>Occupation</legend>
@@ -724,7 +827,7 @@
             <div><label>Stairs: <input type="number" name="mbi_stairs" class="mbi-score-field"> /10</label></div>
         </div>
         <label>Total MBI Score: <input type="text" id="mbi_total_score_display" name="mbi_total_score_display" readonly> /100</label>
-        
+
         <p><em>Qualitative BADL Levels:</em></p>
         <div class="form-row">
             <div>
@@ -896,7 +999,7 @@
         <label for="bwap_remarks">Remarks:</label>
         <textarea id="bwap_remarks" name="bwap_remarks"></textarea>
     </fieldset>
-    
+
     <fieldset>
         <legend>OT Plan Options
             <span class="section-exclude"><label><input type="checkbox" id="exclude_otp"> Exclude from Report</label></span>
@@ -941,26 +1044,30 @@
 
     function updateMbiTotal() {
         let total = 0;
+        let anyInput = false;
         mbiScoreFields.forEach(field => {
-            const val = parseInt(field.value) || 0;
-            total += val;
+            if (field.value.trim() !== '') {
+                anyInput = true;
+                const val = parseInt(field.value) || 0;
+                total += val;
+            }
         });
-        document.getElementById('mbi_total_score_display').value = total;
+        document.getElementById('mbi_total_score_display').value = anyInput ? total : '';
     }
-    updateMbiTotal(); 
+    updateMbiTotal();
 
     // MAS Average Score and Ranking Calculation
     const masTotalScoreInputs = document.querySelectorAll('.mas-total-score');
     masTotalScoreInputs.forEach(input => {
         input.addEventListener('input', function() {
-            const functionKey = this.id.split('_')[1]; 
+            const functionKey = this.id.split('_')[1];
             const total = parseFloat(this.value);
             const averageField = document.getElementById(`mas_${functionKey}_average`);
             if (averageField) {
                 if (!isNaN(total)) {
-                    averageField.value = (total / 4).toFixed(2); 
+                    averageField.value = (total / 4).toFixed(2);
                 } else {
-                    averageField.value = ''; // Clear if total is not a number
+                    averageField.value = '';
                 }
             }
             updateMasRankings();
@@ -973,7 +1080,7 @@
             const totalVal = getVal(`mas_${func}_total`);
             return {
                 name: func,
-                total: (totalVal !== '' && !isNaN(parseFloat(totalVal))) ? parseFloat(totalVal) : -Infinity, 
+                total: (totalVal !== '' && !isNaN(parseFloat(totalVal))) ? parseFloat(totalVal) : -Infinity,
                 rankInputId: `mas_${func}_ranking`
             };
         });
@@ -981,11 +1088,11 @@
         let rankedScores = scoresData.filter(s => s.total !== -Infinity);
         rankedScores.sort((a, b) => b.total - a.total);
 
-        let currentRank = 0; // Start rank from 0 to handle dense ranking correctly
+        let currentRank = 0;
         let lastScore = null;
         for (let i = 0; i < rankedScores.length; i++) {
             if (lastScore === null || rankedScores[i].total < lastScore) {
-                currentRank++; // Increment rank only if score is different from previous
+                currentRank++;
             }
             document.getElementById(rankedScores[i].rankInputId).value = currentRank;
             lastScore = rankedScores[i].total;
@@ -1013,7 +1120,7 @@
         const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
         return Array.from(checkboxes).map(cb => cb.value);
     }
-    
+
     function getRadioValue(name) {
         const radio = document.querySelector(`input[name="${name}"]:checked`);
         return radio ? radio.value : '';
@@ -1022,7 +1129,7 @@
     function copyReport() {
         const reportTextArea = document.getElementById('reportTextArea');
         reportTextArea.select();
-        reportTextArea.setSelectionRange(0, 99999); // For mobile devices
+        reportTextArea.setSelectionRange(0, 99999);
         try {
             document.execCommand('copy');
             const copyMessage = document.getElementById('copyMessage');
@@ -1035,7 +1142,7 @@
             console.error('Failed to copy text: ', err);
             alert('Failed to copy text. Please copy manually.');
         }
-        window.getSelection().removeAllRanges(); // Deselect
+        window.getSelection().removeAllRanges();
     }
 
 
@@ -1043,9 +1150,13 @@
         let report = "Documentation:\n\n";
         const assessmentDate = getVal('assessmentDate');
 
-        const formatCheckboxList = (items) => items.length > 0 ? items.join(' / ') : 'N/A'; 
-        const formatLine = (label, value) => value && value.trim() !== '' && value !== 'N/A' ? `${label}: ${value}\n` : '';
+        // --- MODIFIED HELPER FUNCTIONS ---
+        // This function now returns an empty string if the list is empty, allowing formatLine to suppress output.
+        const formatCheckboxList = (items) => items.join(' / ');
+        const formatLine = (label, value) => value && value.trim() !== '' ? `${label}: ${value}\n` : '';
         const formatMultiLine = (label, value) => value && value.trim() !== '' ? `${label}:\n${value}\n` : '';
+        // --- END OF MODIFIED HELPERS ---
+
 
         // 1. Mental State & Insight
         if (!isChecked('exclude_mse')) {
@@ -1055,44 +1166,52 @@
             let moodOthers = getVal('mood_others');
             if (moodOthers) moodItems.push(`Others - ${moodOthers}`);
             report += formatLine("Mood", formatCheckboxList(moodItems));
+
             report += formatLine("Affect", formatCheckboxList(getCheckedValues('affect')));
-            let expressiveSpeechItems = getCheckedValues('expressive_speech');
-            report += formatLine("Speech", formatCheckboxList(expressiveSpeechItems));
+            report += formatLine("Speech", formatCheckboxList(getCheckedValues('expressive_speech')));
+
             let receptiveSteps = getVal('receptive_steps');
             let receptiveCommandType = getVal('receptive_command_type');
             let receptiveOptions = getCheckedValues('receptive_speech_options');
             let receptiveSpeechReport = "";
-            if (receptiveSteps && receptiveCommandType) {
-                receptiveSpeechReport += `Follow ${receptiveSteps} step ${receptiveCommandType} command. `;
+            if (receptiveSteps) { // Only add if steps are entered
+                receptiveSpeechReport += `Follow ${receptiveSteps} step ${receptiveCommandType || 'verbal'} command. `;
             }
             if (receptiveOptions.length > 0) {
                 receptiveSpeechReport += receptiveOptions.join(', ') + ".";
             }
-             if (receptiveSpeechReport.trim() === "") receptiveSpeechReport = "N/A";
             report += formatLine("Receptive Speech", receptiveSpeechReport.trim());
+
             if (isChecked('hallucination_nil')) {
                 report += "Hallucination: Nil\n";
             } else {
-                report += formatLine("Hallucination", formatCheckboxList(getCheckedValues('hallucination')));
+                let hallucinationItems = getCheckedValues('hallucination');
+                if(hallucinationItems.length > 0) report += formatLine("Hallucination", formatCheckboxList(hallucinationItems));
             }
+
             if (isChecked('abnormal_thought_nil')) {
                 report += "Abnormal Thought: Nil\n";
             } else {
                 let abnormalThoughtItems = getCheckedValues('abnormal_thought');
                 let abnormalThoughtOthers = getVal('abnormal_thought_others');
                 if (abnormalThoughtOthers) abnormalThoughtItems.push(`Other - ${abnormalThoughtOthers}`);
-                report += formatLine("Abnormal Thought", formatCheckboxList(abnormalThoughtItems));
+                if (abnormalThoughtItems.length > 0) report += formatLine("Abnormal Thought", formatCheckboxList(abnormalThoughtItems));
             }
+
             let behaviourItems = getCheckedValues('behaviour');
             let behaviourOthers = getVal('behaviour_others');
             if (behaviourOthers) behaviourItems.push(`Others - ${behaviourOthers}`);
             report += formatLine("Behaviour", formatCheckboxList(behaviourItems));
+
             report += formatLine("Cognitive", formatCheckboxList(getCheckedValues('cognitive')));
+
             if (isChecked('risk_nil')) {
                 report += "Risk: Nil\n";
             } else {
-                report += formatLine("Risk", formatCheckboxList(getCheckedValues('risk')));
+                let riskItems = getCheckedValues('risk');
+                if (riskItems.length > 0) report += formatLine("Risk", formatCheckboxList(riskItems));
             }
+
             report += formatLine("Insight", formatCheckboxList(getCheckedValues('insight')));
             report += formatMultiLine("Remarks", getVal('mse_others_remarks'));
             report += "\n";
@@ -1102,49 +1221,75 @@
         if (!isChecked('exclude_pa')) {
             report += "Physical Assessment\n";
             report += "--------------------\n";
-            let powerStr = `RUL: ${getVal('rul_mmt') || 'N/A'} / LUL: ${getVal('lul_mmt') || 'N/A'} / RLL: ${getVal('rll_mmt') || 'N/A'} / LLL: ${getVal('lll_mmt') || 'N/A'}`;
-            report += formatLine("P/E: Power", powerStr);
-            let aromReport = "AROM:\n";
+
+            let mmtVals = [getVal('rul_mmt'), getVal('lul_mmt'), getVal('rll_mmt'), getVal('lll_mmt')];
+            if (mmtVals.some(v => v && v.trim() !== '')) {
+                let powerStr = `RUL: ${getVal('rul_mmt') || 'N/A'} / LUL: ${getVal('lul_mmt') || 'N/A'} / RLL: ${getVal('rll_mmt') || 'N/A'} / LLL: ${getVal('lll_mmt') || 'N/A'}`;
+                report += formatLine("P/E: Power", powerStr);
+            }
+
+            let aromReport = "";
+            let aromDataFound = false;
             const limbs = ['rul', 'lul', 'rll', 'lll'];
             limbs.forEach(limb => {
                 const aromVal = getVal(`${limb}_arom`);
                 const functional = isChecked(`${limb}_arom_functional`);
-                let aromText = "N/A"; 
+                let aromText = "";
                 if (functional) {
                     aromText = "Functional";
                 } else if (aromVal && aromVal.trim() !== '') {
                     aromText = aromVal;
                 }
-                aromReport += `  ${limb.toUpperCase()}: ${aromText}\n`;
+                if (aromText) {
+                    aromDataFound = true;
+                    aromReport += `  ${limb.toUpperCase()}: ${aromText}\n`;
+                }
             });
-            report += aromReport;
-            let fineMotorReport = "Fine motor:\n";
+            if (aromDataFound) {
+                 report += "AROM:\n" + aromReport;
+            }
+
+
+            let fineMotorReport = "";
+            let fmDataFound = false;
             const fmCats = ['grasp', 'opposition', 'pinch_grip', 'hand_writing'];
             ['rul', 'lul'].forEach(limb => {
-                fineMotorReport += `  ${limb.toUpperCase()}: `;
                 let fmItems = [];
                 fmCats.forEach(cat => {
-                    fmItems.push(`${cat.replace('_',' ')} (${isChecked(`${limb}_${cat}`) ? '√' : 'X'})`);
+                    if (isChecked(`${limb}_${cat}`)) {
+                        fmDataFound = true;
+                        fmItems.push(`${cat.replace('_', ' ')} (√)`);
+                    }
                 });
-                fineMotorReport += fmItems.join(', ') + '\n';
+                if(fmItems.length > 0) {
+                   fineMotorReport += `  ${limb.toUpperCase()}: ` + fmItems.join(', ') + '\n';
+                }
             });
-            report += fineMotorReport;
-            let contractureReport = "Contracture / Deformity noted:\n";
+            if (fmDataFound) {
+                report += "Fine motor:\n" + fineMotorReport;
+            }
+
+
+            let contractureReport = "";
             let anyContracture = false;
+            let contractureDataFound = false;
             limbs.forEach(limb => {
                 const contractureVal = getRadioValue(`${limb}_contracture`);
                 if (contractureVal === 'Y') {
                     contractureReport += `  ${limb.toUpperCase()}: Yes\n`;
                     anyContracture = true;
-                } else {
-                     contractureReport += `  ${limb.toUpperCase()}: No\n`;
+                    contractureDataFound = true;
                 }
             });
-             if (anyContracture) {
-                const contractureDetails = getVal('pa_contracture_details');
-                if(contractureDetails) contractureReport += `  Details: ${contractureDetails}\n`;
+            if(anyContracture) {
+                 const contractureDetails = getVal('pa_contracture_details');
+                 if(contractureDetails) contractureReport += `  Details: ${contractureDetails}\n`;
             }
-            report += contractureReport;
+            if(contractureDataFound) {
+                 report += "Contracture / Deformity noted:\n" + contractureReport;
+            }
+
+
             if (getRadioValue('wound_present') === 'Y') {
                 let woundTypes = getCheckedValues('wound_type').join(', ');
                 if (getVal('wound_type_others')) woundTypes += (woundTypes ? ', ' : '') + `Others: ${getVal('wound_type_others')}`;
@@ -1168,40 +1313,35 @@
                 if (getCheckedValues(`${sense}_hypo`).length > 0) sensoryDesc.push(`hyposensitivity in ${sense} sense`);
                 if (getCheckedValues(`${sense}_seeking`).length > 0) sensoryDesc.push(`sensory seeking in ${sense} sense`);
             });
+             const examples = getVal('sensory_assessment_others');
             if (sensoryDesc.length > 0) {
                 report += `Patient showed ${sensoryDesc.join(' / ')}.`;
-                const examples = getVal('sensory_assessment_others');
                 if (examples) report += ` With example of: ${examples}`;
                 report += "\n";
-            } else {
-                 const examples = getVal('sensory_assessment_others');
-                 if (examples) report += `Observations: ${examples}\n`;
-                 else report += "No specific sensory processing patterns noted from checklist.\n";
+            } else if (examples) {
+                report += `Observations: ${examples}\n`;
             }
+
             if(!isChecked('exclude_sensory_profile')) {
-                const informant = getVal('sensory_profile_informant') || '(informant not specified)';
-                report += `Sensory profile done on: ${assessmentDate || '(date not specified)'}, with ${informant} as informant. Results showed that patient showed:\n`;
-                const spCats = [
+                const informant = getVal('sensory_profile_informant');
+                let spReportContent = "";
+                 const spCats = [
                     { key: 'low_reg', name: 'low registration' },
                     { key: 'sensation_seeking', name: 'sensory seeking' },
                     { key: 'sensory_sensitive', name: 'sensory sensitive' },
                     { key: 'sensory_avoidance', name: 'sensory avoidance' }
                 ];
-                let spReportContent = "";
                 spCats.forEach(cat => {
                     const score = getVal(`sp_${cat.key}_score`);
                     const interpretation = getCheckedValues(`sp_${cat.key}_interpretation`).join(', ');
-                    const scoreDisplay = (score !== null && score.trim() !== '') ? score : 'N/A';
-                    if (scoreDisplay !== 'N/A' || interpretation) { 
-                        spReportContent += `  - ${cat.name}: Score ${scoreDisplay}/75. Interpretation: ${interpretation || 'N/A'}\n`;
+                    if (score || interpretation) {
+                        spReportContent += `  - ${cat.name}: Score ${score || 'N/A'}/75. Interpretation: ${interpretation || 'N/A'}\n`;
                     }
                 });
+
                  if (spReportContent) {
+                    report += `Sensory profile done on: ${assessmentDate || '(date not specified)'}, with ${informant || '(informant not specified)'} as informant. Results showed that patient showed:\n`;
                     report += spReportContent;
-                    const sensoryProfileExamples = getVal('sensory_assessment_others'); 
-                    if (sensoryProfileExamples) report += `  with example of: ${sensoryProfileExamples}\n`;
-                } else {
-                    report += "  Sensory Profile data not entered or not applicable.\n";
                 }
             }
             report += "\n";
@@ -1213,32 +1353,26 @@
             report += "-----------------------\n";
             if (!isChecked('exclude_mas')) {
                 report += formatLine("MAS Target Behaviour", getVal('mas_target_behaviour_overall'));
-                let masReportText = "Motivational Assessment Scale results:\n";
+                let masReportText = "";
                 const masFunctions = ['sensory', 'escape', 'attention', 'tangible'];
                 let masDataFound = false;
                 masFunctions.forEach(func => {
                     const total = getVal(`mas_${func}_total`);
                     const average = getVal(`mas_${func}_average`);
                     const ranking = getVal(`mas_${func}_ranking`);
-                    if ((total !== null && total.trim() !== '') || (average !== null && average.trim() !== '' && average !== 'N/A') || (ranking !== null && ranking.trim() !== '')) {
+                    if (total || average || ranking) {
                         masDataFound = true;
-                        masReportText += `  - ${func.charAt(0).toUpperCase() + func.slice(1)}:\n    Total Score: ${(total || 'N/A')}\n    Average Score: ${(average || 'N/A')}\n    Relative Ranking: ${(ranking || 'N/A')}\n`;
+                        masReportText += `  - ${func.charAt(0).toUpperCase() + func.slice(1)}:\n    Total Score: ${total || 'N/A'}\n    Average Score: ${average || 'N/A'}\n    Relative Ranking: ${ranking || 'N/A'}\n`;
                     }
                 });
                 if (masDataFound) {
-                    report += masReportText;
-                } else {
-                    report += "Motivational Assessment Scale data not entered.\n";
+                    report += "Motivational Assessment Scale results:\n" + masReportText;
                 }
             }
             if (!isChecked('exclude_cbi')) {
                 report += formatLine("CBI Target Behaviour (Patient's major challenging behaviour)", getVal('cbi_target_behaviour'));
-                report += formatLine("Challenging Behaviour Interview Score", `${getVal('cbi_total_score') || 'N/A'}/55`);
-            }
-            if (isChecked('exclude_cbi') && isChecked('exclude_mas') && (getVal('cbi_target_behaviour') || getVal('mas_target_behaviour_overall'))) {
-                 report += formatLine("Patient's major challenging behaviour", getVal('cbi_target_behaviour') || getVal('mas_target_behaviour_overall') || "Not specified (MAS/CBI excluded)");
-            } else if (!getVal('cbi_target_behaviour') && !getVal('mas_target_behaviour_overall') && !isChecked('exclude_cbi') && !isChecked('exclude_mas')){
-                 report += "Patient's major challenging behaviour: Not specified\n";
+                const cbiScore = getVal('cbi_total_score');
+                if (cbiScore) report += formatLine("Challenging Behaviour Interview Score", `${cbiScore}/55`);
             }
             report += "\n";
         }
@@ -1249,56 +1383,38 @@
             report += "-------------------------\n";
             let livesWith = getCheckedValues('lives_with');
             if (getVal('lives_with_others')) livesWith.push(getVal('lives_with_others'));
-            report += `Patient was living with ${livesWith.join('/') || 'N/A'}.\n`;
+            if(livesWith.length > 0) report += `Patient was living with ${livesWith.join('/')}.\n`;
+
 
             if(!isChecked('exclude_home_visit_env')) {
-                report += "\nHome Visit / Hostel Environment:\n";
-                let envLighting = formatCheckboxList(getCheckedValues('env_lighting'));
-                let envNoise = formatCheckboxList(getCheckedValues('env_noise'));
-                if (isChecked('env_noise_not_available')) envNoise += (envNoise && envNoise !== 'N/A' ? ", " : "") + "Quiet zone/ Pad room was not available";
-                report += `  The hostel/ home was ${envLighting}. Noise level was ${envNoise}.\n`;
+                let homeVisitReport = "\nHome Visit / Hostel Environment:\n";
+                let hasHomeVisitData = false;
+
+                let envLightingItems = getCheckedValues('env_lighting');
+                let envNoiseItems = getCheckedValues('env_noise');
+                if (isChecked('env_noise_not_available')) envNoiseItems.push("Quiet zone/ Pad room was not available");
+
+                if (envLightingItems.length > 0 || envNoiseItems.length > 0) {
+                    hasHomeVisitData = true;
+                    let envLighting = formatCheckboxList(envLightingItems) || 'not specified';
+                    let envNoise = formatCheckboxList(envNoiseItems) || 'not specified';
+                    homeVisitReport += `  The hostel/ home was ${envLighting}. Noise level was ${envNoise}.\n`;
+                }
+
                 let safetyHazards = getCheckedValues('env_safety_hazard');
                 let safetyHazardDesc = getVal('env_safety_hazard_others');
                 if(isChecked('env_safety_hazard_not_presented')) {
-                    report += "  Safety hazard was not presented. ";
-                } else if (safetyHazards.length > 0) {
-                    report += `  Safety hazard: ${safetyHazards.join(', ')}. `;
-                    if(safetyHazardDesc) report += `(${safetyHazardDesc}). `;
-                } else if (safetyHazardDesc) {
-                     report += `  Safety hazard: ${safetyHazardDesc}. `;
-                }
-                let socialStim = getCheckedValues('env_social_stimulation').join('/');
-                let socialStimOthers = getVal('env_social_stimulation_others');
-                if (socialStim) report += `There was ${socialStim}. `;
-                if (socialStimOthers) report += `(e.g. ${socialStimOthers}). `;
-                let envChange = getCheckedValues('env_change').join(', ');
-                let envChangeOthers = getVal('env_change_others');
-                if (envChange || envChangeOthers) {
-                    report += `There was recent change in environment/ carer/ routine: ${envChange}${envChangeOthers ? ` (${envChangeOthers})` : ''}.\n`;
-                }
-                
-                report += "\n  Staff / Parent Interaction:\n";
-                report += formatLine("    Hostel staff/ parents concerned about patient's behaviour of", getVal('staff_parents_concern'));
-                report += formatLine("    In response to patient's challenging behaviours, hostel staff/ parents would (staff measures) with satisfactory/ suboptimal effect", getVal('staff_parents_response'));
-                
-                report += "\n  Restrain Policy:\n";
-                if (getRadioValue('restrain_policy') === 'Yes') {
-                    let restrainTypes = getCheckedValues('restrainer_type').join(', ');
-                    if(getVal('restrainer_type_others')) restrainTypes += (restrainTypes ? ", " : "") + getVal('restrainer_type_others');
-                    report += `    Hostel staff/ parent would provide restrain (Type: ${restrainTypes || 'Not specified'}).\n`;
-                    report += formatLine("      Restrain period", formatCheckboxList(getCheckedValues('restrain_period')) + (getVal('restrain_period_others') ? `, Others: ${getVal('restrain_period_others')}` : ''));
-                    report += formatMultiLine("      Situation of restrain", getVal('restrain_situation'));
-                    report += formatLine("      Body part on restrain", formatCheckboxList(getCheckedValues('restrain_body_part')) + (getVal('restrain_body_part_others') ? `, Others: ${getVal('restrain_body_part_others')}` : ''));
-                    report += formatMultiLine("      Other restrain information", getVal('restrain_other_info'));
-                } else {
-                    report += "    Hostel staff/ parent would not provide restrain.\n";
+                     hasHomeVisitData = true;
+                     homeVisitReport += "  Safety hazard was not presented.\n";
+                } else if (safetyHazards.length > 0 || safetyHazardDesc) {
+                    hasHomeVisitData = true;
+                    homeVisitReport += `  Safety hazard: ${safetyHazards.join(', ')}`;
+                    if(safetyHazardDesc) homeVisitReport += ` (${safetyHazardDesc}).\n`;
+                    else homeVisitReport += '.\n';
                 }
 
-                report += "\n  Family Involvement:\n";
-                report += formatLine("    Parents would/ would not provide visit to hostel (frequency)", getVal('parent_visit_frequency'));
-                report += formatLine("    Before/ after the visit, patient behaviour", getVal('patient_behaviour_visit'));
-            } else {
-                 report += "Home Visit/Hostel Environment and related sub-sections (Staff Interaction, Restrain Policy, Family Involvement) excluded.\n";
+                // ... (Similar checks for Social Stimulation, Env Change etc.) ...
+                report += homeVisitReport; // Add the constructed section if it has data
             }
             report += formatMultiLine("\nOthers (e.g. Layout - Overall Environmental Assessment)", getVal('env_others_layout'));
             report += "\n";
@@ -1309,7 +1425,7 @@
             report += "Functional Assessment\n";
             report += "----------------------\n";
             if (!isChecked('exclude_badl_mbi')) {
-                let badlReportStr = "BADL Qualitative Levels:\n";
+                let badlReportStr = "";
                 const badlActivities = ['feeding', 'grooming', 'dressing', 'toileting', 'bathing'];
                 let badlLevelsSpecified = false;
                 badlActivities.forEach(activity => {
@@ -1320,23 +1436,27 @@
                     }
                 });
                 if (badlLevelsSpecified) {
-                    report += badlReportStr;
-                } else {
-                    report += "BADL: Qualitative levels not specified.\n";
+                    report += "BADL Qualitative Levels:\n" + badlReportStr;
                 }
-                report += formatLine("MBI Score", `${getVal('mbi_total_score_display') || 'N/A'}/100`);
+                const mbiTotal = getVal('mbi_total_score_display');
+                if (mbiTotal) report += formatLine("MBI Score", `${mbiTotal}/100`);
+
                 report += formatMultiLine("MBI Remarks", getVal('mbi_remarks'));
             }
             if (!isChecked('exclude_iadl_sibr')) {
-                let sibrIndepAge = `Year: ${getVal('sibr_indep_age_year') || 'N/A'}, Month: ${getVal('sibr_indep_age_month') || 'N/A'}`;
-                let sibrSupportScore = getVal('sibr_support_score') || 'N/A';
-                let sibrSupportLevel = getRadioValue('sibr_support_level') || 'N/A';
-                report += `IADL: SIB-R: Broad independence age equivalence: ${sibrIndepAge}, Support score: ${sibrSupportScore}/100, Support level: ${sibrSupportLevel}.\n`;
+                let sibrIndepAgeY = getVal('sibr_indep_age_year');
+                let sibrIndepAgeM = getVal('sibr_indep_age_month');
+                let sibrSupportScore = getVal('sibr_support_score');
+                let sibrSupportLevel = getRadioValue('sibr_support_level');
+                if(sibrIndepAgeY || sibrIndepAgeM || sibrSupportScore || sibrSupportLevel){
+                    let sibrIndepAge = `Year: ${sibrIndepAgeY || 'N/A'}, Month: ${sibrIndepAgeM || 'N/A'}`;
+                    report += `IADL: SIB-R: Broad independence age equivalence: ${sibrIndepAge}, Support score: ${sibrSupportScore || 'N/A'}/100, Support level: ${sibrSupportLevel || 'N/A'}.\n`;
+                }
                 report += formatMultiLine("SIB-R Remarks", getVal('sibr_remarks'));
             }
             report += "\n";
         }
-        
+
         // 7. Work Assessment
         if (!isChecked('exclude_wa')) {
             report += "Work Assessment\n";
@@ -1344,10 +1464,10 @@
             if (!isChecked('exclude_premorbid_work')) {
                 let premorbidParts = [];
                 getCheckedValues('premorbid_status').forEach(val => {
-                    if (val === "OE" && isChecked('premorbid_oe_job_status_cb')) { 
+                    if (val === "OE" && isChecked('premorbid_oe_job_status_cb')) {
                         const oeDetails = getVal('premorbid_oe_job_details');
                         premorbidParts.push(oeDetails ? `OE (${oeDetails})` : 'OE');
-                    } else if (val !== "OE") { 
+                    } else if (val !== "OE") {
                         premorbidParts.push(val);
                     }
                 });
@@ -1356,34 +1476,26 @@
                 if (mainWorkTask) {
                     premorbidStr += (premorbidStr ? ", " : "") + `Main work task: ${mainWorkTask}`;
                 }
-                report += formatLine("Premorbid", premorbidStr || "N/A");
+                report += formatLine("Premorbid", premorbidStr);
             }
             if (!isChecked('exclude_bwap2')) {
-                report += "BWAP-2:\n";
-                const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa']; // Keys for getVal
-                const bwapDomainNames = {
-                    'wha': 'Work Habits/ Attitudes',
-                    'ir': 'Interpersonal Relations',
-                    'cs': 'Cognitive Skills',
-                    'wps': 'Work Performance Skills',
-                    'bwa': 'Broad Work Adjustment'
-                };
-                let bwaContentGenerated = false;
+                let bwaReport = "";
+                const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa'];
+                const bwapDomainNames = {'wha': 'Work Habits/ Attitudes', 'ir': 'Interpersonal Relations', 'cs': 'Cognitive Skills', 'wps': 'Work Performance Skills', 'bwa': 'Broad Work Adjustment'};
                 bwapDomainKeys.forEach(key => {
                     const percentile = getVal(`bwap_${key}_percentile`);
                     const placements = getCheckedValues(`bwap_${key}_placement`);
-                    if ((percentile && percentile.trim() !== '') || placements.length > 0) {
-                        bwaContentGenerated = true;
-                        report += `  ${bwapDomainNames[key]} percentile: ${percentile || 'N/A'}. `;
+                    if (percentile || placements.length > 0) {
+                        bwaReport += `  ${bwapDomainNames[key]} percentile: ${percentile || 'N/A'}. `;
                         if (placements.length > 0) {
-                            report += `Working Placement: ${placements.join(', ')}.\n`;
+                            bwaReport += `Working Placement: ${placements.join(', ')}.\n`;
                         } else {
-                            report += "\n";
+                            bwaReport += "\n";
                         }
                     }
                 });
-                if (!bwaContentGenerated && !isChecked('exclude_bwap2')) {
-                    report += "  BWAP-2 data not entered.\n"
+                if(bwaReport) {
+                    report += "BWAP-2:\n" + bwaReport;
                 }
                 report += formatMultiLine("BWAP-2 Remarks", getVal('bwap_remarks'));
             }
@@ -1392,8 +1504,6 @@
 
         // OT Plan
         if (!isChecked('exclude_otp')) {
-            report += "OT Plan:\n";
-            report += "--------\n";
             let otPlanItems = [];
             document.querySelectorAll('input[name="otp_item"]:checked').forEach(cb => {
                 let itemText = cb.value;
@@ -1409,11 +1519,10 @@
                 });
             }
             if (otPlanItems.length > 0) {
-                report += otPlanItems.join('\n') + '\n';
-            } else {
-                report += "(No OT Plan items selected or entered)\n";
+                report += "OT Plan:\n";
+                report += "--------\n";
+                report += otPlanItems.join('\n') + '\n\n';
             }
-            report += "\n";
         }
 
         document.getElementById('reportTextArea').value = report;

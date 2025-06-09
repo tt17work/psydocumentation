@@ -28,8 +28,6 @@
         .checkbox-group input[type="checkbox"], .radio-group input[type="radio"] { margin-right: 5px; vertical-align: middle; }
         .inline-fields label { display: inline-block; margin-right: 5px; }
         .inline-fields input[type="text"], .inline-fields input[type="number"], .inline-fields select { width: auto; display: inline-block; margin-right:10px; }
-        .section-exclude { float: right; font-size: 0.9em; }
-        .sub-section-exclude { margin-left: 10px; font-size: 0.9em; font-weight: normal; color: #666;}
         .report-output { margin-top: 30px; }
         .report-output textarea { width: 100%; height: 500px; font-family: monospace; font-size: 0.9em; }
         button#generateReportBtn {
@@ -143,9 +141,7 @@
 
     <!-- 1. Mental State Examination -->
     <fieldset>
-        <legend>1. Mental State Examination
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_mse"> Exclude from Report</label></span>
-        </legend>
+        <legend>1. Mental State Examination</legend>
         <div class="form-row">
             <div>
                 <label>Comorbidity:</label>
@@ -307,16 +303,14 @@
 
     <!-- 2. Physical Assessment -->
     <fieldset>
-        <legend>2. Physical Assessment
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_pa"> Exclude from Report</label></span>
-        </legend>
+        <legend>2. Physical Assessment</legend>
         <h4>General</h4>
         <div class="form-row">
             <div>
                 <label>Wound:</label>
                 <div class="radio-group">
                     <label><input type="radio" name="wound_present" value="Y">Y</label>
-                    <label><input type="radio" name="wound_present" value="N" checked>N</label>
+                    <label><input type="radio" name="wound_present" value="N">N</label>
                 </div>
             </div>
             <div>
@@ -467,9 +461,7 @@
 
     <!-- 3. Sensory Assessment -->
     <fieldset>
-        <legend>3. Sensory Assessment
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_sa"> Exclude from Report</label></span>
-        </legend>
+        <legend>3. Sensory Assessment</legend>
         <table>
             <thead><tr><th>Observation</th><th>Hypersensitivity</th><th>Hyposensitivity</th><th>Sensory Seeking</th></tr></thead>
             <tbody>
@@ -554,9 +546,7 @@
         </table>
         <label for="sensory_assessment_others">Others (Examples/Observations for report):</label>
         <textarea id="sensory_assessment_others" name="sensory_assessment_others"></textarea>
-        <h4>Sensory Profile
-             <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_sensory_profile"> Exclude from Report</label></span>
-        </h4>
+        <h4>Sensory Profile</h4>
         <label for="sensory_profile_informant">Informant:</label>
         <input type="text" id="sensory_profile_informant" name="sensory_profile_informant">
         <div class="grid-container">
@@ -597,12 +587,8 @@
 
     <!-- 4. Behavioural Assessment -->
     <fieldset>
-        <legend>4. Behavioural Assessment
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_ba"> Exclude from Report</label></span>
-        </legend>
-        <h4>Motivational Assessment Scale (MAS)
-            <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_mas"> Exclude from Report</label></span>
-        </h4>
+        <legend>4. Behavioural Assessment</legend>
+        <h4>Motivational Assessment Scale (MAS)</h4>
         <label for="mas_target_behaviour_overall">Target Behaviour (Overall for MAS):</label>
         <input type="text" id="mas_target_behaviour_overall" name="mas_target_behaviour_overall">
 
@@ -631,9 +617,7 @@
             <div><label for="mas_tangible_ranking">Relative Ranking:</label> <input type="text" id="mas_tangible_ranking" readonly></div>
         </div>
 
-        <h4>Challenging Behaviour Interview (CBI)
-            <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_cbi"> Exclude from Report</label></span>
-        </h4>
+        <h4>Challenging Behaviour Interview (CBI)</h4>
         <label for="cbi_target_behaviour">Target Behaviour (Patient's major challenging behaviour):</label>
         <input type="text" id="cbi_target_behaviour" name="cbi_target_behaviour">
         <label for="cbi_total_score">Total Score: <input type="text" id="cbi_total_score" name="cbi_total_score" style="width: 70px;"> /55</label>
@@ -641,9 +625,7 @@
 
     <!-- 5. Environmental Assessment -->
     <fieldset>
-        <legend>5. Environmental Assessment
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_ea"> Exclude from Report</label></span>
-        </legend>
+        <legend>5. Environmental Assessment</legend>
         <h4>Background</h4>
         <label>Lives with:</label>
         <div class="checkbox-group">
@@ -658,9 +640,7 @@
         <label for="lives_with_others">Others:</label>
         <input type="text" id="lives_with_others" name="lives_with_others">
 
-        <h4>Home visit / Hostel Environment
-            <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_home_visit_env"> Exclude from Report</label></span>
-        </h4>
+        <h4>Home visit / Hostel Environment</h4>
         <div id="home_visit_env_content">
             <div class="form-row">
                 <div>
@@ -742,7 +722,7 @@
             <label>Restrain:</label>
             <div class="radio-group">
                 <label><input type="radio" name="restrain_policy" value="Yes">Yes</label>
-                <label><input type="radio" name="restrain_policy" value="No" checked>No</label>
+                <label><input type="radio" name="restrain_policy" value="No">No</label>
             </div>
             <div class="sub-section" id="restrain_details_section" style="display:none;">
                 <label>Restrain period:</label>
@@ -808,12 +788,8 @@
 
     <!-- 6. Independent Function Assessment -->
     <fieldset>
-        <legend>6. Independent Function Assessment
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_ifa"> Exclude from Report</label></span>
-        </legend>
-        <h4>BADL (MBI)
-            <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_badl_mbi"> Exclude from Report</label></span>
-        </h4>
+        <legend>6. Independent Function Assessment</legend>
+        <h4>BADL (MBI)</h4>
         <div class="grid-container">
             <div><label>Feeding: <input type="number" name="mbi_feeding" class="mbi-score-field"> /10</label></div>
             <div><label>Grooming: <input type="number" name="mbi_grooming" class="mbi-score-field"> /5</label></div>
@@ -869,9 +845,7 @@
         <label for="mbi_remarks">Remarks:</label>
         <textarea id="mbi_remarks" name="mbi_remarks"></textarea>
 
-        <h4>IADL (SIB-R Short form)
-            <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_iadl_sibr"> Exclude from Report</label></span>
-        </h4>
+        <h4>IADL (SIB-R Short form)</h4>
         <div class="form-row">
             <div>
                 <label>Patient's Chronological Age:</label>
@@ -908,12 +882,8 @@
 
     <!-- 7. Work Assessment -->
     <fieldset>
-        <legend>7. Work Assessment
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_wa"> Exclude from Report</label></span>
-        </legend>
-        <h4>Premorbid
-            <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_premorbid_work"> Exclude from Report</label></span>
-        </h4>
+        <legend>7. Work Assessment</legend>
+        <h4>Premorbid</h4>
         <div class="checkbox-group">
             <label><input type="checkbox" name="premorbid_status" value="Unemployed">Unemployed</label>
             <label><input type="checkbox" name="premorbid_status" value="Student">Student</label>
@@ -931,9 +901,7 @@
         <label for="premorbid_main_work_task">Main work task:</label>
         <textarea id="premorbid_main_work_task" name="premorbid_main_work_task"></textarea>
 
-        <h4>BWAP-2
-            <span class="sub-section-exclude"><label><input type="checkbox" id="exclude_bwap2"> Exclude from Report</label></span>
-        </h4>
+        <h4>BWAP-2</h4>
         <div class="grid-container">
             <div>
                 <label>Work Habits/ Attitudes Percentile:</label> <input type="text" id="bwap_wha_percentile" name="bwap_wha_percentile">
@@ -1001,9 +969,7 @@
     </fieldset>
 
     <fieldset>
-        <legend>OT Plan Options
-            <span class="section-exclude"><label><input type="checkbox" id="exclude_otp"> Exclude from Report</label></span>
-        </legend>
+        <legend>OT Plan Options</legend>
         <div class="checkbox-group">
             <label><input type="checkbox" id="otp_mental_state" name="otp_item" value="Mental state observation">Mental state observation</label><br>
             <label><input type="checkbox" id="otp_hand_function" name="otp_item" value="Hand function training">Hand function training</label><br>
@@ -1150,379 +1116,380 @@
         let report = "Documentation:\n\n";
         const assessmentDate = getVal('assessmentDate');
 
-        // --- MODIFIED HELPER FUNCTIONS ---
-        // This function now returns an empty string if the list is empty, allowing formatLine to suppress output.
+        // --- HELPER FUNCTIONS ---
         const formatCheckboxList = (items) => items.join(' / ');
-        const formatLine = (label, value) => value && value.trim() !== '' ? `${label}: ${value}\n` : '';
+        const formatLine = (label, value) => value && value.toString().trim() !== '' ? `${label}: ${value}\n` : '';
         const formatMultiLine = (label, value) => value && value.trim() !== '' ? `${label}:\n${value}\n` : '';
-        // --- END OF MODIFIED HELPERS ---
-
 
         // 1. Mental State & Insight
-        if (!isChecked('exclude_mse')) {
-            report += "Mental State & Insight\n";
-            report += "-----------------------\n";
-            let moodItems = getCheckedValues('mood');
-            let moodOthers = getVal('mood_others');
-            if (moodOthers) moodItems.push(`Others - ${moodOthers}`);
-            report += formatLine("Mood", formatCheckboxList(moodItems));
+        let mseReport = "";
+        let moodItems = getCheckedValues('mood');
+        let moodOthers = getVal('mood_others');
+        if (moodOthers) moodItems.push(`Others - ${moodOthers}`);
+        mseReport += formatLine("Mood", formatCheckboxList(moodItems));
 
-            report += formatLine("Affect", formatCheckboxList(getCheckedValues('affect')));
-            report += formatLine("Speech", formatCheckboxList(getCheckedValues('expressive_speech')));
+        mseReport += formatLine("Affect", formatCheckboxList(getCheckedValues('affect')));
+        mseReport += formatLine("Speech", formatCheckboxList(getCheckedValues('expressive_speech')));
 
-            let receptiveSteps = getVal('receptive_steps');
-            let receptiveCommandType = getVal('receptive_command_type');
-            let receptiveOptions = getCheckedValues('receptive_speech_options');
-            let receptiveSpeechReport = "";
-            if (receptiveSteps) { // Only add if steps are entered
-                receptiveSpeechReport += `Follow ${receptiveSteps} step ${receptiveCommandType || 'verbal'} command. `;
-            }
-            if (receptiveOptions.length > 0) {
-                receptiveSpeechReport += receptiveOptions.join(', ') + ".";
-            }
-            report += formatLine("Receptive Speech", receptiveSpeechReport.trim());
+        let receptiveSteps = getVal('receptive_steps');
+        let receptiveCommandType = getVal('receptive_command_type');
+        let receptiveOptions = getCheckedValues('receptive_speech_options');
+        let receptiveSpeechReport = "";
+        if (receptiveSteps) {
+            receptiveSpeechReport += `Follow ${receptiveSteps} step ${receptiveCommandType || 'verbal'} command. `;
+        }
+        if (receptiveOptions.length > 0) {
+            receptiveSpeechReport += receptiveOptions.join(', ') + ".";
+        }
+        mseReport += formatLine("Receptive Speech", receptiveSpeechReport.trim());
 
-            if (isChecked('hallucination_nil')) {
-                report += "Hallucination: Nil\n";
-            } else {
-                let hallucinationItems = getCheckedValues('hallucination');
-                if(hallucinationItems.length > 0) report += formatLine("Hallucination", formatCheckboxList(hallucinationItems));
-            }
-
-            if (isChecked('abnormal_thought_nil')) {
-                report += "Abnormal Thought: Nil\n";
-            } else {
-                let abnormalThoughtItems = getCheckedValues('abnormal_thought');
-                let abnormalThoughtOthers = getVal('abnormal_thought_others');
-                if (abnormalThoughtOthers) abnormalThoughtItems.push(`Other - ${abnormalThoughtOthers}`);
-                if (abnormalThoughtItems.length > 0) report += formatLine("Abnormal Thought", formatCheckboxList(abnormalThoughtItems));
-            }
-
-            let behaviourItems = getCheckedValues('behaviour');
-            let behaviourOthers = getVal('behaviour_others');
-            if (behaviourOthers) behaviourItems.push(`Others - ${behaviourOthers}`);
-            report += formatLine("Behaviour", formatCheckboxList(behaviourItems));
-
-            report += formatLine("Cognitive", formatCheckboxList(getCheckedValues('cognitive')));
-
-            if (isChecked('risk_nil')) {
-                report += "Risk: Nil\n";
-            } else {
-                let riskItems = getCheckedValues('risk');
-                if (riskItems.length > 0) report += formatLine("Risk", formatCheckboxList(riskItems));
-            }
-
-            report += formatLine("Insight", formatCheckboxList(getCheckedValues('insight')));
-            report += formatMultiLine("Remarks", getVal('mse_others_remarks'));
-            report += "\n";
+        if (isChecked('hallucination_nil')) {
+            mseReport += "Hallucination: Nil\n";
+        } else {
+            let hallucinationItems = getCheckedValues('hallucination').filter(v => v !== 'Nil');
+            if(hallucinationItems.length > 0) mseReport += formatLine("Hallucination", formatCheckboxList(hallucinationItems));
         }
 
+        if (isChecked('abnormal_thought_nil')) {
+            mseReport += "Abnormal Thought: Nil\n";
+        } else {
+            let abnormalThoughtItems = getCheckedValues('abnormal_thought').filter(v => v !== 'Nil');
+            let abnormalThoughtOthers = getVal('abnormal_thought_others');
+            if (abnormalThoughtOthers) abnormalThoughtItems.push(`Other - ${abnormalThoughtOthers}`);
+            if (abnormalThoughtItems.length > 0) mseReport += formatLine("Abnormal Thought", formatCheckboxList(abnormalThoughtItems));
+        }
+
+        let behaviourItems = getCheckedValues('behaviour');
+        let behaviourOthers = getVal('behaviour_others');
+        if (behaviourOthers) behaviourItems.push(`Others - ${behaviourOthers}`);
+        mseReport += formatLine("Behaviour", formatCheckboxList(behaviourItems));
+
+        mseReport += formatLine("Cognitive", formatCheckboxList(getCheckedValues('cognitive')));
+
+        if (isChecked('risk_nil')) {
+            mseReport += "Risk: Nil\n";
+        } else {
+            let riskItems = getCheckedValues('risk').filter(v => v !== 'Nil');
+            if (riskItems.length > 0) mseReport += formatLine("Risk", formatCheckboxList(riskItems));
+        }
+
+        mseReport += formatLine("Insight", formatCheckboxList(getCheckedValues('insight')));
+        mseReport += formatMultiLine("Remarks", getVal('mse_others_remarks'));
+
+        if(mseReport.trim() !== "") {
+            report += "Mental State & Insight\n";
+            report += "-----------------------\n";
+            report += mseReport + "\n";
+        }
+
+
         // 2. Physical Assessment
-        if (!isChecked('exclude_pa')) {
+        let paReport = "";
+        let mmtVals = [getVal('rul_mmt'), getVal('lul_mmt'), getVal('rll_mmt'), getVal('lll_mmt')];
+        if (mmtVals.some(v => v && v.trim() !== '')) {
+            let powerStr = `RUL: ${getVal('rul_mmt') || 'N/A'} / LUL: ${getVal('lul_mmt') || 'N/A'} / RLL: ${getVal('rll_mmt') || 'N/A'} / LLL: ${getVal('lll_mmt') || 'N/A'}`;
+            paReport += formatLine("P/E: Power", powerStr);
+        }
+
+        let aromReportText = "";
+        let aromDataFound = false;
+        const limbs = ['rul', 'lul', 'rll', 'lll'];
+        limbs.forEach(limb => {
+            const aromVal = getVal(`${limb}_arom`);
+            const functional = isChecked(`${limb}_arom_functional`);
+            let aromText = "";
+            if (functional) {
+                aromText = "Functional";
+            } else if (aromVal && aromVal.trim() !== '') {
+                aromText = aromVal;
+            }
+            if (aromText) {
+                aromDataFound = true;
+                aromReportText += `  ${limb.toUpperCase()}: ${aromText}\n`;
+            }
+        });
+        if (aromDataFound) {
+             paReport += "AROM:\n" + aromReportText;
+        }
+
+        let fineMotorReportText = "";
+        let fmDataFound = false;
+        const fmCats = ['grasp', 'opposition', 'pinch_grip', 'hand_writing'];
+        ['rul', 'lul'].forEach(limb => {
+            let fmItems = [];
+            fmCats.forEach(cat => {
+                if (isChecked(`${limb}_${cat}`)) {
+                    fmDataFound = true;
+                    fmItems.push(`${cat.replace('_', ' ')} (√)`);
+                }
+            });
+            if(fmItems.length > 0) {
+               fineMotorReportText += `  ${limb.toUpperCase()}: ` + fmItems.join(', ') + '\n';
+            }
+        });
+        if (fmDataFound) {
+            paReport += "Fine motor:\n" + fineMotorReportText;
+        }
+
+        let contractureReportText = "";
+        let anyContracture = false;
+        limbs.forEach(limb => {
+            if (getRadioValue(`${limb}_contracture`) === 'Y') {
+                contractureReportText += `  ${limb.toUpperCase()}: Yes\n`;
+                anyContracture = true;
+            }
+        });
+        if(anyContracture) {
+             const contractureDetails = getVal('pa_contracture_details');
+             if(contractureDetails) contractureReportText += `  Details: ${contractureDetails}\n`;
+             paReport += "Contracture / Deformity noted:\n" + contractureReportText;
+        }
+
+        const woundStatus = getRadioValue('wound_present');
+        if (woundStatus === 'Y') {
+            let woundTypes = getCheckedValues('wound_type').join(', ');
+            if (getVal('wound_type_others')) woundTypes += (woundTypes ? ', ' : '') + `Others: ${getVal('wound_type_others')}`;
+            let woundDressing = getRadioValue('wound_dressing') === 'Yes' ? 'on dressing' : 'no dressing';
+            paReport += `Wound: ${woundTypes || 'Type not specified'} at ${getVal('wound_location') || 'location not specified'}, ${woundDressing}.\n`;
+        } else if (woundStatus === 'N') {
+            paReport += "Wound: No\n";
+        }
+        paReport += formatMultiLine("Other observation", getVal('general_other_observation'));
+        
+        if(paReport.trim() !== "") {
             report += "Physical Assessment\n";
             report += "--------------------\n";
-
-            let mmtVals = [getVal('rul_mmt'), getVal('lul_mmt'), getVal('rll_mmt'), getVal('lll_mmt')];
-            if (mmtVals.some(v => v && v.trim() !== '')) {
-                let powerStr = `RUL: ${getVal('rul_mmt') || 'N/A'} / LUL: ${getVal('lul_mmt') || 'N/A'} / RLL: ${getVal('rll_mmt') || 'N/A'} / LLL: ${getVal('lll_mmt') || 'N/A'}`;
-                report += formatLine("P/E: Power", powerStr);
-            }
-
-            let aromReport = "";
-            let aromDataFound = false;
-            const limbs = ['rul', 'lul', 'rll', 'lll'];
-            limbs.forEach(limb => {
-                const aromVal = getVal(`${limb}_arom`);
-                const functional = isChecked(`${limb}_arom_functional`);
-                let aromText = "";
-                if (functional) {
-                    aromText = "Functional";
-                } else if (aromVal && aromVal.trim() !== '') {
-                    aromText = aromVal;
-                }
-                if (aromText) {
-                    aromDataFound = true;
-                    aromReport += `  ${limb.toUpperCase()}: ${aromText}\n`;
-                }
-            });
-            if (aromDataFound) {
-                 report += "AROM:\n" + aromReport;
-            }
-
-
-            let fineMotorReport = "";
-            let fmDataFound = false;
-            const fmCats = ['grasp', 'opposition', 'pinch_grip', 'hand_writing'];
-            ['rul', 'lul'].forEach(limb => {
-                let fmItems = [];
-                fmCats.forEach(cat => {
-                    if (isChecked(`${limb}_${cat}`)) {
-                        fmDataFound = true;
-                        fmItems.push(`${cat.replace('_', ' ')} (√)`);
-                    }
-                });
-                if(fmItems.length > 0) {
-                   fineMotorReport += `  ${limb.toUpperCase()}: ` + fmItems.join(', ') + '\n';
-                }
-            });
-            if (fmDataFound) {
-                report += "Fine motor:\n" + fineMotorReport;
-            }
-
-
-            let contractureReport = "";
-            let anyContracture = false;
-            let contractureDataFound = false;
-            limbs.forEach(limb => {
-                const contractureVal = getRadioValue(`${limb}_contracture`);
-                if (contractureVal === 'Y') {
-                    contractureReport += `  ${limb.toUpperCase()}: Yes\n`;
-                    anyContracture = true;
-                    contractureDataFound = true;
-                }
-            });
-            if(anyContracture) {
-                 const contractureDetails = getVal('pa_contracture_details');
-                 if(contractureDetails) contractureReport += `  Details: ${contractureDetails}\n`;
-            }
-            if(contractureDataFound) {
-                 report += "Contracture / Deformity noted:\n" + contractureReport;
-            }
-
-
-            if (getRadioValue('wound_present') === 'Y') {
-                let woundTypes = getCheckedValues('wound_type').join(', ');
-                if (getVal('wound_type_others')) woundTypes += (woundTypes ? ', ' : '') + `Others: ${getVal('wound_type_others')}`;
-                let woundDressing = getRadioValue('wound_dressing') === 'Yes' ? 'on dressing' : 'no dressing';
-                report += `Wound: ${woundTypes || 'Type not specified'} at ${getVal('wound_location') || 'location not specified'}, ${woundDressing}.\n`;
-            } else {
-                report += "Wound: No\n";
-            }
-            report += formatMultiLine("Other observation", getVal('general_other_observation'));
-            report += "\n";
+            report += paReport + "\n";
         }
 
         // 3. Sensory Assessment
-        if (!isChecked('exclude_sa')) {
-            report += "Sensory Assessment\n";
-            report += "-------------------\n";
-            let sensoryDesc = [];
-            const senses = ['auditory', 'visual', 'oral', 'tactile', 'proprioception', 'vestibular'];
-            senses.forEach(sense => {
-                if (getCheckedValues(`${sense}_hyper`).length > 0) sensoryDesc.push(`hypersensitivity in ${sense} sense`);
-                if (getCheckedValues(`${sense}_hypo`).length > 0) sensoryDesc.push(`hyposensitivity in ${sense} sense`);
-                if (getCheckedValues(`${sense}_seeking`).length > 0) sensoryDesc.push(`sensory seeking in ${sense} sense`);
-            });
-             const examples = getVal('sensory_assessment_others');
-            if (sensoryDesc.length > 0) {
-                report += `Patient showed ${sensoryDesc.join(' / ')}.`;
-                if (examples) report += ` With example of: ${examples}`;
-                report += "\n";
-            } else if (examples) {
-                report += `Observations: ${examples}\n`;
-            }
-
-            if(!isChecked('exclude_sensory_profile')) {
-                const informant = getVal('sensory_profile_informant');
-                let spReportContent = "";
-                 const spCats = [
-                    { key: 'low_reg', name: 'low registration' },
-                    { key: 'sensation_seeking', name: 'sensory seeking' },
-                    { key: 'sensory_sensitive', name: 'sensory sensitive' },
-                    { key: 'sensory_avoidance', name: 'sensory avoidance' }
-                ];
-                spCats.forEach(cat => {
-                    const score = getVal(`sp_${cat.key}_score`);
-                    const interpretation = getCheckedValues(`sp_${cat.key}_interpretation`).join(', ');
-                    if (score || interpretation) {
-                        spReportContent += `  - ${cat.name}: Score ${score || 'N/A'}/75. Interpretation: ${interpretation || 'N/A'}\n`;
-                    }
-                });
-
-                 if (spReportContent) {
-                    report += `Sensory profile done on: ${assessmentDate || '(date not specified)'}, with ${informant || '(informant not specified)'} as informant. Results showed that patient showed:\n`;
-                    report += spReportContent;
-                }
-            }
-            report += "\n";
+        let sensoryReport = "";
+        let sensoryDesc = [];
+        const senses = ['auditory', 'visual', 'oral', 'tactile', 'proprioception', 'vestibular'];
+        senses.forEach(sense => {
+            if (getCheckedValues(`${sense}_hyper`).length > 0) sensoryDesc.push(`hypersensitivity in ${sense} sense`);
+            if (getCheckedValues(`${sense}_hypo`).length > 0) sensoryDesc.push(`hyposensitivity in ${sense} sense`);
+            if (getCheckedValues(`${sense}_seeking`).length > 0) sensoryDesc.push(`sensory seeking in ${sense} sense`);
+        });
+        const examples = getVal('sensory_assessment_others');
+        if (sensoryDesc.length > 0) {
+            sensoryReport += `Patient showed ${sensoryDesc.join(' / ')}.`;
+            if (examples) sensoryReport += ` With example of: ${examples}`;
+            sensoryReport += "\n";
+        } else if (examples) {
+            sensoryReport += `Observations: ${examples}\n`;
         }
 
+        const informant = getVal('sensory_profile_informant');
+        let spReportContent = "";
+        const spCats = [
+            { key: 'low_reg', name: 'low registration' },
+            { key: 'sensation_seeking', name: 'sensory seeking' },
+            { key: 'sensory_sensitive', name: 'sensory sensitive' },
+            { key: 'sensory_avoidance', name: 'sensory avoidance' }
+        ];
+        spCats.forEach(cat => {
+            const score = getVal(`sp_${cat.key}_score`);
+            const interpretation = getCheckedValues(`sp_${cat.key}_interpretation`).join(', ');
+            if (score || interpretation) {
+                spReportContent += `  - ${cat.name}: Score ${score || 'N/A'}/75. Interpretation: ${interpretation || 'N/A'}\n`;
+            }
+        });
+
+        if (spReportContent) {
+            sensoryReport += `Sensory profile done on: ${assessmentDate || '(date not specified)'}, with ${informant || '(informant not specified)'} as informant. Results showed that patient showed:\n`;
+            sensoryReport += spReportContent;
+        }
+
+        if(sensoryReport.trim() !== "") {
+            report += "Sensory Assessment\n";
+            report += "-------------------\n";
+            report += sensoryReport + "\n";
+        }
+
+
         // 4. Behavioural Assessment
-        if (!isChecked('exclude_ba')) {
+        let behaviourReport = "";
+        behaviourReport += formatLine("MAS Target Behaviour", getVal('mas_target_behaviour_overall'));
+        let masReportText = "";
+        const masFunctions = ['sensory', 'escape', 'attention', 'tangible'];
+        let masDataFound = false;
+        masFunctions.forEach(func => {
+            const total = getVal(`mas_${func}_total`);
+            const average = getVal(`mas_${func}_average`);
+            const ranking = getVal(`mas_${func}_ranking`);
+            if (total || average || ranking) {
+                masDataFound = true;
+                masReportText += `  - ${func.charAt(0).toUpperCase() + func.slice(1)}:\n    Total Score: ${total || 'N/A'}\n    Average Score: ${average || 'N/A'}\n    Relative Ranking: ${ranking || 'N/A'}\n`;
+            }
+        });
+        if (masDataFound) {
+            behaviourReport += "Motivational Assessment Scale results:\n" + masReportText;
+        }
+
+        behaviourReport += formatLine("CBI Target Behaviour (Patient's major challenging behaviour)", getVal('cbi_target_behaviour'));
+        const cbiScore = getVal('cbi_total_score');
+        if (cbiScore) behaviourReport += formatLine("Challenging Behaviour Interview Score", `${cbiScore}/55`);
+
+        if(behaviourReport.trim() !== "") {
             report += "Behavioural Assessment\n";
             report += "-----------------------\n";
-            if (!isChecked('exclude_mas')) {
-                report += formatLine("MAS Target Behaviour", getVal('mas_target_behaviour_overall'));
-                let masReportText = "";
-                const masFunctions = ['sensory', 'escape', 'attention', 'tangible'];
-                let masDataFound = false;
-                masFunctions.forEach(func => {
-                    const total = getVal(`mas_${func}_total`);
-                    const average = getVal(`mas_${func}_average`);
-                    const ranking = getVal(`mas_${func}_ranking`);
-                    if (total || average || ranking) {
-                        masDataFound = true;
-                        masReportText += `  - ${func.charAt(0).toUpperCase() + func.slice(1)}:\n    Total Score: ${total || 'N/A'}\n    Average Score: ${average || 'N/A'}\n    Relative Ranking: ${ranking || 'N/A'}\n`;
-                    }
-                });
-                if (masDataFound) {
-                    report += "Motivational Assessment Scale results:\n" + masReportText;
-                }
-            }
-            if (!isChecked('exclude_cbi')) {
-                report += formatLine("CBI Target Behaviour (Patient's major challenging behaviour)", getVal('cbi_target_behaviour'));
-                const cbiScore = getVal('cbi_total_score');
-                if (cbiScore) report += formatLine("Challenging Behaviour Interview Score", `${cbiScore}/55`);
-            }
-            report += "\n";
+            report += behaviourReport + "\n";
         }
 
         // 5. Environmental Assessment
-        if (!isChecked('exclude_ea')) {
-            report += "Environmental Assessment\n";
-            report += "-------------------------\n";
-            let livesWith = getCheckedValues('lives_with');
-            if (getVal('lives_with_others')) livesWith.push(getVal('lives_with_others'));
-            if(livesWith.length > 0) report += `Patient was living with ${livesWith.join('/')}.\n`;
+        let envReport = "";
+        let livesWith = getCheckedValues('lives_with');
+        if (getVal('lives_with_others')) livesWith.push(getVal('lives_with_others'));
+        if(livesWith.length > 0) envReport += `Patient was living with ${livesWith.join('/')}.\n`;
 
+        let homeVisitReport = "";
+        let envLightingItems = getCheckedValues('env_lighting');
+        let envNoiseItems = getCheckedValues('env_noise');
+        if (isChecked('env_noise_not_available')) envNoiseItems.push("Quiet zone/ Pad room was not available");
 
-            if(!isChecked('exclude_home_visit_env')) {
-                let homeVisitReport = "\nHome Visit / Hostel Environment:\n";
-                let hasHomeVisitData = false;
-
-                let envLightingItems = getCheckedValues('env_lighting');
-                let envNoiseItems = getCheckedValues('env_noise');
-                if (isChecked('env_noise_not_available')) envNoiseItems.push("Quiet zone/ Pad room was not available");
-
-                if (envLightingItems.length > 0 || envNoiseItems.length > 0) {
-                    hasHomeVisitData = true;
-                    let envLighting = formatCheckboxList(envLightingItems) || 'not specified';
-                    let envNoise = formatCheckboxList(envNoiseItems) || 'not specified';
-                    homeVisitReport += `  The hostel/ home was ${envLighting}. Noise level was ${envNoise}.\n`;
-                }
-
-                let safetyHazards = getCheckedValues('env_safety_hazard');
-                let safetyHazardDesc = getVal('env_safety_hazard_others');
-                if(isChecked('env_safety_hazard_not_presented')) {
-                     hasHomeVisitData = true;
-                     homeVisitReport += "  Safety hazard was not presented.\n";
-                } else if (safetyHazards.length > 0 || safetyHazardDesc) {
-                    hasHomeVisitData = true;
-                    homeVisitReport += `  Safety hazard: ${safetyHazards.join(', ')}`;
-                    if(safetyHazardDesc) homeVisitReport += ` (${safetyHazardDesc}).\n`;
-                    else homeVisitReport += '.\n';
-                }
-
-                // ... (Similar checks for Social Stimulation, Env Change etc.) ...
-                report += homeVisitReport; // Add the constructed section if it has data
-            }
-            report += formatMultiLine("\nOthers (e.g. Layout - Overall Environmental Assessment)", getVal('env_others_layout'));
-            report += "\n";
+        if (envLightingItems.length > 0 || envNoiseItems.length > 0) {
+            let envLighting = formatCheckboxList(envLightingItems) || 'not specified';
+            let envNoise = formatCheckboxList(envNoiseItems) || 'not specified';
+            homeVisitReport += `  The hostel/ home was ${envLighting}. Noise level was ${envNoise}.\n`;
         }
 
+        let safetyHazards = getCheckedValues('env_safety_hazard');
+        let safetyHazardDesc = getVal('env_safety_hazard_others');
+        if(isChecked('env_safety_hazard_not_presented')) {
+             homeVisitReport += "  Safety hazard was not presented.\n";
+        } else if (safetyHazards.length > 0 || safetyHazardDesc) {
+            homeVisitReport += `  Safety hazard: ${safetyHazards.join(', ')}`;
+            if(safetyHazardDesc) homeVisitReport += ` (${safetyHazardDesc}).\n`;
+            else homeVisitReport += '.\n';
+        }
+        
+        if (homeVisitReport.trim() !== "") {
+            envReport += "\nHome Visit / Hostel Environment:\n" + homeVisitReport;
+        }
+
+        envReport += formatMultiLine("\nOthers (e.g. Layout - Overall Environmental Assessment)", getVal('env_others_layout'));
+
+        if(envReport.trim() !== "") {
+            report += "Environmental Assessment\n";
+            report += "-------------------------\n";
+            report += envReport + "\n";
+        }
+        
+        // Occupation
+        let occupationReport = "";
+        occupationReport += getVal('occupation_details');
+        if (occupationReport.trim() !== "") {
+            report += "Occupation\n";
+            report += "----------\n";
+            report += occupationReport + "\n\n";
+        }
+
+
         // 6. Independent Function Assessment
-        if (!isChecked('exclude_ifa')) {
+        let funcReport = "";
+        let badlReportStr = "";
+        const badlActivities = ['feeding', 'grooming', 'dressing', 'toileting', 'bathing'];
+        let badlLevelsSpecified = false;
+        badlActivities.forEach(activity => {
+            const level = getVal(`badl_${activity}_level`);
+            if (level) {
+                badlLevelsSpecified = true;
+                badlReportStr += `  - ${activity.charAt(0).toUpperCase() + activity.slice(1)}: ${level}\n`;
+            }
+        });
+        if (badlLevelsSpecified) {
+            funcReport += "BADL Qualitative Levels:\n" + badlReportStr;
+        }
+        const mbiTotal = getVal('mbi_total_score_display');
+        if (mbiTotal) funcReport += formatLine("MBI Score", `${mbiTotal}/100`);
+        funcReport += formatMultiLine("MBI Remarks", getVal('mbi_remarks'));
+
+        let sibrIndepAgeY = getVal('sibr_indep_age_year');
+        let sibrIndepAgeM = getVal('sibr_indep_age_month');
+        let sibrSupportScore = getVal('sibr_support_score');
+        let sibrSupportLevel = getRadioValue('sibr_support_level');
+        if(sibrIndepAgeY || sibrIndepAgeM || sibrSupportScore || sibrSupportLevel){
+            let sibrIndepAge = `Year: ${sibrIndepAgeY || 'N/A'}, Month: ${sibrIndepAgeM || 'N/A'}`;
+            funcReport += `IADL: SIB-R: Broad independence age equivalence: ${sibrIndepAge}, Support score: ${sibrSupportScore || 'N/A'}/100, Support level: ${sibrSupportLevel || 'N/A'}.\n`;
+        }
+        funcReport += formatMultiLine("SIB-R Remarks", getVal('sibr_remarks'));
+
+        if(funcReport.trim() !== "") {
             report += "Functional Assessment\n";
             report += "----------------------\n";
-            if (!isChecked('exclude_badl_mbi')) {
-                let badlReportStr = "";
-                const badlActivities = ['feeding', 'grooming', 'dressing', 'toileting', 'bathing'];
-                let badlLevelsSpecified = false;
-                badlActivities.forEach(activity => {
-                    const level = getVal(`badl_${activity}_level`);
-                    if (level) {
-                        badlLevelsSpecified = true;
-                        badlReportStr += `  - ${activity.charAt(0).toUpperCase() + activity.slice(1)}: ${level}\n`;
-                    }
-                });
-                if (badlLevelsSpecified) {
-                    report += "BADL Qualitative Levels:\n" + badlReportStr;
-                }
-                const mbiTotal = getVal('mbi_total_score_display');
-                if (mbiTotal) report += formatLine("MBI Score", `${mbiTotal}/100`);
-
-                report += formatMultiLine("MBI Remarks", getVal('mbi_remarks'));
-            }
-            if (!isChecked('exclude_iadl_sibr')) {
-                let sibrIndepAgeY = getVal('sibr_indep_age_year');
-                let sibrIndepAgeM = getVal('sibr_indep_age_month');
-                let sibrSupportScore = getVal('sibr_support_score');
-                let sibrSupportLevel = getRadioValue('sibr_support_level');
-                if(sibrIndepAgeY || sibrIndepAgeM || sibrSupportScore || sibrSupportLevel){
-                    let sibrIndepAge = `Year: ${sibrIndepAgeY || 'N/A'}, Month: ${sibrIndepAgeM || 'N/A'}`;
-                    report += `IADL: SIB-R: Broad independence age equivalence: ${sibrIndepAge}, Support score: ${sibrSupportScore || 'N/A'}/100, Support level: ${sibrSupportLevel || 'N/A'}.\n`;
-                }
-                report += formatMultiLine("SIB-R Remarks", getVal('sibr_remarks'));
-            }
-            report += "\n";
+            report += funcReport + "\n";
         }
 
         // 7. Work Assessment
-        if (!isChecked('exclude_wa')) {
+        let workReport = "";
+        let premorbidParts = [];
+        getCheckedValues('premorbid_status').forEach(val => {
+            if (val === "OE" && isChecked('premorbid_oe_job_status_cb')) {
+                const oeDetails = getVal('premorbid_oe_job_details');
+                premorbidParts.push(oeDetails ? `OE (${oeDetails})` : 'OE');
+            } else if (val !== "OE") {
+                premorbidParts.push(val);
+            }
+        });
+        let premorbidStr = premorbidParts.join(' / ');
+        const mainWorkTask = getVal('premorbid_main_work_task');
+        if (mainWorkTask) {
+            premorbidStr += (premorbidStr ? ", " : "") + `Main work task: ${mainWorkTask}`;
+        }
+        workReport += formatLine("Premorbid", premorbidStr);
+
+        let bwaReport = "";
+        const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa'];
+        const bwapDomainNames = {'wha': 'Work Habits/ Attitudes', 'ir': 'Interpersonal Relations', 'cs': 'Cognitive Skills', 'wps': 'Work Performance Skills', 'bwa': 'Broad Work Adjustment'};
+        bwapDomainKeys.forEach(key => {
+            const percentile = getVal(`bwap_${key}_percentile`);
+            const placements = getCheckedValues(`bwap_${key}_placement`);
+            if (percentile || placements.length > 0) {
+                bwaReport += `  ${bwapDomainNames[key]} percentile: ${percentile || 'N/A'}. `;
+                if (placements.length > 0) {
+                    bwaReport += `Working Placement: ${placements.join(', ')}.\n`;
+                } else {
+                    bwaReport += "\n";
+                }
+            }
+        });
+        if(bwaReport) {
+            workReport += "BWAP-2:\n" + bwaReport;
+        }
+        workReport += formatMultiLine("BWAP-2 Remarks", getVal('bwap_remarks'));
+
+        if(workReport.trim() !== "") {
             report += "Work Assessment\n";
             report += "----------------\n";
-            if (!isChecked('exclude_premorbid_work')) {
-                let premorbidParts = [];
-                getCheckedValues('premorbid_status').forEach(val => {
-                    if (val === "OE" && isChecked('premorbid_oe_job_status_cb')) {
-                        const oeDetails = getVal('premorbid_oe_job_details');
-                        premorbidParts.push(oeDetails ? `OE (${oeDetails})` : 'OE');
-                    } else if (val !== "OE") {
-                        premorbidParts.push(val);
-                    }
-                });
-                let premorbidStr = premorbidParts.join(' / ');
-                const mainWorkTask = getVal('premorbid_main_work_task');
-                if (mainWorkTask) {
-                    premorbidStr += (premorbidStr ? ", " : "") + `Main work task: ${mainWorkTask}`;
-                }
-                report += formatLine("Premorbid", premorbidStr);
-            }
-            if (!isChecked('exclude_bwap2')) {
-                let bwaReport = "";
-                const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa'];
-                const bwapDomainNames = {'wha': 'Work Habits/ Attitudes', 'ir': 'Interpersonal Relations', 'cs': 'Cognitive Skills', 'wps': 'Work Performance Skills', 'bwa': 'Broad Work Adjustment'};
-                bwapDomainKeys.forEach(key => {
-                    const percentile = getVal(`bwap_${key}_percentile`);
-                    const placements = getCheckedValues(`bwap_${key}_placement`);
-                    if (percentile || placements.length > 0) {
-                        bwaReport += `  ${bwapDomainNames[key]} percentile: ${percentile || 'N/A'}. `;
-                        if (placements.length > 0) {
-                            bwaReport += `Working Placement: ${placements.join(', ')}.\n`;
-                        } else {
-                            bwaReport += "\n";
-                        }
-                    }
-                });
-                if(bwaReport) {
-                    report += "BWAP-2:\n" + bwaReport;
-                }
-                report += formatMultiLine("BWAP-2 Remarks", getVal('bwap_remarks'));
-            }
-            report += "\n";
+            report += workReport + "\n";
         }
 
+
         // OT Plan
-        if (!isChecked('exclude_otp')) {
-            let otPlanItems = [];
-            document.querySelectorAll('input[name="otp_item"]:checked').forEach(cb => {
-                let itemText = cb.value;
-                if (cb.id === "otp_home_visit") {
-                    itemText = `Home / Hostel visit ${assessmentDate ? 'on ' + assessmentDate : '(date TBD)'}`;
-                }
-                otPlanItems.push(`- ${itemText}`);
+        let otPlanReport = "";
+        let otPlanItems = [];
+        document.querySelectorAll('input[name="otp_item"]:checked').forEach(cb => {
+            let itemText = cb.value;
+            if (cb.id === "otp_home_visit") {
+                itemText = `Home / Hostel visit ${assessmentDate ? 'on ' + assessmentDate : '(date TBD)'}`;
+            }
+            otPlanItems.push(`- ${itemText}`);
+        });
+        const customOtPlan = getVal('ot_plan_custom');
+        if (customOtPlan) {
+            customOtPlan.split('\n').forEach(item => {
+                if (item.trim()) otPlanItems.push(`- ${item.trim()}`);
             });
-            const customOtPlan = getVal('ot_plan_custom');
-            if (customOtPlan) {
-                customOtPlan.split('\n').forEach(item => {
-                    if (item.trim()) otPlanItems.push(`- ${item.trim()}`);
-                });
-            }
-            if (otPlanItems.length > 0) {
-                report += "OT Plan:\n";
-                report += "--------\n";
-                report += otPlanItems.join('\n') + '\n\n';
-            }
+        }
+        if (otPlanItems.length > 0) {
+            otPlanReport += otPlanItems.join('\n') + '\n';
+        }
+
+        if (otPlanReport.trim() !== "") {
+            report += "OT Plan:\n";
+            report += "--------\n";
+            report += otPlanReport + "\n";
         }
 
         document.getElementById('reportTextArea').value = report;

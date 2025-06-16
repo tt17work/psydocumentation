@@ -62,7 +62,7 @@
             resize: vertical;
         }
         .form-group .checkbox-group,
-        .form-group .radio-group { /* Radio group styles still used for layout of new checkbox groups */
+        .form-group .radio-group { 
             display: flex;
             flex-wrap: wrap;
             gap: 5px 15px;
@@ -192,14 +192,13 @@
             padding-bottom: 5px;
             border-bottom: 1px solid #eee;
         }
-        /* Style for checkbox groups that should look like radio groups */
         .checkbox-group.cognitive-assessment-layout {
             display: flex;
-            flex-direction: column; /* Stack cognitive tests */
+            flex-direction: column; 
             gap: 8px;
         }
         .checkbox-group.cognitive-assessment-layout label {
-             width: 100%; /* Make each label take full width */
+             width: 100%; 
         }
 
 
@@ -210,7 +209,7 @@
             .form-group .checkbox-group,
             .form-group .radio-group,
             .work-v-item .work-v-rating,
-            .checkbox-group.cognitive-assessment-layout { /* Apply to new layout too */
+            .checkbox-group.cognitive-assessment-layout { 
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -225,7 +224,7 @@
             .form-group > input.inline-input.digit-input { width: 100px !important; display: block; margin-left: 0; margin-top: 5px; }
             .radio-group label input.inline-input.small-input,
             .radio-group label input.inline-input.digit-input,
-            .checkbox-group label input.inline-input.small-input, /* For cognitive checkboxes */
+            .checkbox-group label input.inline-input.small-input, 
             .checkbox-group label input.inline-input.digit-input { width: 100px !important; margin-left: 5px; }
             .referral-date-input { width: calc(100% - 100px); min-width: 150px; }
             .form-group .referral-date-label { display: block; margin-bottom: 5px; }
@@ -769,40 +768,60 @@
             const thoughtNilCheckbox = adultForm.querySelector('#thoughtNilChk');
 
             // --- Make Radio Buttons Unselectable on Second Click ---
+            const lastClickedRadioInfo = {}; 
+
             function makeRadioGroupUnselectable(groupName) {
                 const radios = adultForm.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
+                if (!lastClickedRadioInfo[groupName]) {
+                    lastClickedRadioInfo[groupName] = { value: null, element: null };
+                }
+
                 radios.forEach(radio => {
-                    radio.addEventListener('mousedown', function(e) {
-                        // For left-click only
-                        if (e.button === 0) {
-                            if (this.checked) {
-                                // Store that it was checked, so click can uncheck it
-                                this.setAttribute('data-waschecked', 'true');
-                            } else {
-                                this.removeAttribute('data-waschecked');
+                    radio.addEventListener('click', function(e) {
+                        // This function is bound to the radio button itself.
+                        // The 'click' event on a radio input happens *after* its 'checked' state has been updated by the browser (if it wasn't already checked).
+                        // Or, if it was already checked, its 'checked' state remains true.
+                        
+                        const currentGroupInfo = lastClickedRadioInfo[this.name];
+
+                        if (this.checked && currentGroupInfo && currentGroupInfo.element === this && e.isTrusted) {
+                            // This radio was the one previously stored as checked for this group,
+                            // and the click event is a genuine user click (not programmatic).
+                            // So, we uncheck it.
+                            this.checked = false;
+                            currentGroupInfo.value = null;
+                            currentGroupInfo.element = null;
+                        } else if (this.checked) {
+                            // This radio is now checked. Update the stored info for this group.
+                            // This covers selecting a new radio or re-selecting one that was just programmatically unchecked.
+                            if (currentGroupInfo) {
+                                currentGroupInfo.value = this.value;
+                                currentGroupInfo.element = this;
+                            } else { 
+                                lastClickedRadioInfo[this.name] = { value: this.value, element: this };
+                            }
+                        } else {
+                            // This radio became unchecked.
+                            // This typically happens if another radio in the same group was selected by the user,
+                            // or if this radio was programmatically unchecked by our logic above.
+                            if (currentGroupInfo && currentGroupInfo.element === this) {
+                                // If this was the stored radio, clear the stored info.
+                                currentGroupInfo.value = null;
+                                currentGroupInfo.element = null;
                             }
                         }
-                    });
-                    radio.addEventListener('click', function(e) {
-                        if (e.button === 0) { // For left-click only
-                            if (this.getAttribute('data-waschecked') === 'true') {
-                                this.checked = false;
-                                this.removeAttribute('data-waschecked');
-                            } else {
-                                // If it wasn't pre-checked for unselection, it's a normal selection
-                                // Remove data-waschecked from others in the group
-                                radios.forEach(otherRadio => {
-                                    if (otherRadio !== this) {
-                                        otherRadio.removeAttribute('data-waschecked');
-                                    }
-                                });
-                            }
-                            // Dispatch change event because programmatic changes don't trigger it
-                            this.dispatchEvent(new Event('change', { bubbles: true }));
+                        
+                        // Dispatch a 'change' event if the state was programmatically changed.
+                        // This helps other event listeners (like for 'treatmentMotivationalScale') to react.
+                        // Check if the event was already from a programmatic dispatch to avoid loops.
+                        if (e.isTrusted || !e.detail || e.detail.source !== 'radio_unselect_logic') {
+                            const changeEvent = new CustomEvent('change', { bubbles: true, detail: { source: 'radio_unselect_logic' } });
+                            this.dispatchEvent(changeEvent);
                         }
                     });
                 });
             }
+
 
             const radioGroupsToMakeUnselectable = [
                 'overallImpression', 'mood', 'affect', 'insight', 
@@ -817,7 +836,6 @@
             });
 
 
-            // --- HK-MoCA Digit Summation ---
             const hkMocaDigitsInput = document.getElementById('cognitiveScore_hkMoca_digits');
             const hkMocaScoreOutput = adultForm.elements['cognitiveScore_hkMoca'];
             const postHkMocaDigitsInput = document.getElementById('postCognitiveScore_hkMoca_digits');
@@ -842,14 +860,13 @@
             }
 
 
-            // --- Treatment needs / Motivational Scale ---
             const treatmentMotivationalLowRadio = document.getElementById('treatmentMotivationalLow');
             const treatmentMotivationalHighRadio = document.getElementById('treatmentMotivationalHigh');
             const treatmentMotivationalHighOptionsDiv = document.getElementById('treatmentMotivationalHighOptions');
             const treatmentMotivationalHighCheckboxes = treatmentMotivationalHighOptionsDiv.querySelectorAll('input[type="checkbox"]');
 
             function handleTreatmentMotivationalScaleChange() {
-                if (treatmentMotivationalHighRadio.checked) {
+                if (treatmentMotivationalHighRadio && treatmentMotivationalHighRadio.checked) {
                     treatmentMotivationalHighOptionsDiv.style.display = 'flex'; 
                     treatmentMotivationalHighCheckboxes.forEach(cb => cb.disabled = false);
                 } else {
@@ -861,13 +878,10 @@
                 }
             }
             
-            setTimeout(() => { 
-                if (treatmentMotivationalLowRadio && treatmentMotivationalHighRadio) {
-                    treatmentMotivationalLowRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
-                    treatmentMotivationalHighRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
-                    handleTreatmentMotivationalScaleChange(); 
-                }
-            }, 0);
+            if (treatmentMotivationalLowRadio && treatmentMotivationalHighRadio) {
+                treatmentMotivationalLowRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
+                treatmentMotivationalHighRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
+            }
 
 
             function handleThoughtExclusiveChecks() {
@@ -923,12 +937,18 @@
                             radio.disabled = !isChecked;
                             if (!isChecked) {
                                 radio.checked = false;
-                                radio.removeAttribute('data-waschecked'); // Clear toggle state
+                                if(lastClickedRadioInfo[radio.name] && lastClickedRadioInfo[radio.name].element === radio) {
+                                    lastClickedRadioInfo[radio.name].value = null;
+                                    lastClickedRadioInfo[radio.name].element = null;
+                                }
                             }
                         });
                         if (isChecked && workOverallNilRadio && workOverallNilRadio.checked) {
                             workOverallNilRadio.checked = false; 
-                            workOverallNilRadio.removeAttribute('data-waschecked');
+                             if(lastClickedRadioInfo[workOverallNilRadio.name] && lastClickedRadioInfo[workOverallNilRadio.name].element === workOverallNilRadio) {
+                                lastClickedRadioInfo[workOverallNilRadio.name].value = null;
+                                lastClickedRadioInfo[workOverallNilRadio.name].element = null;
+                            }
                             workOverallNilRadio.dispatchEvent(new Event('change', {bubbles: true}));
                         }
                     });
@@ -944,10 +964,14 @@
                         if(isNilChecked) vCheckbox.checked = false;
                     }
                     ratingRadios.forEach(radio => {
-                        radio.disabled = isNilChecked || (vCheckbox && !vCheckbox.checked);
-                        if (isNilChecked || (vCheckbox && !vCheckbox.checked)) {
+                        const isDisabled = isNilChecked || (vCheckbox && !vCheckbox.checked);
+                        radio.disabled = isDisabled;
+                        if (isDisabled) {
                            radio.checked = false;
-                           radio.removeAttribute('data-waschecked');
+                           if(lastClickedRadioInfo[radio.name] && lastClickedRadioInfo[radio.name].element === radio) {
+                                lastClickedRadioInfo[radio.name].value = null;
+                                lastClickedRadioInfo[radio.name].element = null;
+                            }
                         }
                     });
                 });
@@ -987,7 +1011,7 @@
                                     inputField.disabled = isNilActualChecked || !cb.checked;
                                     if (inputField.disabled) {
                                         inputField.value = '';
-                                        if (inputName === 'cognitiveScore_hkMoca') { // Also clear summed score if HK-MoCA is disabled
+                                        if (inputName === 'cognitiveScore_hkMoca_digits') { 
                                             calculateAndSetMocaScore(hkMocaDigitsInput, hkMocaScoreOutput);
                                         }
                                     }
@@ -999,7 +1023,7 @@
                 if(!isNilActualChecked && adultForm.querySelector('input[name="cognitiveTest"][value="HK-MoCA"]').checked){
                     calculateAndSetMocaScore(hkMocaDigitsInput, hkMocaScoreOutput);
                 } else if (isNilActualChecked || !adultForm.querySelector('input[name="cognitiveTest"][value="HK-MoCA"]').checked) {
-                     if(hkMocaScoreOutput) hkMocaScoreOutput.value = ''; // Clear if HK-MoCA itself is unchecked or Nil is checked
+                     if(hkMocaScoreOutput) hkMocaScoreOutput.value = ''; 
                 }
             }
 
@@ -1016,7 +1040,6 @@
                     });
                 }
             });
-            handleCognitiveTestInteractions();
 
 
             function getCheckboxValues(name) {
@@ -1044,6 +1067,8 @@
                 let parts = [];
                 selectedCheckboxes.forEach(checkbox => {
                     const testName = checkbox.value;
+                    if(testName === "Nil") return; // Should not happen if Nil logic is correct but good failsafe
+
                     let score, score2, digits, formattedDigits;
 
                     switch(testName) {
@@ -1270,8 +1295,11 @@
                 adultForm.reset(); 
                 generatedReportTextarea.value = ''; 
 
-                adultForm.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.removeAttribute('data-waschecked');
+                Object.keys(lastClickedRadioInfo).forEach(groupName => {
+                    if (lastClickedRadioInfo.hasOwnProperty(groupName)) {
+                        lastClickedRadioInfo[groupName].value = null;
+                        lastClickedRadioInfo[groupName].element = null;
+                    }
                 });
                 
                 if(workOverallNilRadio) updateOverallNilEffect(workOverallNilRadio.checked);
@@ -1283,7 +1311,10 @@
                     ratingRadios.forEach(radio => {
                         radio.disabled = true; 
                         radio.checked = false; 
-                        radio.removeAttribute('data-waschecked');
+                         if(lastClickedRadioInfo[radio.name] && lastClickedRadioInfo[radio.name].element === radio) {
+                            lastClickedRadioInfo[radio.name].value = null;
+                            lastClickedRadioInfo[radio.name].element = null;
+                        }
                     });
                 });
                 if (thoughtNilCheckbox) {
@@ -1298,6 +1329,7 @@
                  alert('Form has been reset.');
             });
             
+            // Initial setup calls
             if(workOverallNilRadio) {
                 updateOverallNilEffect(workOverallNilRadio.checked);
             }

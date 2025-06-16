@@ -28,7 +28,6 @@
             margin-top: 0;
             margin-bottom: 20px;
         }
-        /* Navigation area styles removed as the section is deleted */
 
         fieldset {
             border: 1px solid #ddd;
@@ -63,7 +62,7 @@
             resize: vertical;
         }
         .form-group .checkbox-group,
-        .form-group .radio-group {
+        .form-group .radio-group { /* Radio group styles still used for layout of new checkbox groups */
             display: flex;
             flex-wrap: wrap;
             gap: 5px 15px;
@@ -80,13 +79,10 @@
             margin-right: 5px;
             flex-shrink: 0;
          }
-        /* Style for the new "Thought" other text area */
         #thoughtOtherText {
             margin-top: 5px;
             min-height: 60px;
         }
-
-
         .action-buttons {
             text-align: center;
             margin-top: 20px;
@@ -106,7 +102,6 @@
         .action-buttons button#copyReportBtn { background-color: #f39c12; }
         .action-buttons button#resetFormBtn { background-color: #e74c3c; }
 
-
         #generatedReport {
             width: 100%;
             min-height: 300px;
@@ -119,16 +114,19 @@
             font-family: monospace;
             font-size: 0.9em;
         }
-        .inline-input { /* Used for cognitive scores etc. */
+        .inline-input {
             width: auto;
-            /* flex-grow: 1; */ /* Removed to prevent over-expansion in some flex contexts */
-            min-width: 60px; /* Adjusted min-width */
+            min-width: 60px;
             margin-left: 5px;
             padding: 5px 8px;
         }
         .small-input {
             width: 80px !important;
             flex-grow: 0;
+        }
+        .digit-input { 
+            width: 100px !important;
+            margin-left: 5px;
         }
         .referral-date-input {
             margin-left: 5px;
@@ -144,7 +142,6 @@
             margin-top: 8px;
             font-weight: normal;
         }
-
 
         .work-item-container {
             display: flex;
@@ -183,6 +180,28 @@
             padding-top: 10px;
             border-top: 1px dashed #ccc;
         }
+        #treatmentMotivationalHighOptions {
+            margin-left: 20px; 
+            margin-top: 5px;
+        }
+        .sub-section-heading { 
+            font-weight: bold;
+            color: #555;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        /* Style for checkbox groups that should look like radio groups */
+        .checkbox-group.cognitive-assessment-layout {
+            display: flex;
+            flex-direction: column; /* Stack cognitive tests */
+            gap: 8px;
+        }
+        .checkbox-group.cognitive-assessment-layout label {
+             width: 100%; /* Make each label take full width */
+        }
+
 
         @media (max-width: 768px) {
             .container { margin: 10px; padding: 10px; }
@@ -190,18 +209,24 @@
             legend { font-size: 1.1em; }
             .form-group .checkbox-group,
             .form-group .radio-group,
-            .work-v-item .work-v-rating {
+            .work-v-item .work-v-rating,
+            .checkbox-group.cognitive-assessment-layout { /* Apply to new layout too */
                 flex-direction: column;
                 align-items: flex-start;
             }
             .form-group .checkbox-group label,
             .form-group .radio-group label,
-            .work-v-item .work-v-rating label {
+            .work-v-item .work-v-rating label,
+            .checkbox-group.cognitive-assessment-layout label {
                  width: 100%;
              }
-            .action-buttons button { width: calc(33.33% - 7px); margin: 5px 3px; } /* Adjusted for 3 buttons with small gaps */
-            .form-group > input.inline-input.small-input { width: 100px !important; display: block; margin-left: 0; margin-top: 5px; }
-            .radio-group label input.inline-input.small-input { width: 100px !important; margin-left: 5px; }
+            .action-buttons button { width: calc(33.33% - 7px); margin: 5px 3px; }
+            .form-group > input.inline-input.small-input,
+            .form-group > input.inline-input.digit-input { width: 100px !important; display: block; margin-left: 0; margin-top: 5px; }
+            .radio-group label input.inline-input.small-input,
+            .radio-group label input.inline-input.digit-input,
+            .checkbox-group label input.inline-input.small-input, /* For cognitive checkboxes */
+            .checkbox-group label input.inline-input.digit-input { width: 100px !important; margin-left: 5px; }
             .referral-date-input { width: calc(100% - 100px); min-width: 150px; }
             .form-group .referral-date-label { display: block; margin-bottom: 5px; }
             .referral-date-input { width: 100%; margin-left: 0; }
@@ -211,14 +236,16 @@
             body { padding: 5px; }
             .container { margin: 5px; }
             h1 { font-size: 1.3em; }
-            /* Navigation area media queries removed */
             .action-buttons button { width: 100%; margin: 10px 0 0 0; margin-right: 0; }
-            .inline-input, .small-input, .referral-date-input { width: 100% !important; margin-left: 0; margin-top: 5px; display: block; }
+            .inline-input, .small-input, .digit-input, .referral-date-input { width: 100% !important; margin-left: 0; margin-top: 5px; display: block; }
             .form-group .radio-group label input[type="text"],
             .form-group .checkbox-group label input[type="text"] { margin-left: 0; }
-            .form-group > .inline-input.small-input { margin-top: 5px; margin-left:0; }
+            .form-group > .inline-input.small-input,
+            .form-group > .inline-input.digit-input { margin-top: 5px; margin-left:0; }
             #thoughtOtherLabel { flex-direction: column; align-items: flex-start !important; }
             #thoughtOtherLabel input { margin-bottom: 5px; }
+            .radio-group label > .inline-input,
+            .checkbox-group.cognitive-assessment-layout label > .inline-input { display: inline-block; width: auto !important; } 
         }
     </style>
 </head>
@@ -283,7 +310,6 @@
                     </div>
                 </div>
                 
-                <!-- Restructured Thought Section -->
                 <div class="form-group">
                     <span class="standalone-label">Thought (select all that apply if not Nil):</span>
                     <div class="checkbox-group">
@@ -303,7 +329,6 @@
                 <div class="form-group">
                     <label><input type="checkbox" name="thoughtNilChk" id="thoughtNilChk" value="Nil"> Nil (for Thought)</label>
                 </div>
-                <!-- End of Restructured Thought Section -->
 
                 <div class="form-group">
                     <label>Behavior:</label>
@@ -318,7 +343,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Cognitive:</label>
+                    <label>Cognitive (Mental State):</label>
                     <div class="checkbox-group">
                         <label><input type="checkbox" name="cognitiveState" value="Oriented"> Oriented</label>
                         <label><input type="checkbox" name="cognitiveState" value="Disoriented"> Disoriented</label>
@@ -337,6 +362,7 @@
                         <label><input type="checkbox" name="risk" value="Self-harm"> Self-harm</label>
                         <label><input type="checkbox" name="risk" value="Self-neglect"> Self-neglect</label>
                         <label><input type="checkbox" name="risk" value="Violent"> Violent</label>
+                        <label><input type="checkbox" name="risk" value="Re-instate Substance"> Re-instate Substance</label>
                         <label><input type="checkbox" name="risk" value="Nil"> Nil</label>
                     </div>
                 </div>
@@ -362,7 +388,7 @@
                     <div class="work-item-container" id="workItemsContainer">
                         <script>
                             const workVOptions_render = ["V2", "V3", "V6", "V7", "V8", "V9", "V19"];
-                            const workRatings_render = ["MME", "M", "DNMA", "DNMB"]; // N/A removed
+                            const workRatings_render = ["MME", "M", "DNMA", "DNMB"];
                             let workHtml_render = '';
                             workVOptions_render.forEach(v => {
                                 workHtml_render += `
@@ -442,14 +468,20 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Cognitive:</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="cognitiveTest" value="HK-MoCA"> HK-MoCA <input type="text" name="cognitiveScore_hkMoca" class="inline-input small-input"> /30</label>
-                        <label><input type="radio" name="cognitiveTest" value="Hk-MoCA 5"> Hk-MoCA 5 <input type="text" name="cognitiveScore_hkMoca5" class="inline-input small-input"> /30</label>
-                        <label><input type="radio" name="cognitiveTest" value="AMT"> AMT <input type="text" name="cognitiveScore_amt" class="inline-input small-input"> /10</label>
-                        <label><input type="radio" name="cognitiveTest" value="CFAB"> CFAB <input type="text" name="cognitiveScore_cfab" class="inline-input small-input"> /18</label>
-                        <label><input type="radio" name="cognitiveTest" value="HKBC"> HKBC <input type="text" name="cognitiveScore_hkbc" class="inline-input small-input"> /30</label>
-                        <label><input type="radio" name="cognitiveTest" value="Nil"> Nil</label>
+                    <label>Cognitive (Assessment Tools):</label>
+                    <div class="checkbox-group cognitive-assessment-layout">
+                        <label>
+                            <input type="checkbox" name="cognitiveTest" value="HK-MoCA"> HK-MoCA
+                            <input type="text" name="cognitiveScore_hkMoca" class="inline-input small-input" readonly disabled> /30
+                            (<input type="text" name="cognitiveScore_hkMoca_digits" id="cognitiveScore_hkMoca_digits" class="inline-input digit-input" placeholder="e.g 2321023" maxlength="7" disabled>)
+                        </label>
+                        <label><input type="checkbox" name="cognitiveTest" value="Hk-MoCA 5"> Hk-MoCA 5 <input type="text" name="cognitiveScore_hkMoca5" class="inline-input small-input" disabled> /30</label>
+                        <label><input type="checkbox" name="cognitiveTest" value="AMT"> AMT <input type="text" name="cognitiveScore_amt" class="inline-input small-input" disabled> /10</label>
+                        <label><input type="checkbox" name="cognitiveTest" value="CFAB"> CFAB <input type="text" name="cognitiveScore_cfab" class="inline-input small-input" disabled> /18</label>
+                        <label><input type="checkbox" name="cognitiveTest" value="HKBC"> HKBC <input type="text" name="cognitiveScore_hkbc" class="inline-input small-input" disabled> /30</label>
+                        <label><input type="checkbox" name="cognitiveTest" value="B-MCCB"> B-MCCB T-score: <input type="text" name="cognitiveScore_bmccb_tscore" class="inline-input small-input" disabled></label>
+                        <label><input type="checkbox" name="cognitiveTest" value="WMS-III"> WMS-III: <input type="text" name="cognitiveScore_wms3_score" class="inline-input small-input" disabled> /32, T-score: <input type="text" name="cognitiveScore_wms3_tscore" class="inline-input small-input" disabled></label>
+                        <label><input type="checkbox" name="cognitiveTest" value="Nil" id="cognitiveTestNil"> Nil</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -465,6 +497,31 @@
                         <label><input type="radio" name="dailyFunctioning" value="Not affected"> Not affected</label>
                         <label><input type="radio" name="dailyFunctioning" value="Affected"> Affected</label>
                         <label><input type="radio" name="dailyFunctioning" value="Doubtful"> Doubtful</label>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label>Stimulate Relapse Risk Scale:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="stimulateRelapse" value="Intention to use drug"> Intention to use drug</label>
+                        <label><input type="checkbox" name="stimulateRelapse" value="Emotionality problem"> Emotionality problem</label>
+                        <label><input type="checkbox" name="stimulateRelapse" value="Compulsivity for drug"> Compulsivity for drug</label>
+                        <label><input type="checkbox" name="stimulateRelapse" value="Positive expectancy for drug"> Positive expectancy for drug</label>
+                        <label><input type="checkbox" name="stimulateRelapse" value="Impetus and confidence to avoid drug"> Impetus and confidence to avoid drug</label>
+                        <label><input type="checkbox" name="stimulateRelapse" value="Lack of control over drug"> Lack of control over drug</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Treatment needs / Motivational Scale:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="treatmentMotivationalScale" value="Low" id="treatmentMotivationalLow"> Low</label>
+                        <label><input type="radio" name="treatmentMotivationalScale" value="High" id="treatmentMotivationalHigh"> High in:</label>
+                    </div>
+                    <div class="checkbox-group" id="treatmentMotivationalHighOptions" style="display: none;">
+                        <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Problem recognition"> Problem recognition</label>
+                        <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Desire for help"> Desire for help</label>
+                        <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Treatment readiness"> Treatment readiness</label>
+                        <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Pressure for treatment"> Pressure for treatment</label>
+                        <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Treatment needs"> Treatment needs</label>
                     </div>
                 </div>
             </fieldset>
@@ -517,6 +574,21 @@
                     <label><input type="checkbox" name="interventionCognitive" value="Nil"> Nil</label>
                     </div>
                 </div>
+                
+                <div class="sub-section-heading">Post-Intervention Cognitive Scores (if applicable):</div>
+                <div class="form-group">
+                    <label>Post HK-MoCA:
+                        <input type="text" name="postCognitiveScore_hkMoca" id="postCognitiveScore_hkMoca" class="inline-input small-input" readonly> /30
+                        (<input type="text" name="postCognitiveScore_hkMoca_digits" id="postCognitiveScore_hkMoca_digits" class="inline-input digit-input" placeholder="e.g 2321023" maxlength="7">)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Post B-MCCB T-score: <input type="text" name="postCognitiveScore_bmccb_tscore" id="postCognitiveScore_bmccb_tscore" class="inline-input small-input"></label>
+                </div>
+                <div class="form-group">
+                    <label>Post WMS-III: <input type="text" name="postCognitiveScore_wms3_score" id="postCognitiveScore_wms3_score" class="inline-input small-input"> /32, T-score: <input type="text" name="postCognitiveScore_wms3_tscore" id="postCognitiveScore_wms3_tscore" class="inline-input small-input"></label>
+                </div>
+
                 <div class="form-group">
                     <label>Life Coaching:</label>
                     <div class="checkbox-group">
@@ -596,7 +668,7 @@
                         <label><input type="radio" name="dischargeResidential" value="Subvented or BP- Private Hostel"> Subvented or BP- Private Hostel</label>
                         <label><input type="radio" name="dischargeResidential" value="MD hostel"> MD hostel</label>
                         <label><input type="radio" name="dischargeResidential" value="Boarding school"> Boarding school</label>
-                        <label><input type="radio" name="dischargeResidential" value="Detox center"> Detox center</label>
+                        <label><input type="radio" name="dischargeResidential" value="Detox centre"> Detox centre</label>
                         <label><input type="radio" name="dischargeResidential" value="Foster home"> Foster home</label>
                         <label><input type="radio" name="dischargeResidential" value="Other hospital"> Other hospital</label>
                         <label><input type="radio" name="dischargeResidential" value="Street"> Street</label>
@@ -691,13 +763,113 @@
             
             const workVOptionsList_js = ["V2", "V3", "V6", "V7", "V8", "V9", "V19"]; 
 
-            // --- Thought Section Elements ---
             const thoughtCheckboxes = adultForm.querySelectorAll('input[name="thought"]');
             const thoughtOtherCheckbox = adultForm.querySelector('#thoughtOtherChk');
             const thoughtOtherTextbox = adultForm.querySelector('#thoughtOtherText');
             const thoughtNilCheckbox = adultForm.querySelector('#thoughtNilChk');
 
-            // --- Thought Section Interactivity ---
+            // --- Make Radio Buttons Unselectable on Second Click ---
+            function makeRadioGroupUnselectable(groupName) {
+                const radios = adultForm.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
+                radios.forEach(radio => {
+                    radio.addEventListener('mousedown', function(e) {
+                        // For left-click only
+                        if (e.button === 0) {
+                            if (this.checked) {
+                                // Store that it was checked, so click can uncheck it
+                                this.setAttribute('data-waschecked', 'true');
+                            } else {
+                                this.removeAttribute('data-waschecked');
+                            }
+                        }
+                    });
+                    radio.addEventListener('click', function(e) {
+                        if (e.button === 0) { // For left-click only
+                            if (this.getAttribute('data-waschecked') === 'true') {
+                                this.checked = false;
+                                this.removeAttribute('data-waschecked');
+                            } else {
+                                // If it wasn't pre-checked for unselection, it's a normal selection
+                                // Remove data-waschecked from others in the group
+                                radios.forEach(otherRadio => {
+                                    if (otherRadio !== this) {
+                                        otherRadio.removeAttribute('data-waschecked');
+                                    }
+                                });
+                            }
+                            // Dispatch change event because programmatic changes don't trigger it
+                            this.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                });
+            }
+
+            const radioGroupsToMakeUnselectable = [
+                'overallImpression', 'mood', 'affect', 'insight', 
+                'recommendedWorkLevel', 'adl', 'iadlCfna', 'childcare', 
+                'overallPerformance', 'dailyFunctioning', 'treatmentMotivationalScale', 
+                'dischargeResidential', 'workOverallNil'
+            ];
+            radioGroupsToMakeUnselectable.forEach(groupName => makeRadioGroupUnselectable(groupName));
+            
+            workVOptionsList_js.forEach(vId => { 
+                 makeRadioGroupUnselectable(`workV_rating_${vId}`);
+            });
+
+
+            // --- HK-MoCA Digit Summation ---
+            const hkMocaDigitsInput = document.getElementById('cognitiveScore_hkMoca_digits');
+            const hkMocaScoreOutput = adultForm.elements['cognitiveScore_hkMoca'];
+            const postHkMocaDigitsInput = document.getElementById('postCognitiveScore_hkMoca_digits');
+            const postHkMocaScoreOutput = adultForm.elements['postCognitiveScore_hkMoca'];
+
+            function calculateAndSetMocaScore(digitsInput, scoreOutput) {
+                if (digitsInput && scoreOutput) {
+                    const digitsStr = digitsInput.value.replace(/[^0-9]/g, ''); 
+                    let sum = 0;
+                    if (digitsStr.length > 0) {
+                        sum = digitsStr.split('').reduce((acc, digit) => acc + parseInt(digit, 10), 0);
+                    }
+                    scoreOutput.value = sum;
+                }
+            }
+
+            if(hkMocaDigitsInput && hkMocaScoreOutput) {
+                hkMocaDigitsInput.addEventListener('input', () => calculateAndSetMocaScore(hkMocaDigitsInput, hkMocaScoreOutput));
+            }
+            if(postHkMocaDigitsInput && postHkMocaScoreOutput) {
+                postHkMocaDigitsInput.addEventListener('input', () => calculateAndSetMocaScore(postHkMocaDigitsInput, postHkMocaScoreOutput));
+            }
+
+
+            // --- Treatment needs / Motivational Scale ---
+            const treatmentMotivationalLowRadio = document.getElementById('treatmentMotivationalLow');
+            const treatmentMotivationalHighRadio = document.getElementById('treatmentMotivationalHigh');
+            const treatmentMotivationalHighOptionsDiv = document.getElementById('treatmentMotivationalHighOptions');
+            const treatmentMotivationalHighCheckboxes = treatmentMotivationalHighOptionsDiv.querySelectorAll('input[type="checkbox"]');
+
+            function handleTreatmentMotivationalScaleChange() {
+                if (treatmentMotivationalHighRadio.checked) {
+                    treatmentMotivationalHighOptionsDiv.style.display = 'flex'; 
+                    treatmentMotivationalHighCheckboxes.forEach(cb => cb.disabled = false);
+                } else {
+                    treatmentMotivationalHighOptionsDiv.style.display = 'none';
+                    treatmentMotivationalHighCheckboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = true;
+                    });
+                }
+            }
+            
+            setTimeout(() => { 
+                if (treatmentMotivationalLowRadio && treatmentMotivationalHighRadio) {
+                    treatmentMotivationalLowRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
+                    treatmentMotivationalHighRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
+                    handleTreatmentMotivationalScaleChange(); 
+                }
+            }, 0);
+
+
             function handleThoughtExclusiveChecks() {
                 const isNilChecked = thoughtNilCheckbox && thoughtNilCheckbox.checked;
                 const isOtherChecked = thoughtOtherCheckbox && thoughtOtherCheckbox.checked;
@@ -740,23 +912,24 @@
                 });
             }
 
-
-            // --- Setup Work Section Interactivity ---
             workVOptionsList_js.forEach(vId => {
                 const vCheckbox = adultForm.querySelector(`#workV_selected_${vId}`);
                 const ratingRadios = adultForm.querySelectorAll(`input[name="workV_rating_${vId}"]`);
 
                 if (vCheckbox) {
                     vCheckbox.addEventListener('change', function() {
+                        const isChecked = this.checked;
                         ratingRadios.forEach(radio => {
-                            radio.disabled = !this.checked;
-                            if (!this.checked) {
+                            radio.disabled = !isChecked;
+                            if (!isChecked) {
                                 radio.checked = false;
+                                radio.removeAttribute('data-waschecked'); // Clear toggle state
                             }
                         });
-                        if (this.checked && workOverallNilRadio) {
+                        if (isChecked && workOverallNilRadio && workOverallNilRadio.checked) {
                             workOverallNilRadio.checked = false; 
-                            updateOverallNilEffect(false);
+                            workOverallNilRadio.removeAttribute('data-waschecked');
+                            workOverallNilRadio.dispatchEvent(new Event('change', {bubbles: true}));
                         }
                     });
                 }
@@ -766,22 +939,85 @@
                  workVOptionsList_js.forEach(vId => {
                     const vCheckbox = adultForm.querySelector(`#workV_selected_${vId}`);
                     const ratingRadios = adultForm.querySelectorAll(`input[name="workV_rating_${vId}"]`);
-                    if (vCheckbox) vCheckbox.disabled = isNilChecked;
+                    if (vCheckbox) {
+                        vCheckbox.disabled = isNilChecked;
+                        if(isNilChecked) vCheckbox.checked = false;
+                    }
                     ratingRadios.forEach(radio => {
                         radio.disabled = isNilChecked || (vCheckbox && !vCheckbox.checked);
-                        if (isNilChecked) {
-                           if(vCheckbox) vCheckbox.checked = false;
+                        if (isNilChecked || (vCheckbox && !vCheckbox.checked)) {
                            radio.checked = false;
+                           radio.removeAttribute('data-waschecked');
                         }
                     });
                 });
             }
 
-            if (workOverallNilRadio) {
+            if (workOverallNilRadio) { 
                 workOverallNilRadio.addEventListener('change', function() {
                     updateOverallNilEffect(this.checked);
                 });
             }
+            
+            const allCognitiveTestCheckboxes = adultForm.querySelectorAll('input[name="cognitiveTest"]');
+            const cognitiveTestNilActualChk = adultForm.querySelector('#cognitiveTestNil'); 
+            const cognitiveTestInputsMap = { 
+                'HK-MoCA': ['cognitiveScore_hkMoca', 'cognitiveScore_hkMoca_digits'],
+                'Hk-MoCA 5': ['cognitiveScore_hkMoca5'],
+                'AMT': ['cognitiveScore_amt'],
+                'CFAB': ['cognitiveScore_cfab'],
+                'HKBC': ['cognitiveScore_hkbc'],
+                'B-MCCB': ['cognitiveScore_bmccb_tscore'],
+                'WMS-III': ['cognitiveScore_wms3_score', 'cognitiveScore_wms3_tscore']
+            };
+
+            function handleCognitiveTestInteractions() {
+                const isNilActualChecked = cognitiveTestNilActualChk.checked;
+                allCognitiveTestCheckboxes.forEach(cb => {
+                    if (cb !== cognitiveTestNilActualChk) {
+                        cb.disabled = isNilActualChecked;
+                        if (isNilActualChecked) {
+                            cb.checked = false;
+                        }
+                        const inputNames = cognitiveTestInputsMap[cb.value];
+                        if (inputNames) {
+                            inputNames.forEach(inputName => {
+                                const inputField = adultForm.querySelector(`[name="${inputName}"]`);
+                                if (inputField) {
+                                    inputField.disabled = isNilActualChecked || !cb.checked;
+                                    if (inputField.disabled) {
+                                        inputField.value = '';
+                                        if (inputName === 'cognitiveScore_hkMoca') { // Also clear summed score if HK-MoCA is disabled
+                                            calculateAndSetMocaScore(hkMocaDigitsInput, hkMocaScoreOutput);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                if(!isNilActualChecked && adultForm.querySelector('input[name="cognitiveTest"][value="HK-MoCA"]').checked){
+                    calculateAndSetMocaScore(hkMocaDigitsInput, hkMocaScoreOutput);
+                } else if (isNilActualChecked || !adultForm.querySelector('input[name="cognitiveTest"][value="HK-MoCA"]').checked) {
+                     if(hkMocaScoreOutput) hkMocaScoreOutput.value = ''; // Clear if HK-MoCA itself is unchecked or Nil is checked
+                }
+            }
+
+            if (cognitiveTestNilActualChk) {
+                cognitiveTestNilActualChk.addEventListener('change', handleCognitiveTestInteractions);
+            }
+            allCognitiveTestCheckboxes.forEach(cb => {
+                if (cb !== cognitiveTestNilActualChk) {
+                    cb.addEventListener('change', function() {
+                        if (this.checked && cognitiveTestNilActualChk) {
+                            cognitiveTestNilActualChk.checked = false;
+                        }
+                        handleCognitiveTestInteractions(); 
+                    });
+                }
+            });
+            handleCognitiveTestInteractions();
+
 
             function getCheckboxValues(name) {
                 const checkboxes = adultForm.querySelectorAll(`input[name="${name}"]:checked`);
@@ -799,31 +1035,64 @@
                 return element ? element.value.trim() : '';
             }
             
-            function getCognitiveTestValue() {
-                const selectedTestRadio = adultForm.querySelector('input[name="cognitiveTest"]:checked');
-                if (!selectedTestRadio || selectedTestRadio.value === "Nil") return selectedTestRadio ? "Nil" : ""; 
-
-                const testName = selectedTestRadio.value;
-                let scoreInputName, suffix;
-                switch(testName) {
-                    case "HK-MoCA": scoreInputName = "cognitiveScore_hkMoca"; suffix = "/30"; break;
-                    case "Hk-MoCA 5": scoreInputName = "cognitiveScore_hkMoca5"; suffix = "/30"; break;
-                    case "AMT": scoreInputName = "cognitiveScore_amt"; suffix = "/10"; break;
-                    case "CFAB": scoreInputName = "cognitiveScore_cfab"; suffix = "/18"; break;
-                    case "HKBC": scoreInputName = "cognitiveScore_hkbc"; suffix = "/30"; break;
-                    default: return ""; 
+            function getCognitiveTestValuesForReport() {
+                const selectedCheckboxes = adultForm.querySelectorAll('input[name="cognitiveTest"]:checked');
+                if (cognitiveTestNilActualChk && cognitiveTestNilActualChk.checked) {
+                    return "Nil";
                 }
-                const score = adultForm.querySelector(`input[name="${scoreInputName}"]`).value.trim();
-                return score ? `${testName} ${score}${suffix}` : `${testName} (score not entered)`;
+
+                let parts = [];
+                selectedCheckboxes.forEach(checkbox => {
+                    const testName = checkbox.value;
+                    let score, score2, digits, formattedDigits;
+
+                    switch(testName) {
+                        case "HK-MoCA": 
+                            score = adultForm.querySelector(`input[name="cognitiveScore_hkMoca"]`).value.trim();
+                            digits = adultForm.querySelector(`input[name="cognitiveScore_hkMoca_digits"]`).value.trim();
+                            formattedDigits = digits ? ` (${digits.split('').join('-')})` : '';
+                            parts.push(score ? `HK-MoCA ${score}/30${formattedDigits}` : `HK-MoCA (score not entered)`);
+                            break;
+                        case "Hk-MoCA 5": 
+                            score = adultForm.querySelector(`input[name="cognitiveScore_hkMoca5"]`).value.trim();
+                            parts.push(score ? `Hk-MoCA 5 ${score}/30` : `Hk-MoCA 5 (score not entered)`);
+                            break;
+                        case "AMT": 
+                            score = adultForm.querySelector(`input[name="cognitiveScore_amt"]`).value.trim();
+                            parts.push(score ? `AMT ${score}/10` : `AMT (score not entered)`);
+                            break;
+                        case "CFAB": 
+                            score = adultForm.querySelector(`input[name="cognitiveScore_cfab"]`).value.trim();
+                            parts.push(score ? `CFAB ${score}/18` : `CFAB (score not entered)`);
+                            break;
+                        case "HKBC": 
+                            score = adultForm.querySelector(`input[name="cognitiveScore_hkbc"]`).value.trim();
+                            parts.push(score ? `HKBC ${score}/30` : `HKBC (score not entered)`);
+                            break;
+                        case "B-MCCB":
+                            score = adultForm.querySelector(`input[name="cognitiveScore_bmccb_tscore"]`).value.trim();
+                            parts.push(score ? `B-MCCB T-score: ${score}` : `B-MCCB T-score: (not entered)`);
+                            break;
+                        case "WMS-III":
+                            score = adultForm.querySelector(`input[name="cognitiveScore_wms3_score"]`).value.trim();
+                            score2 = adultForm.querySelector(`input[name="cognitiveScore_wms3_tscore"]`).value.trim();
+                            parts.push(`WMS-III: ${score || '_'}/32, T-score: ${score2 || '_'}`);
+                            break;
+                    }
+                });
+                return parts.length > 0 ? parts.join('; ') : '';
             }
 
+
             function addReportLine(currentReport, label, value, isMultiPartValue = false, multiPartSeparator = " / ") {
+                if (value === undefined || value === null) return currentReport; 
+
                 if (isMultiPartValue) {
                     const validParts = Array.isArray(value) ? value.filter(part => part && part.toString().trim() !== '') : [];
                     if (validParts.length > 0) {
                         return currentReport + `${label}: ${validParts.join(multiPartSeparator)}\n`;
                     }
-                } else if (value && value.toString().trim() !== '') {
+                } else if (value.toString().trim() !== '') {
                     return currentReport + `${label}: ${value.toString().trim()}\n`;
                 }
                 return currentReport;
@@ -831,7 +1100,7 @@
 
 
             generateReportBtn.addEventListener('click', function () {
-                let report = ""; // Initialize report as empty string
+                let report = ""; 
                 
                 report += "1. Mental State & Insight\n\n";
                 report = addReportLine(report, "Overall impression", getRadioValue('overallImpression'));
@@ -860,7 +1129,7 @@
                 report = addReportLine(report, "Thought", thoughtReportVal);
 
                 report = addReportLine(report, "Behavior", getCheckboxValues('behavior'));
-                report = addReportLine(report, "Cognitive", getCheckboxValues('cognitiveState'));
+                report = addReportLine(report, "Cognitive (Mental State)", getCheckboxValues('cognitiveState'));
                 report = addReportLine(report, "Risk", getCheckboxValues('risk'));
                 report = addReportLine(report, "Insight", getRadioValue('insight'));
                 report = addReportLine(report, "Remarks", getTextValue('remarksMentalState'));
@@ -881,6 +1150,8 @@
                     });
                     if (workReportPartsList.length > 0) {
                         workReportContent = workReportPartsList.join(' / ');
+                    } else {
+                         workReportContent = "Not specified"; 
                     }
                 }
                 report = addReportLine(report, "Work", workReportContent);
@@ -903,9 +1174,21 @@
 
                 report = addReportLine(report, "Domestic", getCheckboxValues('domestic'));
                 report = addReportLine(report, "Childcare", getRadioValue('childcare'));
-                report = addReportLine(report, "Cognitive", getCognitiveTestValue());
+                report = addReportLine(report, "Cognitive (Assessment Tools)", getCognitiveTestValuesForReport());
                 report = addReportLine(report, "Overall performance", getRadioValue('overallPerformance'));
                 report = addReportLine(report, "Daily functioning", getRadioValue('dailyFunctioning'));
+                report = addReportLine(report, "Stimulate Relapse Risk Scale", getCheckboxValues('stimulateRelapse'));
+                
+                let treatmentMotivationalReport = getRadioValue('treatmentMotivationalScale');
+                if (treatmentMotivationalReport === "High") {
+                    const highDetails = getCheckboxValues('treatmentMotivationalHighDetail');
+                    if (highDetails) {
+                        treatmentMotivationalReport += ` in (${highDetails})`;
+                    } else {
+                        treatmentMotivationalReport += " (details not specified)";
+                    }
+                }
+                report = addReportLine(report, "Treatment needs / Motivational Scale", treatmentMotivationalReport);
                 report += "\n";
 
                 report += "3. Interventions Provided\n\n";
@@ -913,6 +1196,20 @@
                 report = addReportLine(report, "Self-management Training", getCheckboxValues('interventionSelfMgmt'));
                 report = addReportLine(report, "Interpersonal Skills Training", getCheckboxValues('interventionInterpersonal'));
                 report = addReportLine(report, "Cognitive Training", getCheckboxValues('interventionCognitive'));
+
+                let postHkMocaVal = getTextValue('postCognitiveScore_hkMoca');
+                let postHkMocaDigitsVal = getTextValue('postCognitiveScore_hkMoca_digits');
+                if (postHkMocaVal || postHkMocaDigitsVal) {
+                    let formattedPostDigits = postHkMocaDigitsVal ? ` (${postHkMocaDigitsVal.split('').join('-')})` : '';
+                    report = addReportLine(report, "Post-Intervention HK-MoCA", postHkMocaVal ? `${postHkMocaVal}/30${formattedPostDigits}` : `(digits: ${formattedPostDigits || 'N/A'})`);
+                }
+                report = addReportLine(report, "Post-Intervention B-MCCB T-score", getTextValue('postCognitiveScore_bmccb_tscore'));
+                let postWms3ScoreVal = getTextValue('postCognitiveScore_wms3_score');
+                let postWms3TscoreVal = getTextValue('postCognitiveScore_wms3_tscore');
+                if (postWms3ScoreVal || postWms3TscoreVal) {
+                    report = addReportLine(report, "Post-Intervention WMS-III", `${postWms3ScoreVal || '_'}/32, T-score: ${postWms3TscoreVal || '_'}`);
+                }
+                
                 report = addReportLine(report, "Life Coaching", getCheckboxValues('interventionLifeCoaching'));
                 report = addReportLine(report, "Behavioral Management Training", getCheckboxValues('interventionBehavioral'));
                 report = addReportLine(report, "Home Assessment & Modification", getCheckboxValues('interventionHome'));
@@ -972,34 +1269,53 @@
             resetFormBtn.addEventListener('click', function() {
                 adultForm.reset(); 
                 generatedReportTextarea.value = ''; 
-                updateOverallNilEffect(workOverallNilRadio.checked); 
+
+                adultForm.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.removeAttribute('data-waschecked');
+                });
+                
+                if(workOverallNilRadio) updateOverallNilEffect(workOverallNilRadio.checked);
+
+
                 workVOptionsList_js.forEach(vId => { 
                     const vCheckbox = adultForm.querySelector(`#workV_selected_${vId}`); 
                     const ratingRadios = adultForm.querySelectorAll(`input[name="workV_rating_${vId}"]`);
                     ratingRadios.forEach(radio => {
                         radio.disabled = true; 
                         radio.checked = false; 
+                        radio.removeAttribute('data-waschecked');
                     });
                 });
                 if (thoughtNilCheckbox) {
                      handleThoughtExclusiveChecks();
                 }
+                if (hkMocaScoreOutput) hkMocaScoreOutput.value = ''; 
+                if (postHkMocaScoreOutput) postHkMocaScoreOutput.value = ''; 
+                
+                handleTreatmentMotivationalScaleChange(); 
+                handleCognitiveTestInteractions(); 
+
                  alert('Form has been reset.');
             });
             
             if(workOverallNilRadio) {
                 updateOverallNilEffect(workOverallNilRadio.checked);
             }
-            workVOptionsList_js.forEach(vId => { 
+             workVOptionsList_js.forEach(vId => { 
                 const vCheckbox = adultForm.querySelector(`#workV_selected_${vId}`);
                 if (vCheckbox) {
                     const ratingRadios = adultForm.querySelectorAll(`input[name="workV_rating_${vId}"]`);
                     ratingRadios.forEach(radio => radio.disabled = !vCheckbox.checked);
                 }
             });
+
             if (thoughtNilCheckbox) {
                 handleThoughtExclusiveChecks();
             }
+            if (treatmentMotivationalLowRadio || treatmentMotivationalHighRadio) { 
+                handleTreatmentMotivationalScaleChange();
+            }
+            handleCognitiveTestInteractions(); 
         });
     </script>
 

@@ -180,9 +180,9 @@
             padding-top: 10px;
             border-top: 1px dashed #ccc;
         }
-        #treatmentMotivationalHighOptions {
+        #treatmentMotivationalHighOptions,
+        #stimulateRelapseHighOptions {
             margin-left: 20px; 
-            margin-top: 5px;
         }
         .sub-section-heading { 
             font-weight: bold;
@@ -500,22 +500,28 @@
                 </div>
                  <div class="form-group">
                     <label>Stimulate Relapse Risk Scale:</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" name="stimulateRelapse" value="Intention to use drug"> Intention to use drug</label>
-                        <label><input type="checkbox" name="stimulateRelapse" value="Emotionality problem"> Emotionality problem</label>
-                        <label><input type="checkbox" name="stimulateRelapse" value="Compulsivity for drug"> Compulsivity for drug</label>
-                        <label><input type="checkbox" name="stimulateRelapse" value="Positive expectancy for drug"> Positive expectancy for drug</label>
-                        <label><input type="checkbox" name="stimulateRelapse" value="Impetus and confidence to avoid drug"> Impetus and confidence to avoid drug</label>
-                        <label><input type="checkbox" name="stimulateRelapse" value="Lack of control over drug"> Lack of control over drug</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="stimulateRelapseScale" value="Low" id="stimulateRelapseLow"> Low</label>
+                        <label><input type="radio" name="stimulateRelapseScale" value="High" id="stimulateRelapseHigh"> High</label>
+                    </div>
+                    <span class="standalone-label" style="font-weight: normal; margin-top: 10px; margin-bottom: 5px; margin-left: 20px; display: block;">Specific aspects:</span>
+                    <div class="checkbox-group" id="stimulateRelapseHighOptions">
+                        <label><input type="checkbox" name="stimulateRelapseDetail" value="Intention to use drug"> Intention to use drug</label>
+                        <label><input type="checkbox" name="stimulateRelapseDetail" value="Emotionality problem"> Emotionality problem</label>
+                        <label><input type="checkbox" name="stimulateRelapseDetail" value="Compulsivity for drug"> Compulsivity for drug</label>
+                        <label><input type="checkbox" name="stimulateRelapseDetail" value="Positive expectancy for drug"> Positive expectancy for drug</label>
+                        <label><input type="checkbox" name="stimulateRelapseDetail" value="Impetus and confidence to avoid drug"> Impetus and confidence to avoid drug</label>
+                        <label><input type="checkbox" name="stimulateRelapseDetail" value="Lack of control over drug"> Lack of control over drug</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Treatment needs / Motivational Scale:</label>
                     <div class="radio-group">
                         <label><input type="radio" name="treatmentMotivationalScale" value="Low" id="treatmentMotivationalLow"> Low</label>
-                        <label><input type="radio" name="treatmentMotivationalScale" value="High" id="treatmentMotivationalHigh"> High in:</label>
+                        <label><input type="radio" name="treatmentMotivationalScale" value="High" id="treatmentMotivationalHigh"> High</label>
                     </div>
-                    <div class="checkbox-group" id="treatmentMotivationalHighOptions" style="display: none;">
+                    <span class="standalone-label" style="font-weight: normal; margin-top: 10px; margin-bottom: 5px; margin-left: 20px; display: block;">Specific aspects:</span>
+                    <div class="checkbox-group" id="treatmentMotivationalHighOptions">
                         <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Problem recognition"> Problem recognition</label>
                         <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Desire for help"> Desire for help</label>
                         <label><input type="checkbox" name="treatmentMotivationalHighDetail" value="Treatment readiness"> Treatment readiness</label>
@@ -767,7 +773,6 @@
             const thoughtOtherTextbox = adultForm.querySelector('#thoughtOtherText');
             const thoughtNilCheckbox = adultForm.querySelector('#thoughtNilChk');
 
-            // --- Make Radio Buttons Unselectable on Second Click ---
             const lastClickedRadioInfo = {}; 
 
             function makeRadioGroupUnselectable(groupName) {
@@ -778,22 +783,12 @@
 
                 radios.forEach(radio => {
                     radio.addEventListener('click', function(e) {
-                        // This function is bound to the radio button itself.
-                        // The 'click' event on a radio input happens *after* its 'checked' state has been updated by the browser (if it wasn't already checked).
-                        // Or, if it was already checked, its 'checked' state remains true.
-                        
                         const currentGroupInfo = lastClickedRadioInfo[this.name];
-
                         if (this.checked && currentGroupInfo && currentGroupInfo.element === this && e.isTrusted) {
-                            // This radio was the one previously stored as checked for this group,
-                            // and the click event is a genuine user click (not programmatic).
-                            // So, we uncheck it.
                             this.checked = false;
                             currentGroupInfo.value = null;
                             currentGroupInfo.element = null;
                         } else if (this.checked) {
-                            // This radio is now checked. Update the stored info for this group.
-                            // This covers selecting a new radio or re-selecting one that was just programmatically unchecked.
                             if (currentGroupInfo) {
                                 currentGroupInfo.value = this.value;
                                 currentGroupInfo.element = this;
@@ -801,19 +796,11 @@
                                 lastClickedRadioInfo[this.name] = { value: this.value, element: this };
                             }
                         } else {
-                            // This radio became unchecked.
-                            // This typically happens if another radio in the same group was selected by the user,
-                            // or if this radio was programmatically unchecked by our logic above.
                             if (currentGroupInfo && currentGroupInfo.element === this) {
-                                // If this was the stored radio, clear the stored info.
                                 currentGroupInfo.value = null;
                                 currentGroupInfo.element = null;
                             }
                         }
-                        
-                        // Dispatch a 'change' event if the state was programmatically changed.
-                        // This helps other event listeners (like for 'treatmentMotivationalScale') to react.
-                        // Check if the event was already from a programmatic dispatch to avoid loops.
                         if (e.isTrusted || !e.detail || e.detail.source !== 'radio_unselect_logic') {
                             const changeEvent = new CustomEvent('change', { bubbles: true, detail: { source: 'radio_unselect_logic' } });
                             this.dispatchEvent(changeEvent);
@@ -822,19 +809,17 @@
                 });
             }
 
-
             const radioGroupsToMakeUnselectable = [
                 'overallImpression', 'mood', 'affect', 'insight', 
                 'recommendedWorkLevel', 'adl', 'iadlCfna', 'childcare', 
                 'overallPerformance', 'dailyFunctioning', 'treatmentMotivationalScale', 
-                'dischargeResidential', 'workOverallNil'
+                'dischargeResidential', 'workOverallNil', 'stimulateRelapseScale' // Added new radio group
             ];
             radioGroupsToMakeUnselectable.forEach(groupName => makeRadioGroupUnselectable(groupName));
             
             workVOptionsList_js.forEach(vId => { 
                  makeRadioGroupUnselectable(`workV_rating_${vId}`);
             });
-
 
             const hkMocaDigitsInput = document.getElementById('cognitiveScore_hkMoca_digits');
             const hkMocaScoreOutput = adultForm.elements['cognitiveScore_hkMoca'];
@@ -859,28 +844,34 @@
                 postHkMocaDigitsInput.addEventListener('input', () => calculateAndSetMocaScore(postHkMocaDigitsInput, postHkMocaScoreOutput));
             }
 
-
+            // --- Treatment Motivational Scale Elements and Logic ---
             const treatmentMotivationalLowRadio = document.getElementById('treatmentMotivationalLow');
             const treatmentMotivationalHighRadio = document.getElementById('treatmentMotivationalHigh');
             const treatmentMotivationalHighOptionsDiv = document.getElementById('treatmentMotivationalHighOptions');
-            const treatmentMotivationalHighCheckboxes = treatmentMotivationalHighOptionsDiv.querySelectorAll('input[type="checkbox"]');
+            const treatmentMotivationalHighCheckboxes = treatmentMotivationalHighOptionsDiv.querySelectorAll('input[name="treatmentMotivationalHighDetail"]');
 
             function handleTreatmentMotivationalScaleChange() {
-                if (treatmentMotivationalHighRadio && treatmentMotivationalHighRadio.checked) {
-                    treatmentMotivationalHighOptionsDiv.style.display = 'flex'; 
-                    treatmentMotivationalHighCheckboxes.forEach(cb => cb.disabled = false);
-                } else {
-                    treatmentMotivationalHighOptionsDiv.style.display = 'none';
-                    treatmentMotivationalHighCheckboxes.forEach(cb => {
-                        cb.checked = false;
-                        cb.disabled = true;
-                    });
-                }
+                treatmentMotivationalHighCheckboxes.forEach(cb => cb.disabled = false);
             }
             
             if (treatmentMotivationalLowRadio && treatmentMotivationalHighRadio) {
                 treatmentMotivationalLowRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
                 treatmentMotivationalHighRadio.addEventListener('change', handleTreatmentMotivationalScaleChange);
+            }
+
+            // --- Stimulate Relapse Risk Scale Elements and Logic ---
+            const stimulateRelapseLowRadio = document.getElementById('stimulateRelapseLow');
+            const stimulateRelapseHighRadio = document.getElementById('stimulateRelapseHigh');
+            const stimulateRelapseHighOptionsDiv = document.getElementById('stimulateRelapseHighOptions');
+            const stimulateRelapseDetailCheckboxes = stimulateRelapseHighOptionsDiv.querySelectorAll('input[name="stimulateRelapseDetail"]');
+
+            function handleStimulateRelapseScaleChange() {
+                stimulateRelapseDetailCheckboxes.forEach(cb => cb.disabled = false);
+            }
+
+            if (stimulateRelapseLowRadio && stimulateRelapseHighRadio) {
+                stimulateRelapseLowRadio.addEventListener('change', handleStimulateRelapseScaleChange);
+                stimulateRelapseHighRadio.addEventListener('change', handleStimulateRelapseScaleChange);
             }
 
 
@@ -1041,7 +1032,6 @@
                 }
             });
 
-
             function getCheckboxValues(name) {
                 const checkboxes = adultForm.querySelectorAll(`input[name="${name}"]:checked`);
                 const values = Array.from(checkboxes).map(cb => cb.value);
@@ -1067,7 +1057,7 @@
                 let parts = [];
                 selectedCheckboxes.forEach(checkbox => {
                     const testName = checkbox.value;
-                    if(testName === "Nil") return; // Should not happen if Nil logic is correct but good failsafe
+                    if(testName === "Nil") return; 
 
                     let score, score2, digits, formattedDigits;
 
@@ -1108,7 +1098,6 @@
                 return parts.length > 0 ? parts.join('; ') : '';
             }
 
-
             function addReportLine(currentReport, label, value, isMultiPartValue = false, multiPartSeparator = " / ") {
                 if (value === undefined || value === null) return currentReport; 
 
@@ -1122,7 +1111,6 @@
                 }
                 return currentReport;
             }
-
 
             generateReportBtn.addEventListener('click', function () {
                 let report = ""; 
@@ -1202,16 +1190,32 @@
                 report = addReportLine(report, "Cognitive (Assessment Tools)", getCognitiveTestValuesForReport());
                 report = addReportLine(report, "Overall performance", getRadioValue('overallPerformance'));
                 report = addReportLine(report, "Daily functioning", getRadioValue('dailyFunctioning'));
-                report = addReportLine(report, "Stimulate Relapse Risk Scale", getCheckboxValues('stimulateRelapse'));
                 
-                let treatmentMotivationalReport = getRadioValue('treatmentMotivationalScale');
-                if (treatmentMotivationalReport === "High") {
-                    const highDetails = getCheckboxValues('treatmentMotivationalHighDetail');
-                    if (highDetails) {
-                        treatmentMotivationalReport += ` in (${highDetails})`;
-                    } else {
-                        treatmentMotivationalReport += " (details not specified)";
+                // Stimulate Relapse Risk Scale
+                let stimulateRelapseScaleVal = getRadioValue('stimulateRelapseScale');
+                let stimulateRelapseDetails = getCheckboxValues('stimulateRelapseDetail');
+                let stimulateRelapseReport = "";
+                if (stimulateRelapseScaleVal) {
+                    stimulateRelapseReport = stimulateRelapseScaleVal;
+                    if (stimulateRelapseDetails) {
+                        stimulateRelapseReport += ` in ${stimulateRelapseDetails}`;
                     }
+                } else if (stimulateRelapseDetails) { 
+                    stimulateRelapseReport = `Specific aspects: ${stimulateRelapseDetails}`;
+                }
+                report = addReportLine(report, "Stimulate Relapse Risk Scale", stimulateRelapseReport);
+
+                // Treatment needs / Motivational Scale
+                let treatmentMotivationalRadioVal = getRadioValue('treatmentMotivationalScale');
+                let treatmentMotivationalDetails = getCheckboxValues('treatmentMotivationalHighDetail');
+                let treatmentMotivationalReport = "";
+                if (treatmentMotivationalRadioVal) {
+                    treatmentMotivationalReport = treatmentMotivationalRadioVal;
+                    if (treatmentMotivationalDetails) {
+                        treatmentMotivationalReport += ` in ${treatmentMotivationalDetails}`;
+                    }
+                } else if (treatmentMotivationalDetails) { 
+                    treatmentMotivationalReport = `Specific aspects: ${treatmentMotivationalDetails}`;
                 }
                 report = addReportLine(report, "Treatment needs / Motivational Scale", treatmentMotivationalReport);
                 report += "\n";
@@ -1304,7 +1308,6 @@
                 
                 if(workOverallNilRadio) updateOverallNilEffect(workOverallNilRadio.checked);
 
-
                 workVOptionsList_js.forEach(vId => { 
                     const vCheckbox = adultForm.querySelector(`#workV_selected_${vId}`); 
                     const ratingRadios = adultForm.querySelectorAll(`input[name="workV_rating_${vId}"]`);
@@ -1324,6 +1327,7 @@
                 if (postHkMocaScoreOutput) postHkMocaScoreOutput.value = ''; 
                 
                 handleTreatmentMotivationalScaleChange(); 
+                handleStimulateRelapseScaleChange();
                 handleCognitiveTestInteractions(); 
 
                  alert('Form has been reset.');
@@ -1344,9 +1348,8 @@
             if (thoughtNilCheckbox) {
                 handleThoughtExclusiveChecks();
             }
-            if (treatmentMotivationalLowRadio || treatmentMotivationalHighRadio) { 
-                handleTreatmentMotivationalScaleChange();
-            }
+            handleTreatmentMotivationalScaleChange();
+            handleStimulateRelapseScaleChange();
             handleCognitiveTestInteractions(); 
         });
     </script>

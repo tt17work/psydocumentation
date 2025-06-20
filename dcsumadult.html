@@ -467,7 +467,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Cognitive (Assessment Tools):</label>
+                    <label>Cognitive:</label>
                     <div class="checkbox-group cognitive-assessment-layout">
                         <label>
                             <input type="checkbox" name="cognitiveTest" value="HK-MoCA"> HK-MoCA
@@ -482,6 +482,10 @@
                         <label><input type="checkbox" name="cognitiveTest" value="WMS-III"> WMS-III: <input type="text" name="cognitiveScore_wms3_score" class="inline-input small-input" disabled> /32, T-score: <input type="text" name="cognitiveScore_wms3_tscore" class="inline-input small-input" disabled></label>
                         <label><input type="checkbox" name="cognitiveTest" value="Nil" id="cognitiveTestNil"> Nil</label>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="educationLevel">Education level:</label>
+                    <input type="text" id="educationLevel" name="educationLevel">
                 </div>
                 <div class="form-group">
                     <label>Overall performance:</label>
@@ -1186,7 +1190,8 @@
 
                 report = addReportLine(report, "Domestic", getCheckboxValues('domestic'));
                 report = addReportLine(report, "Childcare", getRadioValue('childcare'));
-                report = addReportLine(report, "Cognitive (Assessment Tools)", getCognitiveTestValuesForReport());
+                report = addReportLine(report, "Cognitive", getCognitiveTestValuesForReport());
+                report = addReportLine(report, "Education level", getTextValue('educationLevel'));
                 report = addReportLine(report, "Overall performance", getRadioValue('overallPerformance'));
                 report = addReportLine(report, "Daily functioning", getRadioValue('dailyFunctioning'));
                 

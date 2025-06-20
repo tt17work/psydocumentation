@@ -121,7 +121,7 @@
             <label><input type="checkbox" name="ms_thought" value="Nil"> Nil</label>
         </div>
         <div class="input-group checkbox-group">
-            <span class="section-title">Behavior:</span>
+            <span class="section-title">Behaviour:</span>
             <label><input type="checkbox" name="ms_behavior" value="Normal"> Normal</label>
             <label><input type="checkbox" name="ms_behavior" value="Bizarre"> Bizarre</label>
             <label><input type="checkbox" name="ms_behavior" value="Self-muttering"> Self-muttering</label>
@@ -176,11 +176,11 @@
                 <input type="text" id="ar_mood_dass21_sum" name="ar_mood_dass21_sum" class="inline-text" style="width: 60px;" readonly>
                 <div class="dass-details">
                     <label for="ar_mood_dass21_depression">Depression:</label>
-                    <input type="number" id="ar_mood_dass21_depression" name="ar_mood_dass21_depression" class="inline-text dass21-subscore" style="width: 50px;">
+                    <input type="number" id="ar_mood_dass21_depression" name="ar_mood_dass21_depression" class="inline-text dass21-subscore" style="width: 50px;" min="0">
                     <label for="ar_mood_dass21_anxiety">Anxiety:</label>
-                    <input type="number" id="ar_mood_dass21_anxiety" name="ar_mood_dass21_anxiety" class="inline-text dass21-subscore" style="width: 50px;">
+                    <input type="number" id="ar_mood_dass21_anxiety" name="ar_mood_dass21_anxiety" class="inline-text dass21-subscore" style="width: 50px;" min="0">
                     <label for="ar_mood_dass21_stress">Stress:</label>
-                    <input type="number" id="ar_mood_dass21_stress" name="ar_mood_dass21_stress" class="inline-text dass21-subscore" style="width: 50px;">
+                    <input type="number" id="ar_mood_dass21_stress" name="ar_mood_dass21_stress" class="inline-text dass21-subscore" style="width: 50px;" min="0">
                 </div>
             </div>
             <div class="sub-item">
@@ -194,7 +194,7 @@
             <div class="sub-item">
                 HK-MoCA <input type="text" id="ar_hkmoca_score" name="ar_hkmoca_score" class="inline-text" style="width:40px;" readonly> /30
                 (
-                  <input type="text" id="ar_hkmoca_detail_string" name="ar_hkmoca_detail_string" class="inline-text" style="width:100px;" placeholder="e.g. 2322425" maxlength="7">
+                  <input type="text" id="ar_hkmoca_detail_string" name="ar_hkmoca_detail_string" class="inline-text" style="width:100px;" placeholder="e.g. 5333256" maxlength="7">
                 ),
                 <select id="ar_hkmoca_cutoff_operator" name="ar_hkmoca_cutoff_operator" class="inline-text">
                     <option value="">--</option>
@@ -361,7 +361,7 @@
         <div class="input-group checkbox-group">
             <span class="section-title">Life Coaching:</span>
             <label><input type="checkbox" name="ip_life_coaching" value="Counseling"> Counseling</label>
-            <label><input type="checkbox" name="ip_life_coaching" value="Cognitive behavioral therapy"> Cognitive behavioral therapy</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Cognitive behavioural therapy"> Cognitive behavioural therapy</label>
             <label><input type="checkbox" name="ip_life_coaching" value="Health Qi-gong"> Health Qi-gong</label>
             <label><input type="checkbox" name="ip_life_coaching" value="Life coaching"> Life coaching</label>
             <label><input type="checkbox" name="ip_life_coaching" value="Lifestyle re-design"> Lifestyle re-design</label>
@@ -370,7 +370,7 @@
             <label><input type="checkbox" name="ip_life_coaching" value="Nil"> Nil</label>
         </div>
         <div class="input-group checkbox-group">
-            <span class="section-title">Behavioral Management Training:</span>
+            <span class="section-title">Behavioural Management Training:</span>
             <label><input type="checkbox" name="ip_behavioral_management" value="Education and intervention on BPSD"> Education and intervention on BPSD</label>
             <label><input type="checkbox" name="ip_behavioral_management" value="Multi-sensory stimulation"> Multi-sensory stimulation</label>
             <label><input type="checkbox" name="ip_behavioral_management" value="Impulse control"> Impulse control</label>
@@ -491,7 +491,6 @@
         input.addEventListener('input', updateDass21Sum);
     });
 
-
     // HK-MoCA Score from Detail String Calculation
     const hkmocaDetailStringInput = document.getElementById('ar_hkmoca_detail_string');
     const hkmocaScoreInput = document.getElementById('ar_hkmoca_score');
@@ -499,8 +498,12 @@
     if (hkmocaDetailStringInput && hkmocaScoreInput) {
         hkmocaDetailStringInput.addEventListener('input', function(event) {
             let value = event.target.value;
-            // Allow only digits that are valid for HK-MoCA subscores (e.g., 0-5, adjust if needed)
-            value = value.replace(/[^0-5]/g, ''); 
+            // Allow only digits; specific max for HK-MoCA subscores:
+            // V/S, EF: 0-5; Naming: 0-3; Attention: 0-6 (total); Language: 0-3; Abstraction: 0-2; Recall: 0-5; Orientation: 0-6
+            // Since it's a single string, we'll allow 0-9 and rely on user to input correct sub-scores.
+            // Or, more strictly, if each character represents a subscore with a max (e.g., orientation 6)
+            // This simple validation allows any digit. The placeholder suggests typical scores.
+            value = value.replace(/[^0-9]/g, ''); 
 
             if (value.length > 7) { 
                 value = value.substring(0, 7);
@@ -510,12 +513,35 @@
             if (value.length === 7) {
                 const digits = value.split('').map(Number); 
                 const sum = digits.reduce((acc, digit) => acc + digit, 0);
-                hkmocaScoreInput.value = sum;
+                hkmocaScoreInput.value = sum > 30 ? 30 : sum; // Cap at 30
             } else {
                 hkmocaScoreInput.value = ''; 
             }
         });
     }
+
+    // Radio button unselect functionality
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('mousedown', function(e) {
+            if (this.checked) {
+                this.dataset.wasChecked = "true";
+            } else {
+                this.dataset.wasChecked = "false";
+            }
+        });
+        radio.addEventListener('click', function(e) {
+            if (this.dataset.wasChecked === "true") {
+                this.checked = false;
+            }
+            // Ensure wasChecked is updated for the group for next click
+             document.querySelectorAll(`input[type="radio"][name="${this.name}"]`).forEach(otherRadio => {
+                otherRadio.dataset.wasChecked = otherRadio.checked ? "true" : "false";
+            });
+             // For the current clicked radio, if it became checked, its wasChecked should be true for next potential uncheck
+             this.dataset.wasChecked = this.checked ? "true" : "false";
+
+        });
+    });
 
 
     document.getElementById('generateReportButton').addEventListener('click', function() {
@@ -545,7 +571,7 @@
 
 
         function formatReportLine(label, value, noLabel = false, noNewLine = false) {
-            if (value && String(value).trim() !== "") {
+            if (value && String(value).trim() !== "" && String(value).trim() !== "N/A") { // Exclude "N/A" if it's the only content
                 let line = "";
                 if (noLabel) line = `${String(value).trim()}`;
                 else line = `${label}: ${String(value).trim()}`;
@@ -590,7 +616,7 @@
         }
         section1Content += formatReportLine("Thought", thoughtStr);
 
-        section1Content += formatReportLine("Behavior", getSelectedCheckboxValues('ms_behavior'));
+        section1Content += formatReportLine("Behaviour", getSelectedCheckboxValues('ms_behavior')); // Spelling
         
         let msCognitiveOrientation = getRadioValue('ms_cognitive_orientation');
         let msCognitiveMemory = getRadioValue('ms_cognitive_memory');
@@ -610,15 +636,14 @@
         // --- Section 2: Assessment Results ---
         let section2Content = "";
 
-        // DASS-21 Report - Updated for your provided HTML structure
-        let moodDass21SumFromHTML = getTextValue('ar_mood_dass21_sum'); // This is the readonly sum field
+        let moodDass21SumFromHTML = getTextValue('ar_mood_dass21_sum');
         let moodDass21Dep = getTextValue('ar_mood_dass21_depression');
         let moodDass21Anx = getTextValue('ar_mood_dass21_anxiety');
         let moodDass21Str = getTextValue('ar_mood_dass21_stress');
         let dass21ReportString = "";
 
-        if (moodDass21SumFromHTML || moodDass21Dep || moodDass21Anx || moodDass21Str) { 
-            dass21ReportString = `${moodDass21SumFromHTML || 'N/A'}`; 
+        if (moodDass21SumFromHTML && moodDass21SumFromHTML !== "0") { // Only report if sum is not 0
+            dass21ReportString = `${moodDass21SumFromHTML}`; 
             let breakdown = [];
             if (moodDass21Dep) breakdown.push(`Depression: ${moodDass21Dep}`);
             if (moodDass21Anx) breakdown.push(`Anxiety: ${moodDass21Anx}`);
@@ -628,18 +653,6 @@
             }
         }
         
-        // Note: Your provided HTML for DASS-21 has the main DASS-21 text box as id="ar_mood_dass21"
-        // I'm assuming you meant for that to be the GDS and the new sum field is ar_mood_dass21_sum
-        // If ar_mood_dass21 was intended to be the sum, the HTML and JS need a slight adjustment.
-        // For now, I'll proceed assuming ar_mood_dass21_sum is the primary sum display.
-        // And the old ar_mood_dass21 is now the GDS or was removed.
-        // The HTML you provided for Mood was:
-        // <label for="ar_mood_dass21"...>DASS-21:</label><input id="ar_mood_dass21"...>
-        // <label for="ar_mood_gds"...>GDS:</label><input id="ar_mood_gds"...>
-        // I've added the sum and sub-fields based on your request on top of this structure.
-        // If ar_mood_dass21 in your HTML *was* meant for the sum, then that ID should be ar_mood_dass21_sum
-        // and the GDS field is ar_mood_gds.
-
         let moodGds = getTextValue('ar_mood_gds');
         let moodSubSectionContent = "";
         moodSubSectionContent += formatReportLine("  DASS-21", dass21ReportString); 
@@ -648,12 +661,10 @@
             section2Content += "Mood:\n" + moodSubSectionContent;
         }
 
-
         let hkmocaLine = "";
         let hkmocaScore = getTextValue('ar_hkmoca_score');
         let hkmocaDetailStr = getTextValue('ar_hkmoca_detail_string');
-        let hkmocaDetailsFilled = hkmocaDetailStr.length === 7;
-
+        
         let cutoffOp = getSelectValue('ar_hkmoca_cutoff_operator');
         let cutoffValSelect = getSelectValue('ar_hkmoca_cutoff_value_select');
         let eduLevel = getTextValue('ar_hkmoca_education');
@@ -661,9 +672,7 @@
         let amtScore = getTextValue('ar_amt_score');
 
         if (hkmocaScore) hkmocaLine += `HK-MoCA ${hkmocaScore}/30 `;
-        if (hkmocaDetailsFilled) {
-             hkmocaLine += `(${hkmocaDetailStr[0]}-${hkmocaDetailStr[1]}-${hkmocaDetailStr[2]}-${hkmocaDetailStr[3]}-${hkmocaDetailStr[4]}-${hkmocaDetailStr[5]}-${hkmocaDetailStr[6]})`;
-        } else if (hkmocaDetailStr.length > 0) { 
+        if (hkmocaDetailStr.length > 0) { // Show details if any part of string is entered
              hkmocaLine += `(${hkmocaDetailStr.split('').join('-')})`;
         }
 
@@ -677,14 +686,16 @@
         let hkmocaSubScoreLine = "";
         if (hkmocaDetailStr.length > 0) {
             const digits = hkmocaDetailStr.split('');
-            hkmocaSubScoreLine += `Visuospatial/EF: ${digits[0] || '-'}`;
-            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Naming: ${digits[1] || '-'}`;
-            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Attention: ${digits[2] || '-'}`;
-            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Language: ${digits[3] || '-'}`;
-            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Abstraction: ${digits[4] || '-'}`;
-            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Delayed recall: ${digits[5] || '-'}`;
-            hkmocaSubScoreLine += (hkmocaSubScoreLine ? ", " : "") + `Orientation: ${digits[6] || '-'}`;
+            const labels = ["Visuospatial/EF", "Naming", "Attention", "Language", "Abstraction", "Delayed recall", "Orientation"];
+            let subScores = [];
+            for (let i = 0; i < digits.length; i++) {
+                if (digits[i]) { // Only add if digit is present
+                    subScores.push(`${labels[i] || 'Item '+(i+1)}: ${digits[i]}`);
+                }
+            }
+            hkmocaSubScoreLine = subScores.join(', ');
         }
+
 
         if (hkmocaLine.trim()) {
             section2Content += formatReportLine("Cognitive", hkmocaLine.trim());
@@ -802,7 +813,7 @@
         section3Content += formatReportLine("Cognitive Training", getSelectedCheckboxValues('ip_cognitive_training'));
         section3Content += formatReportLine("Self-management Training", getSelectedCheckboxValues('ip_self_management'));
         section3Content += formatReportLine("Life Coaching", getSelectedCheckboxValues('ip_life_coaching'));
-        section3Content += formatReportLine("Behavioral Management Training", getSelectedCheckboxValues('ip_behavioral_management'));
+        section3Content += formatReportLine("Behavioural Management Training", getSelectedCheckboxValues('ip_behavioral_management')); // Spelling
         section3Content += formatReportLine("Functional Training", getSelectedCheckboxValues('ip_functional_training'));
         section3Content += formatReportLine("Home Assessment & Modification", getSelectedCheckboxValues('ip_home_assessment'));
         section3Content += formatReportLine("Aids Prescription and Training", getSelectedCheckboxValues('ip_aids_prescription'));
@@ -897,13 +908,17 @@
         if (document.getElementById('ar_carer_yes_details')) {
              document.getElementById('ar_carer_yes_details').style.display = 'none';
         }
-        if (hkmocaScoreInput) { 
-            hkmocaScoreInput.value = '';
-        }
-        // Also reset DASS-21 sum on form reset
-        if(document.getElementById('ar_mood_dass21_sum')) {
+        // Manually clear readonly fields that are auto-calculated
+        if (document.getElementById('ar_mood_dass21_sum')) {
             document.getElementById('ar_mood_dass21_sum').value = '';
         }
+        if (document.getElementById('ar_hkmoca_score')) { 
+            document.getElementById('ar_hkmoca_score').value = '';
+        }
+        // Reset wasChecked for radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.dataset.wasChecked = "false";
+        });
     });
 </script>
 

@@ -69,7 +69,7 @@
         }
         .form-group .checkbox-group label,
         .form-group .radio-group label,
-        .form-group .radio-group .radio-option-wrapper { /* Target the wrapper for layout */
+        .form-group .radio-group .radio-option-wrapper {
             font-weight: normal;
             display: flex;
             align-items: center;
@@ -81,10 +81,9 @@
             margin-right: 5px;
             flex-shrink: 0;
          }
-        /* Style for IADL item wrappers to allow stacking */
         .form-group .radio-group .iadl-item-block {
-            width: 100%; /* Make each IADL item block take full width to stack */
-            display: flex; /* Keep radio and text on same line within the block */
+            width: 100%; 
+            display: flex; 
             align-items: center;
             margin-bottom: 5px;
         }
@@ -201,8 +200,8 @@
             }
             .form-group .checkbox-group label, 
             .form-group .radio-group label,   
-            .form-group .radio-group .radio-option-wrapper, /* Target wrapper in media query */
-            .form-group .radio-group .iadl-item-block, /* Target IADL block in media query */
+            .form-group .radio-group .radio-option-wrapper, 
+            .form-group .radio-group .iadl-item-block, 
             .work-v-item .work-v-rating label {
                  width: 100%; 
              }
@@ -312,16 +311,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Behavior:</label>
+                    <label>Behaviour:</label>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="behavior" value="Normal"> Normal</label>
-                        <label><input type="checkbox" name="behavior" value="Bizarre"> Bizarre</label>
-                        <label><input type="checkbox" name="behavior" value="Self-muttering"> Self-muttering</label>
-                        <label><input type="checkbox" name="behavior" value="Self-giggling"> Self-giggling</label>
-                        <label><input type="checkbox" name="behavior" value="Disturbing"> Disturbing</label>
-                        <label><input type="checkbox" name="behavior" value="Disorganized"> Disorganized</label>
-                        <label><input type="checkbox" name="behavior" value="Disinhibited"> Disinhibited</label>
-                        <label><input type="checkbox" name="behavior" value="Violent"> Violent</label>
+                        <label><input type="checkbox" name="behaviour" value="Normal"> Normal</label>
+                        <label><input type="checkbox" name="behaviour" value="Bizarre"> Bizarre</label>
+                        <label><input type="checkbox" name="behaviour" value="Self-muttering"> Self-muttering</label>
+                        <label><input type="checkbox" name="behaviour" value="Self-giggling"> Self-giggling</label>
+                        <label><input type="checkbox" name="behaviour" value="Disturbing"> Disturbing</label>
+                        <label><input type="checkbox" name="behaviour" value="Disorganized"> Disorganized</label>
+                        <label><input type="checkbox" name="behaviour" value="Disinhibited"> Disinhibited</label>
+                        <label><input type="checkbox" name="behaviour" value="Violent"> Violent</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -409,19 +408,19 @@
                         <div class="iadl-item-block radio-option-wrapper"><label><input type="radio" name="iadlMode" value="CFNA: Supervised living"> CFNA: Supervised living</label></div>
                         <div class="iadl-item-block radio-option-wrapper">
                             <label>
-                                <input type="radio" name="iadlMode" value="CFNA_Score"> CFNA&nbsp;
-                                <input type="text" name="iadlCfnaScoreVal" class="inline-input small-input" placeholder="Score">&nbsp;/650
+                                <input type="radio" name="iadlMode" value="CFNA_Score"> CFNA 
+                                <input type="text" name="iadlCfnaScoreVal" class="inline-input small-input" placeholder="Score"> /650
                             </label>
                         </div>
                         <div class="iadl-item-block radio-option-wrapper">
                             <label>
-                                <input type="radio" name="iadlMode" value="AssistedBy"> Assisted by:&nbsp;
+                                <input type="radio" name="iadlMode" value="AssistedBy"> Assisted by: 
                                 <input type="text" name="iadlAssistedByVal" class="inline-input" placeholder="Details">
                             </label>
                         </div>
                         <div class="iadl-item-block radio-option-wrapper">
                             <label>
-                                <input type="radio" name="iadlMode" value="SIBR"> SIB-R:&nbsp;
+                                <input type="radio" name="iadlMode" value="SIBR"> SIB-R: 
                                 <input type="text" name="iadlSibrVal" class="inline-input" placeholder="Score/Details">
                             </label>
                         </div>
@@ -466,7 +465,7 @@
                         <label><input type="checkbox" name="interventionWork" value="Returning to work program"> Returning to work program</label>
                         <label><input type="checkbox" name="interventionWork" value="Work capacity evaluation"> Work capacity evaluation</label>
                         <label><input type="checkbox" name="interventionWork" value="Work hardening"> Work hardening</label>
-                        <label><input type="checkbox" name="interventionWork" value="Workshop behavior training"> Workshop behavior training</label>
+                        <label><input type="checkbox" name="interventionWork" value="Workshop behaviour training"> Workshop behaviour training</label>
                         <label><input type="checkbox" name="interventionWork" value="SWS simulated training"> SWS simulated training</label>
                         <label><input type="checkbox" name="interventionWork" value="Day activity simulated training"> Day activity simulated training</label>
                         <label><input type="checkbox" name="interventionWork" value="Nil"> Nil</label>
@@ -513,11 +512,11 @@
                     </div>
                 </div>
                  <div class="form-group">
-                    <label>Behavioral Management Training:</label>
+                    <label>Behavioural Management Training:</label>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="interventionBehavioral" value="Impulse control"> Impulse control</label>
-                        <label><input type="checkbox" name="interventionBehavioral" value="Temper management"> Temper management</label>
-                        <label><input type="checkbox" name="interventionBehavioral" value="Nil"> Nil</label>
+                        <label><input type="checkbox" name="interventionBehavioural" value="Impulse control"> Impulse control</label>
+                        <label><input type="checkbox" name="interventionBehavioural" value="Temper management"> Temper management</label>
+                        <label><input type="checkbox" name="interventionBehavioural" value="Nil"> Nil</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -682,15 +681,13 @@
                 { id: "V9", label: "V9 Whole Body Range of Motion", ratings: ["MME", "M", "DNMA", "DNMB"] },
                 { id: "V19", label: "V19 Dynamic Physical Capacities", ratings: ["MME", "M", "DNMA", "DNMB"] }
             ];
-             const workRatingReportMap = { // For the final report text (short codes)
+             const workRatingReportMap = { 
                 "MME": "MME",
                 "M": "M",
                 "DNMA": "DNMA",
                 "DNMB": "DNMB"
             };
 
-
-            // --- Populate Work V-Items ---
             let workHtml_render = '';
             workVDefinitions.forEach(vDef => {
                 workHtml_render += `
@@ -701,7 +698,7 @@
                     </div>
                     <div class="radio-group work-v-rating">`;
                 vDef.ratings.forEach(r_code => { 
-                    workHtml_render += `<label><input type="radio" name="workV_rating_${vDef.id}" value="${r_code}" disabled> ${r_code}</label>`; // Display short code
+                    workHtml_render += `<label><input type="radio" name="workV_rating_${vDef.id}" value="${r_code}" disabled> ${r_code}</label>`;
                 });
                 workHtml_render += `</div></div>`;
             });
@@ -805,6 +802,51 @@
             }
             if (workOverallNilRadio) updateOverallNilEffect(workOverallNilRadio.checked);
 
+            function makeRadiosToggleable() {
+                const radios = document.querySelectorAll('input[type="radio"]');
+                radios.forEach(radio => {
+                    radio.addEventListener('click', function(e) {
+                        const currentRadio = this;
+                        const wasChecked = currentRadio.dataset.waschecked === 'true';
+
+                        if (wasChecked) {
+                            currentRadio.checked = false;
+                            currentRadio.dataset.waschecked = 'false';
+                        } else {
+                            // Unset waschecked for all in the same group
+                            document.querySelectorAll(`input[type="radio"][name="${currentRadio.name}"]`).forEach(r => {
+                                r.dataset.waschecked = 'false';
+                            });
+                            // Set current one as checked and waschecked
+                            currentRadio.checked = true; // browser default might do this, but explicit is fine
+                            currentRadio.dataset.waschecked = 'true';
+                        }
+                         // If part of work V-ratings, and a selection is made (not unselection)
+                        // ensure the overall work nil is unchecked
+                        if (currentRadio.name.startsWith('workV_rating_') && currentRadio.checked) {
+                            if (workOverallNilRadio) {
+                                workOverallNilRadio.checked = false;
+                                workOverallNilRadio.dataset.waschecked = 'false'; // Sync its toggle state
+                                updateOverallNilEffect(false); // Update dependent elements
+                            }
+                        }
+                        // If BWAP radio selected, ensure overall work nil is unchecked
+                        if (currentRadio.name === 'bwap2Adjustment' && currentRadio.checked) {
+                             if (workOverallNilRadio) {
+                                workOverallNilRadio.checked = false;
+                                workOverallNilRadio.dataset.waschecked = 'false';
+                                updateOverallNilEffect(false);
+                            }
+                        }
+                         // If workOverallNilRadio is selected, trigger its effect
+                        if (currentRadio === workOverallNilRadio && currentRadio.checked) {
+                            updateOverallNilEffect(true);
+                        }
+                    });
+                });
+            }
+            makeRadiosToggleable();
+
 
             function getCheckboxValues(name) {
                 const checkboxes = ldForm.querySelectorAll(`input[name="${name}"]:checked`);
@@ -896,7 +938,7 @@
                 }
                 report = addReportLine(report, "Abnormal Thought", thoughtReportVal);
 
-                report = addReportLine(report, "Behavior", getCheckboxValues('behavior'));
+                report = addReportLine(report, "Behaviour", getCheckboxValues('behaviour'));
                 report = addReportLine(report, "Cognitive", getRadioValue('cognitiveOrientation'));
                 report = addReportLine(report, "Risk", getCheckboxValues('risk'));
                 report = addReportLine(report, "Insight", getRadioValue('insight'));
@@ -961,7 +1003,7 @@
                 report = addReportLine(report, "Interpersonal Skills Training", getCheckboxValues('interventionInterpersonal'));
                 report = addReportLine(report, "Cognitive Training", getCheckboxValues('interventionCognitive'));
                 report = addReportLine(report, "Life Coaching", getCheckboxValues('interventionLifeCoaching'));
-                report = addReportLine(report, "Behavioral Management Training", getCheckboxValues('interventionBehavioral'));
+                report = addReportLine(report, "Behavioural Management Training", getCheckboxValues('interventionBehavioural'));
                 report = addReportLine(report, "Home Assessment & Modification", getCheckboxValues('interventionHome'));
                 report = addReportLine(report, "Sensory Based Intervention", getCheckboxValues('interventionSensory'));
                 report = addReportLine(report, "Physical Training", getCheckboxValues('interventionPhysical'));
@@ -1030,17 +1072,26 @@
                 ldForm.reset(); 
                 generatedReportTextarea.value = ''; 
                 
-                if (workOverallNilRadio) {
-                    updateOverallNilEffect(workOverallNilRadio.checked);
+                // Reset data-waschecked for all radio buttons
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.dataset.waschecked = 'false';
+                });
+
+                if (workOverallNilRadio) { // This will call updateOverallNilEffect which handles disabling/enabling
+                    workOverallNilRadio.dataset.waschecked = 'false'; // Ensure its toggle state is also reset
+                    updateOverallNilEffect(false); // Reset to non-nil state effect
                 }
-                workVCheckboxes.forEach(vCheckbox => { 
+                // Ensure V-item radios are disabled correctly after reset if their parent checkbox is not checked
+                 workVCheckboxes.forEach(vCheckbox => { 
                     const vId = vCheckbox.value;
                     const ratingRadios = ldForm.querySelectorAll(`input[name="workV_rating_${vId}"]`);
                     ratingRadios.forEach(radio => {
-                        radio.disabled = true; 
+                        radio.disabled = !vCheckbox.checked; 
                         radio.checked = false; 
+                        radio.dataset.waschecked = 'false';
                     });
                 });
+
                 if (thoughtNilCheckbox) {
                      handleThoughtExclusiveChecks();
                 }

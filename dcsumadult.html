@@ -330,7 +330,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Behavior:</label>
+                    <label>Behaviour:</label>
                     <div class="checkbox-group">
                         <label><input type="checkbox" name="behavior" value="Normal"> Normal</label>
                         <label><input type="checkbox" name="behavior" value="Bizarre"> Bizarre</label>
@@ -342,7 +342,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Cognitive (Mental State):</label>
+                    <label>Cognitive:</label>
                     <div class="checkbox-group">
                         <label><input type="checkbox" name="cognitiveState" value="Oriented"> Oriented</label>
                         <label><input type="checkbox" name="cognitiveState" value="Disoriented"> Disoriented</label>
@@ -813,7 +813,7 @@
                 'overallImpression', 'mood', 'affect', 'insight', 
                 'recommendedWorkLevel', 'adl', 'iadlCfna', 'childcare', 
                 'overallPerformance', 'dailyFunctioning', 'treatmentMotivationalScale', 
-                'dischargeResidential', 'workOverallNil', 'stimulateRelapseScale' // Added new radio group
+                'dischargeResidential', 'workOverallNil', 'stimulateRelapseScale'
             ];
             radioGroupsToMakeUnselectable.forEach(groupName => makeRadioGroupUnselectable(groupName));
             
@@ -1141,15 +1141,15 @@
                 }
                 report = addReportLine(report, "Thought", thoughtReportVal);
 
-                report = addReportLine(report, "Behavior", getCheckboxValues('behavior'));
-                report = addReportLine(report, "Cognitive (Mental State)", getCheckboxValues('cognitiveState'));
+                report = addReportLine(report, "Behaviour", getCheckboxValues('behavior')); // Changed label
+                report = addReportLine(report, "Cognitive", getCheckboxValues('cognitiveState')); // Changed label
                 report = addReportLine(report, "Risk", getCheckboxValues('risk'));
                 report = addReportLine(report, "Insight", getRadioValue('insight'));
                 report = addReportLine(report, "Remarks", getTextValue('remarksMentalState'));
                 report += "\n";
 
                 report += "2. Assessment Results\n\n";
-                let workReportContent = "";
+                let workReportContent = ""; // Default to empty
                 if (workOverallNilRadio && workOverallNilRadio.checked) {
                     workReportContent = "Nil";
                 } else {
@@ -1163,11 +1163,10 @@
                     });
                     if (workReportPartsList.length > 0) {
                         workReportContent = workReportPartsList.join(' / ');
-                    } else {
-                         workReportContent = "Not specified"; 
                     }
                 }
                 report = addReportLine(report, "Work", workReportContent);
+
 
                 report = addReportLine(report, "Recommended work level", getRadioValue('recommendedWorkLevel'));
                 
@@ -1191,7 +1190,6 @@
                 report = addReportLine(report, "Overall performance", getRadioValue('overallPerformance'));
                 report = addReportLine(report, "Daily functioning", getRadioValue('dailyFunctioning'));
                 
-                // Stimulate Relapse Risk Scale
                 let stimulateRelapseScaleVal = getRadioValue('stimulateRelapseScale');
                 let stimulateRelapseDetails = getCheckboxValues('stimulateRelapseDetail');
                 let stimulateRelapseReport = "";
@@ -1205,7 +1203,6 @@
                 }
                 report = addReportLine(report, "Stimulate Relapse Risk Scale", stimulateRelapseReport);
 
-                // Treatment needs / Motivational Scale
                 let treatmentMotivationalRadioVal = getRadioValue('treatmentMotivationalScale');
                 let treatmentMotivationalDetails = getCheckboxValues('treatmentMotivationalHighDetail');
                 let treatmentMotivationalReport = "";

@@ -117,7 +117,7 @@
             <label><input type="checkbox" name="ms_thought" value="Nil"> Nil</label>
         </div>
         <div class="input-group checkbox-group">
-            <span class="section-title">Behavior:</span>
+            <span class="section-title">Behaviour:</span>
             <label><input type="checkbox" name="ms_behavior" value="Normal"> Normal</label>
             <label><input type="checkbox" name="ms_behavior" value="Bizarre"> Bizarre</label>
             <label><input type="checkbox" name="ms_behavior" value="Self-muttering"> Self-muttering</label>
@@ -191,7 +191,7 @@
         <div class="input-group checkbox-group">
             <span class="section-title">Life Coaching:</span>
             <label><input type="checkbox" name="ip_life_coaching" value="Counseling"> Counseling</label>
-            <label><input type="checkbox" name="ip_life_coaching" value="Cognitive behavioral therapy"> Cognitive behavioral therapy</label>
+            <label><input type="checkbox" name="ip_life_coaching" value="Cognitive behavioural therapy"> Cognitive behavioural therapy</label>
             <label><input type="checkbox" name="ip_life_coaching" value="Health Qi-gong"> Health Qi-gong</label>
             <label><input type="checkbox" name="ip_life_coaching" value="Lifestyle re-design"> Lifestyle re-design</label>
             <label><input type="checkbox" name="ip_life_coaching" value="Motivational interviewing"> Motivational interviewing</label>
@@ -199,7 +199,7 @@
             <label><input type="checkbox" name="ip_life_coaching" value="Nil"> Nil</label>
         </div>
         <div class="input-group checkbox-group">
-            <span class="section-title">Behavioral Management Training:</span>
+            <span class="section-title">Behavioural Management Training:</span>
             <label><input type="checkbox" name="ip_behavioral_management" value="Impulse control"> Impulse control</label>
             <label><input type="checkbox" name="ip_behavioral_management" value="Temper management"> Temper management</label>
             <label><input type="checkbox" name="ip_behavioral_management" value="Nil"> Nil</label>
@@ -274,6 +274,34 @@
 </div>
 
 <script>
+    const radioClickState = {}; // Stores the element that is considered 'selected' for each radio group
+
+    // Initialize radioClickState for any initially checked radio buttons
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        if (radio.checked) {
+            radioClickState[radio.name] = radio;
+        }
+    });
+
+    // Add click listeners to all radio buttons for toggle functionality
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('click', function(event) {
+            const currentRadio = event.target;
+            const groupName = currentRadio.name;
+
+            if (radioClickState[groupName] === currentRadio) {
+                // If the clicked radio is the one already marked as selected, uncheck it
+                currentRadio.checked = false;
+                radioClickState[groupName] = null; // No radio is selected in this group now
+            } else {
+                // Otherwise, mark this radio as selected for the group
+                // The browser default action handles checking this radio and unchecking others in the group
+                radioClickState[groupName] = currentRadio;
+            }
+        });
+    });
+
+
     document.getElementById('generateReportButton').addEventListener('click', function() {
         let overallReport = "";
         const form = document.getElementById('dischargeForm');
@@ -311,7 +339,7 @@
         
         let thoughtValues = [];
         form.querySelectorAll('input[name="ms_thought"]:checked').forEach(cb => {
-            if (cb.value !== "Other") { // Exclude the "Other" checkbox value itself
+            if (cb.value !== "Other") { 
                  thoughtValues.push(cb.value);
             }
         });
@@ -329,7 +357,7 @@
         }
         section1Content += formatReportLine("Thought", thoughtStr);
 
-        section1Content += formatReportLine("Behavior", getSelectedCheckboxValues('ms_behavior'));
+        section1Content += formatReportLine("Behaviour", getSelectedCheckboxValues('ms_behavior')); // Changed "Behavior" to "Behaviour"
         section1Content += formatReportLine("Risk", getSelectedCheckboxValues('ms_risk'));
         section1Content += formatReportLine("Insight", getRadioValue('ms_insight'));
 
@@ -352,7 +380,7 @@
         section3Content += formatReportLine("Self-management Training", getSelectedCheckboxValues('ip_self_management'));
         section3Content += formatReportLine("Interpersonal Skills Training", getSelectedCheckboxValues('ip_interpersonal_skills'));
         section3Content += formatReportLine("Life Coaching", getSelectedCheckboxValues('ip_life_coaching'));
-        section3Content += formatReportLine("Behavioral Management Training", getSelectedCheckboxValues('ip_behavioral_management'));
+        section3Content += formatReportLine("Behavioural Management Training", getSelectedCheckboxValues('ip_behavioral_management')); // Changed "Behavioral"
         section3Content += formatReportLine("Sensory Based Intervention", getSelectedCheckboxValues('ip_sensory_intervention'));
         section3Content += formatReportLine("Physical Training", getSelectedCheckboxValues('ip_physical_training'));
         section3Content += formatReportLine("Aids Prescription and Training", getSelectedCheckboxValues('ip_aids_prescription'));
@@ -402,6 +430,12 @@
 
     document.getElementById('resetFormButton').addEventListener('click', function() {
         document.getElementById('dischargeForm').reset();
+        
+        // Reset the radioClickState for all radio groups
+        Object.keys(radioClickState).forEach(groupName => {
+            radioClickState[groupName] = null;
+        });
+
         document.getElementById('reportOutput').textContent = '';
         document.getElementById('reportOutputContainer').style.display = 'none';
         document.getElementById('copyReportButton').style.display = 'none';

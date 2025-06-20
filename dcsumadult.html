@@ -332,13 +332,13 @@
                 <div class="form-group">
                     <label>Behaviour:</label>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="behavior" value="Normal"> Normal</label>
-                        <label><input type="checkbox" name="behavior" value="Bizarre"> Bizarre</label>
-                        <label><input type="checkbox" name="behavior" value="Self-muttering"> Self-muttering</label>
-                        <label><input type="checkbox" name="behavior" value="Self-giggling"> Self-giggling</label>
-                        <label><input type="checkbox" name="behavior" value="Disturbing"> Disturbing</label>
-                        <label><input type="checkbox" name="behavior" value="Disorganized"> Disorganized</label>
-                        <label><input type="checkbox" name="behavior" value="Disinhibited"> Disinhibited</label>
+                        <label><input type="checkbox" name="behaviour" value="Normal"> Normal</label>
+                        <label><input type="checkbox" name="behaviour" value="Bizarre"> Bizarre</label>
+                        <label><input type="checkbox" name="behaviour" value="Self-muttering"> Self-muttering</label>
+                        <label><input type="checkbox" name="behaviour" value="Self-giggling"> Self-giggling</label>
+                        <label><input type="checkbox" name="behaviour" value="Disturbing"> Disturbing</label>
+                        <label><input type="checkbox" name="behaviour" value="Disorganized"> Disorganized</label>
+                        <label><input type="checkbox" name="behaviour" value="Disinhibited"> Disinhibited</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -598,7 +598,7 @@
                     <label>Life Coaching:</label>
                     <div class="checkbox-group">
                     <label><input type="checkbox" name="interventionLifeCoaching" value="Counseling"> Counseling</label>
-                    <label><input type="checkbox" name="interventionLifeCoaching" value="Cognitive behavioral therapy"> Cognitive behavioral therapy</label>
+                    <label><input type="checkbox" name="interventionLifeCoaching" value="Cognitive behavioural therapy"> Cognitive behavioural therapy</label>
                     <label><input type="checkbox" name="interventionLifeCoaching" value="Health Qi-gong"> Health Qi-gong</label>
                     <label><input type="checkbox" name="interventionLifeCoaching" value="Lifestyle re-design"> Lifestyle re-design</label>
                     <label><input type="checkbox" name="interventionLifeCoaching" value="Motivational interviewing"> Motivational interviewing</label>
@@ -607,11 +607,11 @@
                     </div>
                 </div>
                  <div class="form-group">
-                    <label>Behavioral Management Training:</label>
+                    <label>Behavioural Management Training:</label>
                     <div class="checkbox-group">
-                    <label><input type="checkbox" name="interventionBehavioral" value="Impulse control"> Impulse control</label>
-                    <label><input type="checkbox" name="interventionBehavioral" value="Temper management"> Temper management</label>
-                    <label><input type="checkbox" name="interventionBehavioral" value="Nil"> Nil</label>
+                    <label><input type="checkbox" name="interventionBehavioural" value="Impulse control"> Impulse control</label>
+                    <label><input type="checkbox" name="interventionBehavioural" value="Temper management"> Temper management</label>
+                    <label><input type="checkbox" name="interventionBehavioural" value="Nil"> Nil</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -1141,15 +1141,15 @@
                 }
                 report = addReportLine(report, "Thought", thoughtReportVal);
 
-                report = addReportLine(report, "Behaviour", getCheckboxValues('behavior')); // Changed label
-                report = addReportLine(report, "Cognitive", getCheckboxValues('cognitiveState')); // Changed label
+                report = addReportLine(report, "Behaviour", getCheckboxValues('behaviour'));
+                report = addReportLine(report, "Cognitive", getCheckboxValues('cognitiveState'));
                 report = addReportLine(report, "Risk", getCheckboxValues('risk'));
                 report = addReportLine(report, "Insight", getRadioValue('insight'));
                 report = addReportLine(report, "Remarks", getTextValue('remarksMentalState'));
                 report += "\n";
 
                 report += "2. Assessment Results\n\n";
-                let workReportContent = ""; // Default to empty
+                let workReportContent = ""; 
                 if (workOverallNilRadio && workOverallNilRadio.checked) {
                     workReportContent = "Nil";
                 } else {
@@ -1237,7 +1237,7 @@
                 }
                 
                 report = addReportLine(report, "Life Coaching", getCheckboxValues('interventionLifeCoaching'));
-                report = addReportLine(report, "Behavioral Management Training", getCheckboxValues('interventionBehavioral'));
+                report = addReportLine(report, "Behavioural Management Training", getCheckboxValues('interventionBehavioural'));
                 report = addReportLine(report, "Home Assessment & Modification", getCheckboxValues('interventionHome'));
                 report = addReportLine(report, "Sensory Based Intervention", getCheckboxValues('interventionSensory'));
                 report = addReportLine(report, "Physical Training", getCheckboxValues('interventionPhysical'));

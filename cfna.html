@@ -143,7 +143,7 @@
         }
         .cfna-item {
             display: grid;
-            grid-template-columns: 200px 120px 1fr;
+            grid-template-columns: 220px 120px 1fr;
             gap: 10px;
             align-items: center;
             margin-bottom: 8px;
@@ -614,12 +614,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const cfnaSelfCareItemsList = ["Toileting Skills", "Bathing Skills", "Personal Hygiene", "Dressing Skills", "Dining Skills", "Care of Living Quarters", "Tasks Skills"];
     const cfnaCommunityItemsList = ["Physical Ability", "Receptive Communication", "Expressive Communication", "Place Orientation", "Time Orientation", "Personal Knowledge", "Numerical Concepts", "Safety and Prevention", "Kitchen Skills", "Food Preparation", "Laundry Skills", "Community Mobility", "Money Management", "Shopping and Purchasing", "Participation in Treatment", "Prevocational Skills", "Social Etiquette", "Planning and Decision Making", "Leisure Skills"];
     const cfnaScoreOptions = [25, 20, 15, 10, 5, 0];
-    const createCfnaItem = (name, category) => {
+    const createCfnaItem = (name, category, number) => {
         const idName = name.replace(/[^a-zA-Z0-9]/g, '');
         const optionsHtml = cfnaScoreOptions.map(o => `<option value="${o}" ${o === 25 ? 'selected' : ''}>${o}</option>`).join('');
         return `
             <div class="cfna-item">
-                <label for="cfna_score_${idName}">${name}</label>
+                <label for="cfna_score_${idName}">${number}. ${name}</label>
                 <div class="score-group">
                     <select id="cfna_score_${idName}" name="cfna_score_${idName}" class="cfna-score-input" data-category="${category}">${optionsHtml}</select>
                     <span>/25</span>
@@ -627,8 +627,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 <input type="text" id="cfna_comment_${idName}" name="cfna_comment_${idName}" class="comment-input" placeholder="Comments...">
             </div>`;
     };
-    cfnaSelfCareContainer.innerHTML = cfnaSelfCareItemsList.map(item => createCfnaItem(item, 'selfcare')).join('');
-    cfnaCommunityContainer.innerHTML = cfnaCommunityItemsList.map(item => createCfnaItem(item, 'community')).join('');
+    cfnaSelfCareContainer.innerHTML = cfnaSelfCareItemsList.map((item, index) => createCfnaItem(item, 'selfcare', index + 1)).join('');
+    cfnaCommunityContainer.innerHTML = cfnaCommunityItemsList.map((item, index) => createCfnaItem(item, 'community', cfnaSelfCareItemsList.length + index + 1)).join('');
 
     const badlTasks = ["Feeding", "Grooming", "Dressing", "Toileting", "Bathing"];
     const badlAssistLevels = ["Modified Independent", "Supervision", "Mild Assist", "Moderate Assist", "Maximal Assist", "Dependent"];
@@ -837,8 +837,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             let ssFreq = getSelectValue('ssFrequencyCount');
             if (ssFreq) {
-                 if (ssFreq === 'other') ssFreq = getTextValue('ssFrequencyNum');
-                 if (ssFreq) sectionE.push(`Frequency: ${ssFreq} times per ${getSelectValue('ssFrequencyPeriod')}`);
+                 const ssPeriod = getSelectValue('ssFrequencyPeriod');
+                 if (ssFreq === 'other') {
+                    const num = getTextValue('ssFrequencyNum');
+                    if (num) sectionE.push(`Frequency: ${num} times per ${ssPeriod}`);
+                 } else { // 'once' or 'twice'
+                    sectionE.push(`Frequency: ${ssFreq} per ${ssPeriod}`);
+                 }
             }
             const ssTask = getTextValue('ssTask');
             if (ssTask) sectionE.push(`Task: ${ssTask}`);
@@ -854,7 +859,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     let detail = getRadioValue('planLiveWithDetail');
                     if (detail === 'other') detail = getTextValue('planLiveWithOther');
                     plan = `live with: ${detail || '(not specified)'}`;
-                } else if (plan === 'other') plan = getTextValue('planOther');
+                } else if (plan === 'other') {
+                    plan = getTextValue('planOther').toLowerCase();
+                }
                 sectionF.push(`Patient planned to ${plan} after discharge.`);
             }
             const planRemarks = getTextValue('planRemarks');

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Independent Living Report Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 950px;
+            margin: 20px auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        legend {
+            font-weight: bold;
+            color: #2980b9;
+            padding: 0 10px;
+            font-size: 1.3em;
+        }
+        .form-group, .sub-section {
+            margin-bottom: 15px;
+        }
+        label, .form-group > span, .standalone-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 15px;
+            margin-top: 5px;
+        }
+        .radio-group label, .checkbox-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+         .radio-group label input, .checkbox-group label input {
+            margin-right: 5px;
+            flex-shrink: 0;
+         }
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .action-buttons button {
+            padding: 12px 20px;
+            margin: 5px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+        .action-buttons button:hover {
+            opacity: 0.9;
+        }
+        .action-buttons button#copyReportBtn { background-color: #f39c12; }
+        .action-buttons button#resetFormBtn { background-color: #e74c3c; }
+
+        #generatedReport {
+            width: 100%;
+            min-height: 400px;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            background-color: #fdfdfd;
+        }
+        .inline-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .inline-input-group label, .inline-input-group span {
+            font-weight: normal;
+            margin-bottom: 0;
+            flex-shrink: 0;
+        }
+        .inline-input-group input[type="text"], .inline-input-group input[type="number"], .inline-input-group select {
+            width: auto;
+            flex-grow: 1;
+            min-width: 60px;
+        }
+        .score-input {
+            width: 60px !important;
+            text-align: center;
+        }
+        .sub-section-heading {
+            font-weight: bold;
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1em;
+        }
+        .cfna-item {
+            display: grid;
+            grid-template-columns: 200px 120px 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .cfna-item label { font-weight: normal; margin-bottom: 0; }
+        .cfna-item .score-group { display: flex; align-items: center; gap: 5px; }
+        .cfna-item .score-group select { padding: 5px 8px; }
+        .cfna-item input[type="text"].comment-input { padding: 5px 8px; }
+        .readonly-score {
+            font-weight: bold;
+            background-color: #e9ecef;
+            padding: 5px 8px;
+            border-radius: 3px;
+        }
+        .badl-dependent-item {
+            display: none; /* Hidden by default */
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .cfna-item {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            .cfna-item label { font-weight: bold; }
+            .inline-input-group { flex-direction: column; align-items: flex-start; }
+            .inline-input-group input, .inline-input-group select { width: 100% !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Occupational Therapy Report on Independent Living Skills</h1>
+
+        <form id="livingSkillsForm">
+            <!-- SECTION A: MENTAL STATE -->
+            <fieldset>
+                <legend>A. Mental State</legend>
+                <div class="form-group">
+                    <label for="msOverall">Overall impression:</label>
+                    <input type="text" id="msOverall" name="msOverall">
+                </div>
+                <div class="form-group">
+                    <label>Mood:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="msMood" value="Neutral"> Neutral</label>
+                        <label><input type="radio" name="msMood" value="Depressed"> Depressed</label>
+                        <label><input type="radio" name="msMood" value="Dysthymic"> Dysthymic</label>
+                        <label><input type="radio" name="msMood" value="Euthymic"> Euthymic</label>
+                        <label><input type="radio" name="msMood" value="Elated"> Elated</label>
+                        <label><input type="radio" name="msMood" value="Irritable"> Irritable</label>
+                        <label><input type="radio" name="msMood" value="Anxious"> Anxious</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Affect:</label>
+                     <div class="radio-group">
+                        <label><input type="radio" name="msAffect" value="Congruent"> Congruent</label>
+                        <label><input type="radio" name="msAffect" value="Labile"> Labile</label>
+                        <label><input type="radio" name="msAffect" value="Shallow"> Shallow</label>
+                        <label><input type="radio" name="msAffect" value="Blunted"> Blunted</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Attention:</label>
+                    <div class="radio-group">
+                       <label><input type="radio" name="msAttention" value="Good"> Good</label>
+                       <label><input type="radio" name="msAttention" value="Satisfactory"> Satisfactory</label>
+                       <label><input type="radio" name="msAttention" value="Acceptable"> Acceptable</label>
+                       <label><input type="radio" name="msAttention" value="Fair"> Fair</label>
+                       <label><input type="radio" name="msAttention" value="Poor"> Poor</label>
+                   </div>
+               </div>
+                <div class="form-group">
+                    <label>Speech:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="msSpeech" value="Relevant"> Relevant</label>
+                        <label><input type="checkbox" name="msSpeech" value="Coherent"> Coherent</label>
+                        <label><input type="checkbox" name="msSpeech" value="Spontaneous"> Spontaneous</label>
+                        <label><input type="checkbox" name="msSpeech" value="Pressured"> Pressured</label>
+                        <label><input type="checkbox" name="msSpeech" value="Slurred"> Slurred</label>
+                        <label><input type="checkbox" name="msSpeech" value="Circumstantial"> Circumstantial</label>
+                        <label><input type="checkbox" name="msSpeech" value="Tangential"> Tangential</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Abnormal Thought:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="msAbnormalThought" value="Persecutory"> Persecutory</label>
+                        <label><input type="checkbox" name="msAbnormalThought" value="Delusional"> Delusional</label>
+                        <label><input type="checkbox" name="msAbnormalThought" value="Somatic"> Somatic</label>
+                        <label><input type="checkbox" name="msAbnormalThought" value="Grandiose"> Grandiose</label>
+                        <label><input type="checkbox" name="msAbnormalThought" value="Idea of reference"> Idea of reference</label>
+                        <label><input type="checkbox" name="msAbnormalThought" value="Thought broadcasting"> Thought broadcasting</label>
+                        <label><input type="checkbox" name="msAbnormalThought" value="Being control"> Being control</label>
+                        <label><input type="checkbox" name="msAbnormalThought" value="Nil" class="exclusive-check"> Nil</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Negative Thought:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="msNegativeThought" value="Rumination"> Rumination</label>
+                        <label><input type="checkbox" name="msNegativeThought" value="Suicidal"> Suicidal</label>
+                        <label><input type="checkbox" name="msNegativeThought" value="Self-blaming"> Self-blaming</label>
+                        <label><input type="checkbox" name="msNegativeThought" value="Nil" class="exclusive-check"> Nil</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Hallucination:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="msHallucination" value="Auditory"> Auditory</label>
+                        <label><input type="checkbox" name="msHallucination" value="Visual"> Visual</label>
+                        <label><input type="checkbox" name="msHallucination" value="Olfactory"> Olfactory</label>
+                        <label><input type="checkbox" name="msHallucination" value="Tactile"> Tactile</label>
+                        <label><input type="checkbox" name="msHallucination" value="Gustatory"> Gustatory</label>
+                        <label><input type="checkbox" name="msHallucination" value="Nil" class="exclusive-check"> Nil</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Insight:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="msInsight" value="Full"> Full</label>
+                        <label><input type="radio" name="msInsight" value="Partial"> Partial</label>
+                        <label><input type="radio" name="msInsight" value="Fair"> Fair</label>
+                        <label><input type="radio" name="msInsight" value="Limited"> Limited</label>
+                        <label><input type="radio" name="msInsight" value="Poor"> Poor</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="msRemarks">Remarks:</label>
+                    <textarea id="msRemarks" name="msRemarks"></textarea>
+                </div>
+            </fieldset>
+
+            <!-- SECTION B: COGNITIVE ASSESSMENT -->
+            <fieldset>
+                <legend>B. Cognitive Assessment</legend>
+                <div class="form-group">
+                    <label for="mocaDate">HK-MoCA done on:</label>
+                    <input type="date" id="mocaDate" name="mocaDate">
+                </div>
+                <div class="form-group inline-input-group">
+                    <label>Total score:</label>
+                    <input type="text" id="mocaTotal" name="mocaTotal" class="score-input readonly-score" readonly> /30
+                </div>
+                 <div class="sub-section">
+                    <div class="form-group inline-input-group">
+                        <label style="width:200px">Visuospatial/ executive function:</label> 
+                        <input type="number" class="score-input moca-score-input" min="0" max="5"> /5
+                    </div>
+                    <div class="form-group inline-input-group">
+                        <label style="width:200px">Naming:</label> 
+                        <input type="number" class="score-input moca-score-input" min="0" max="3"> /3
+                    </div>
+                    <div class="form-group inline-input-group">
+                        <label style="width:200px">Attention:</label> 
+                        <input type="number" class="score-input moca-score-input" min="0" max="6"> /6
+                    </div>
+                    <div class="form-group inline-input-group">
+                        <label style="width:200px">Language:</label> 
+                        <input type="number" class="score-input moca-score-input" min="0" max="3"> /3
+                    </div>
+                    <div class="form-group inline-input-group">
+                        <label style="width:200px">Abstraction:</label> 
+                        <input type="number" class="score-input moca-score-input" min="0" max="2"> /2
+                    </div>
+                    <div class="form-group inline-input-group">
+                        <label style="width:200px">Delayed recall:</label> 
+                        <input type="number" class="score-input moca-score-input" min="0" max="5"> /5
+                    </div>
+                    <div class="form-group inline-input-group">
+                        <label style="width:200px">Orientation:</label> 
+                        <input type="number" class="score-input moca-score-input" min="0" max="6"> /6
+                    </div>
+                 </div>
+            </fieldset>
+
+            <!-- SECTION C: BADL -->
+            <fieldset>
+                <legend>C. BADL Assessment</legend>
+                <div class="form-group">
+                    <label for="badlIndependenceLevel">Independent up to:</label>
+                    <select id="badlIndependenceLevel" name="badlIndependenceLevel">
+                        <option value="Feeding">Feeding</option>
+                        <option value="Grooming">Grooming</option>
+                        <option value="Dressing">Dressing</option>
+                        <option value="Toileting">Toileting</option>
+                        <option value="Bathing" selected>Bathing</option>
+                    </select>
+                </div>
+                <div id="badlDependentItemsContainer">
+                    <!-- This container will be populated by JS based on selection -->
+                </div>
+                 <div class="form-group inline-input-group" style="margin-top:20px;">
+                    <label>MBI:</label>
+                    <input type="number" id="badlMbi" name="badlMbi" class="score-input" value="100" min="0" max="100"> / 100
+                </div>
+                <div class="form-group">
+                    <label for="badlRemarks">Remarks:</label>
+                    <textarea id="badlRemarks" name="badlRemarks"></textarea>
+                </div>
+            </fieldset>
+
+            <!-- SECTION D: CFNA -->
+            <fieldset>
+                <legend>D. Functional Needs Assessment (CFNA)</legend>
+                <div class="form-group">
+                    <label for="cfnaDate">Verbal assessment done on:</label>
+                    <input type="date" id="cfnaDate" name="cfnaDate">
+                </div>
+                <div class="form-group inline-input-group">
+                    <label>Total score:</label>
+                    <input type="text" id="cfnaTotalScore" name="cfnaTotalScore" class="score-input readonly-score" readonly> /650
+                     <span id="cfnaCutoffText" class="readonly-score"></span> cut off at 605
+                </div>
+                <div class="form-group inline-input-group">
+                    <span>Indicated patient showed</span>
+                    <select name="cfnaPerformance" style="width: auto;">
+                         <option value="good">good</option>
+                        <option value="satisfactory">satisfactory</option>
+                        <option value="acceptable">acceptable</option>
+                        <option value="fair">fair</option>
+                        <option value="borderline">borderline</option>
+                        <option value="poor">poor</option>
+                    </select>
+                    <span>performance in independent living.</span>
+                </div>
+                <div class="form-group inline-input-group">
+                    <span>Patient demonstrated</span>
+                    <select name="cfnaSelfCareKnowledge" style="width: auto;">
+                         <option value="good">good</option>
+                        <option value="satisfactory">satisfactory</option>
+                        <option value="acceptable">acceptable</option>
+                        <option value="fair">fair</option>
+                        <option value="borderline">borderline</option>
+                        <option value="poor">poor</option>
+                    </select>
+                    <span>knowledge in self-care and</span>
+                    <select name="cfnaCommunityKnowledge" style="width: auto;">
+                         <option value="good">good</option>
+                        <option value="satisfactory">satisfactory</option>
+                        <option value="acceptable">acceptable</option>
+                        <option value="fair">fair</option>
+                        <option value="borderline">borderline</option>
+                        <option value="poor">poor</option>
+                    </select>
+                    <span>knowledge in community living skills.</span>
+                </div>
+                
+                <div class="sub-section">
+                    <h4 class="sub-section-heading">Self-care sub score: <span id="cfnaSelfCareScore" class="readonly-score">0</span>/175</h4>
+                    <div id="cfnaSelfCareItems"></div>
+                </div>
+                <div class="sub-section">
+                    <h4 class="sub-section-heading">Community living skill sub score: <span id="cfnaCommunityScore" class="readonly-score">0</span>/475</h4>
+                    <div id="cfnaCommunityItems"></div>
+                </div>
+                <div class="form-group">
+                    <label for="cfnaRemarks">Remarks:</label>
+                    <textarea id="cfnaRemarks" name="cfnaRemarks"></textarea>
+                </div>
+            </fieldset>
+            
+            <!-- SECTION E: SOCIAL SUPPORT -->
+            <fieldset>
+                <legend>E. Social Support</legend>
+                 <div class="form-group">
+                    <label>Social support was provided by:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="ssProvider" value="father"> father</label>
+                        <label><input type="radio" name="ssProvider" value="mother"> mother</label>
+                        <label><input type="radio" name="ssProvider" value="parents"> parents</label>
+                        <label><input type="radio" name="ssProvider" value="siblings"> siblings</label>
+                        <label><input type="radio" name="ssProvider" value="other" data-shows="ssProviderOther"> (other)</label>
+                    </div>
+                    <input type="text" id="ssProviderOther" name="ssProviderOther" placeholder="Specify other provider" style="display:none; margin-top:10px;">
+                </div>
+                <div class="form-group">
+                    <label>Frequency:</label>
+                    <div class="inline-input-group">
+                        <select name="ssFrequencyCount" style="width: auto;">
+                            <option value="">--</option>
+                            <option value="once">once</option>
+                            <option value="twice">twice</option>
+                            <option value="other">other</option>
+                        </select>
+                        <input type="text" name="ssFrequencyNum" placeholder="e.g. 3" style="width: 80px; display: none;">
+                        <span>times per</span>
+                        <select name="ssFrequencyPeriod" style="width: auto;">
+                            <option value="day">day</option>
+                            <option value="week">week</option>
+                            <option value="month">month</option>
+                        </select>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label for="ssTask">Task:</label>
+                    <input type="text" id="ssTask" name="ssTask" placeholder="e.g., financial support, emotional support">
+                </div>
+                 <div class="form-group">
+                    <label for="ssRemarks">Remarks:</label>
+                    <textarea id="ssRemarks" name="ssRemarks"></textarea>
+                </div>
+            </fieldset>
+            
+            <!-- SECTION F: PATIENT'S PLAN -->
+            <fieldset>
+                <legend>F. Patient’s Plan</legend>
+                 <div class="form-group">
+                    <label>Patient planned to:</label>
+                    <div class="radio-group" style="flex-direction: column; align-items: flex-start;">
+                        <label><input type="radio" name="plan" value="return home"> return home</label>
+                        <label><input type="radio" name="plan" value="live with" data-shows="planLiveWithGroup"> live with...</label>
+                        <div id="planLiveWithGroup" style="display: none; padding-left: 25px;">
+                             <div class="radio-group">
+                                <label><input type="radio" name="planLiveWithDetail" value="father"> father</label>
+                                <label><input type="radio" name="planLiveWithDetail" value="mother"> mother</label>
+                                <label><input type="radio" name="planLiveWithDetail" value="parents"> parents</label>
+                                <label><input type="radio" name="planLiveWithDetail" value="siblings"> siblings</label>
+                                <label><input type="radio" name="planLiveWithDetail" value="relatives"> relatives</label>
+                                <label><input type="radio" name="planLiveWithDetail" value="other" data-shows="planLiveWithOther"> (other)</label>
+                             </div>
+                             <input type="text" id="planLiveWithOther" name="planLiveWithOther" placeholder="Specify who to live with" style="display:none; margin-top:10px;">
+                        </div>
+                        <label><input type="radio" name="plan" value="live at HWH"> live at HWH</label>
+                        <label><input type="radio" name="plan" value="live at private hostel"> live at private hostel</label>
+                        <label><input type="radio" name="plan" value="other" data-shows="planOther"> Other</label>
+                    </div>
+                    <textarea id="planOther" name="planOther" placeholder="Specify other living arrangement" style="display: none; margin-top: 10px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="planRemarks">Remarks:</label>
+                    <textarea id="planRemarks" name="planRemarks"></textarea>
+                </div>
+            </fieldset>
+
+            <!-- SECTION G: COLLATERAL INFORMATION -->
+            <fieldset>
+                <legend>G. Collateral Information</legend>
+                 <div class="form-group">
+                    <label>Informant:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="collateralInformant" value="Father"> Father</label>
+                        <label><input type="radio" name="collateralInformant" value="Mother"> Mother</label>
+                        <label><input type="radio" name="collateralInformant" value="Elder brother"> Elder brother</label>
+                        <label><input type="radio" name="collateralInformant" value="Younger brother"> Younger brother</label>
+                        <label><input type="radio" name="collateralInformant" value="Elder sister"> Elder sister</label>
+                        <label><input type="radio" name="collateralInformant" value="Younger sister"> Younger sister</label>
+                        <label><input type="radio" name="collateralInformant" value="Son"> Son</label>
+                        <label><input type="radio" name="collateralInformant" value="Daughter"> Daughter</label>
+                        <label><input type="radio" name="collateralInformant" value="SW"> SW</label>
+                        <label><input type="radio" name="collateralInformant" value="other" data-shows="collateralInformantOther"> (Other)</label>
+                    </div>
+                    <input type="text" id="collateralInformantOther" name="collateralInformantOther" placeholder="Specify other informant" style="display:none; margin-top:10px;">
+                </div>
+                <div class="form-group">
+                    <label for="collateralInfo">Collateral Information:</label>
+                    <textarea id="collateralInfo" name="collateralInfo" placeholder="Input collateral information here"></textarea>
+                </div>
+            </fieldset>
+
+            <!-- OVERALL COMMENTS AND MANAGEMENT -->
+            <fieldset>
+                <legend>Overall Comments & Management</legend>
+                <div class="sub-section">
+                    <label class="standalone-label">Overall Comments:</label>
+                    <div class="form-group inline-input-group">
+                        <span>Patient was</span>
+                        <select name="ocAdlLevel">
+                            <option value="independent">independent</option>
+                            <option value="mild assisted">mild assisted</option>
+                            <option value="moderate assisted">moderate assisted</option>
+                            <option value="maximal assisted">maximal assisted</option>
+                            <option value="dependent">dependent</option>
+                        </select>
+                        <select name="ocAdlAid">
+                            <option value="(unaided)">(unaided)</option>
+                            <option value="(with stick)">(with stick)</option>
+                            <option value="(with quad)">(with quad)</option>
+                            <option value="(with frame)">(with frame)</option>
+                            <option value="(with wheelchair)">(with wheelchair)</option>
+                        </select>
+                        <span>in basic ADL.</span>
+                    </div>
+                    <div class="form-group inline-input-group">
+                        <span>Independent living skills assessment (CFNA) results indicated patient showed</span>
+                        <select name="ocCfnaSelfCare">
+                            <option value="poor">poor</option>
+                            <option value="fair">fair</option>
+                            <option value="inadequate">inadequate</option>
+                            <option value="adequate">adequate</option>
+                            <option value="satisfactory">satisfactory</option>
+                            <option value="good">good</option>
+                            <option value="full">full</option>
+                        </select>
+                        <span>knowledge in self-care and</span>
+                        <select name="ocCfnaCommunity">
+                             <option value="poor">poor</option>
+                            <option value="fair">fair</option>
+                            <option value="inadequate">inadequate</option>
+                            <option value="adequate">adequate</option>
+                            <option value="satisfactory">satisfactory</option>
+                            <option value="good">good</option>
+                            <option value="full">full</option>
+                        </select>
+                         <span>knowledge in community living.</span>
+                    </div>
+                    <div class="form-group">
+                         <span>In view of present mental state, cognitive assessment and independent functioning assessment,</span>
+                         <select id="ocRecommendationType" name="ocRecommendationType">
+                            <option value="independent living">independent living</option>
+                            <option value="independent living with support">independent living (with support)</option>
+                            <option value="supervised living">supervised living</option>
+                         </select>
+                         <div id="ocSupportProviderGroup" class="checkbox-group" style="display:none; margin-top: 10px; padding-left: 20px;">
+                            <span>Support from:</span>
+                            <label><input type="checkbox" name="ocSupportProvider" value="father"> father</label>
+                            <label><input type="checkbox" name="ocSupportProvider" value="mother"> mother</label>
+                            <label><input type="checkbox" name="ocSupportProvider" value="parents"> parents</label>
+                            <label><input type="checkbox" name="ocSupportProvider" value="siblings"> siblings</label>
+                            <label><input type="checkbox" name="ocSupportProvider" value="relatives"> relatives</label>
+                            <label><input type="checkbox" name="ocSupportProvider" value="social worker"> social worker</label>
+                            <label><input type="checkbox" name="ocSupportProvider" value="CPN"> CPN</label>
+                         </div>
+                         <span>would be beneficial to patient’s ADL and IADL formulation and performance.</span>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label>Management:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="mgmt" value="Ward OT training"> Ward OT training</label>
+                        <label><input type="checkbox" name="mgmt" value="Main OT training"> Main OT training</label>
+                        <label><input type="checkbox" name="mgmt" value="BADL training"> BADL training</label>
+                        <label><input type="checkbox" name="mgmt" value="IADL training"> IADL training</label>
+                        <label><input type="checkbox" name="mgmt" value="Illness management training"> Illness management training</label>
+                        <label><input type="checkbox" name="mgmt" value="HWH preparation"> HWH preparation</label>
+                    </div>
+                    <textarea name="mgmtOther" placeholder="Other management details..."></textarea>
+                </div>
+            </fieldset>
+
+            <!-- ACTION BUTTONS -->
+            <div class="action-buttons">
+                <button type="button" id="generateReportBtn">Generate Report</button>
+                <button type="button" id="copyReportBtn">Copy Report</button>
+                <button type="button" id="resetFormBtn">Reset Form</button>
+            </div>
+        </form>
+
+        <textarea id="generatedReport" readonly placeholder="Generated report will appear here..."></textarea>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('livingSkillsForm');
+    const generateReportBtn = document.getElementById('generateReportBtn');
+    const copyReportBtn = document.getElementById('copyReportBtn');
+    const resetFormBtn = document.getElementById('resetFormBtn'); 
+    const generatedReportTextarea = document.getElementById('generatedReport');
+
+    // --- Dynamic UI Population ---
+    const cfnaSelfCareContainer = document.getElementById('cfnaSelfCareItems');
+    const cfnaCommunityContainer = document.getElementById('cfnaCommunityItems');
+    const cfnaSelfCareItemsList = ["Toileting Skills", "Bathing Skills", "Personal Hygiene", "Dressing Skills", "Dining Skills", "Care of Living Quarters", "Tasks Skills"];
+    const cfnaCommunityItemsList = ["Physical Ability", "Receptive Communication", "Expressive Communication", "Place Orientation", "Time Orientation", "Personal Knowledge", "Numerical Concepts", "Safety and Prevention", "Kitchen Skills", "Food Preparation", "Laundry Skills", "Community Mobility", "Money Management", "Shopping and Purchasing", "Participation in Treatment", "Prevocational Skills", "Social Etiquette", "Planning and Decision Making", "Leisure Skills"];
+    const cfnaScoreOptions = [25, 20, 15, 10, 5, 0];
+    const createCfnaItem = (name, category) => {
+        const idName = name.replace(/[^a-zA-Z0-9]/g, '');
+        const optionsHtml = cfnaScoreOptions.map(o => `<option value="${o}" ${o === 25 ? 'selected' : ''}>${o}</option>`).join('');
+        return `
+            <div class="cfna-item">
+                <label for="cfna_score_${idName}">${name}</label>
+                <div class="score-group">
+                    <select id="cfna_score_${idName}" name="cfna_score_${idName}" class="cfna-score-input" data-category="${category}">${optionsHtml}</select>
+                    <span>/25</span>
+                </div>
+                <input type="text" id="cfna_comment_${idName}" name="cfna_comment_${idName}" class="comment-input" placeholder="Comments...">
+            </div>`;
+    };
+    cfnaSelfCareContainer.innerHTML = cfnaSelfCareItemsList.map(item => createCfnaItem(item, 'selfcare')).join('');
+    cfnaCommunityContainer.innerHTML = cfnaCommunityItemsList.map(item => createCfnaItem(item, 'community')).join('');
+
+    const badlTasks = ["Feeding", "Grooming", "Dressing", "Toileting", "Bathing"];
+    const badlAssistLevels = ["Modified Independent", "Supervision", "Mild Assist", "Moderate Assist", "Maximal Assist", "Dependent"];
+    const badlContainer = document.getElementById('badlDependentItemsContainer');
+    const badlIndependenceSelect = document.getElementById('badlIndependenceLevel');
+
+    const updateBadlSection = () => {
+        badlContainer.innerHTML = '';
+        const selectedIndex = badlTasks.indexOf(badlIndependenceSelect.value);
+        badlTasks.forEach((task, index) => {
+            if (index > selectedIndex) {
+                const assistOptions = badlAssistLevels.map(level => `<option value="${level}">${level}</option>`).join('');
+                const itemHtml = `
+                    <div class="badl-dependent-item" style="display: block;">
+                        <div class="inline-input-group">
+                            <label style="width: 100px;">${task}:</label>
+                            <select name="badlAssist_${task}">${assistOptions}</select>
+                        </div>
+                    </div>`;
+                badlContainer.innerHTML += itemHtml;
+            }
+        });
+    };
+    badlIndependenceSelect.addEventListener('change', updateBadlSection);
+
+    // --- Auto-Calculation Logic ---
+    const mocaTotalInput = document.getElementById('mocaTotal');
+    const cfnaSelfCareScoreSpan = document.getElementById('cfnaSelfCareScore');
+    const cfnaCommunityScoreSpan = document.getElementById('cfnaCommunityScore');
+    const cfnaTotalScoreInput = document.getElementById('cfnaTotalScore');
+    const cfnaCutoffTextSpan = document.getElementById('cfnaCutoffText');
+    
+    const calculateMocaTotal = () => {
+        const total = Array.from(form.querySelectorAll('.moca-score-input')).reduce((sum, input) => sum + (Number(input.value) || 0), 0);
+        mocaTotalInput.value = total;
+    };
+    
+    const calculateCfnaScores = () => {
+        let selfCareTotal = 0;
+        let communityTotal = 0;
+        form.querySelectorAll('.cfna-score-input').forEach(select => {
+            const score = Number(select.value);
+            if (select.dataset.category === 'selfcare') selfCareTotal += score;
+            else communityTotal += score;
+        });
+        cfnaSelfCareScoreSpan.textContent = selfCareTotal;
+        cfnaCommunityScoreSpan.textContent = communityTotal;
+        const totalScore = selfCareTotal + communityTotal;
+        cfnaTotalScoreInput.value = totalScore;
+        
+        if (totalScore < 605) {
+            cfnaCutoffTextSpan.textContent = 'below';
+        } else if (totalScore === 605) {
+            cfnaCutoffTextSpan.textContent = 'at';
+        } else {
+            cfnaCutoffTextSpan.textContent = 'above';
+        }
+    };
+    form.addEventListener('input', (e) => {
+        if (e.target.classList.contains('moca-score-input')) calculateMocaTotal();
+    });
+    form.addEventListener('change', (e) => {
+        if (e.target.classList.contains('cfna-score-input')) calculateCfnaScores();
+    });
+
+    // --- Interactive UI Logic ---
+    let lastClickedRadio = {};
+    form.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('click', function (e) {
+            if (lastClickedRadio[this.name] && lastClickedRadio[this.name] === this) {
+                this.checked = false;
+                lastClickedRadio[this.name] = null;
+            } else {
+                lastClickedRadio[this.name] = this;
+            }
+        });
+    });
+
+    form.querySelectorAll('.exclusive-check').forEach(nilCheck => {
+        const group = nilCheck.closest('.checkbox-group');
+        const otherChecks = group.querySelectorAll('input[type="checkbox"]:not(.exclusive-check)');
+        nilCheck.addEventListener('change', () => {
+            otherChecks.forEach(cb => { cb.disabled = nilCheck.checked; if(nilCheck.checked) cb.checked = false; });
+        });
+        otherChecks.forEach(cb => {
+            cb.addEventListener('change', () => { if (cb.checked) nilCheck.checked = false; });
+        });
+    });
+
+    form.addEventListener('change', (e) => {
+        if (e.target.dataset.shows) {
+            document.getElementById(e.target.dataset.shows).style.display = e.target.checked ? 'block' : 'none';
+        }
+    });
+
+    const ssFreqSelect = form.querySelector('select[name="ssFrequencyCount"]');
+    ssFreqSelect.addEventListener('change', () => {
+        form.querySelector('input[name="ssFrequencyNum"]').style.display = ssFreqSelect.value === 'other' ? 'inline-block' : 'none';
+    });
+    
+    document.getElementById('ocRecommendationType').addEventListener('change', (e) => {
+        document.getElementById('ocSupportProviderGroup').style.display = e.target.value === 'independent living with support' ? 'block' : 'none';
+    });
+
+    // --- Report Generation ---
+    generateReportBtn.addEventListener('click', () => {
+        try {
+            const getRadioValue = name => form.querySelector(`input[name="${name}"]:checked`)?.value || '';
+            const getTextValue = name => form.querySelector(`[name="${name}"]`)?.value.trim() || '';
+            const getSelectValue = name => form.querySelector(`select[name="${name}"]`)?.value || '';
+            const getCheckboxValues = name => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value).join(' / ');
+            
+            const mainSections = [];
+            let sectionLetterCode = 'A'.charCodeAt(0);
+
+            // --- Section A ---
+            const sectionA = [];
+            const msOverall = getTextValue('msOverall');
+            if(msOverall) sectionA.push(`Overall impression: ${msOverall}`);
+            const msMood = getRadioValue('msMood');
+            if(msMood) sectionA.push(`Mood: ${msMood}`);
+            const msAffect = getRadioValue('msAffect');
+            if(msAffect) sectionA.push(`Affect: ${msAffect}`);
+            const msAttention = getRadioValue('msAttention');
+            if(msAttention) sectionA.push(`Attention: ${msAttention}`);
+            const msSpeech = getCheckboxValues('msSpeech');
+            if(msSpeech) sectionA.push(`Speech: ${msSpeech}`);
+            const msAbnormalThought = getCheckboxValues('msAbnormalThought');
+            if(msAbnormalThought) sectionA.push(`Abnormal Thought: ${msAbnormalThought}`);
+            const msNegativeThought = getCheckboxValues('msNegativeThought');
+            if(msNegativeThought) sectionA.push(`Negative Thought: ${msNegativeThought}`);
+            const msHallucination = getCheckboxValues('msHallucination');
+            if(msHallucination) sectionA.push(`Hallucination: ${msHallucination}`);
+            const msInsight = getRadioValue('msInsight');
+            if(msInsight) sectionA.push(`Insight: ${msInsight}`);
+            const msRemarks = getTextValue('msRemarks');
+            if(msRemarks) sectionA.push(`Remarks: ${msRemarks}`);
+            if (sectionA.length > 0) {
+                mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Mental state\n` + "--------------\n" + sectionA.join('\n'));
+            }
+
+            // --- Section B (Conditional) ---
+            const hasMocaData = getTextValue('mocaDate') || Array.from(form.querySelectorAll('.moca-score-input')).some(i => i.value);
+            if (hasMocaData) {
+                const sectionB = [];
+                const mocaDateRaw = getTextValue('mocaDate');
+                if (mocaDateRaw) {
+                    const parts = mocaDateRaw.split('-');
+                    sectionB.push(`HK-MoCA done on: ${parts[2]}/${parts[1]}/${parts[0]}`);
+                }
+                sectionB.push(`Total score: ${getTextValue('mocaTotal') || '_'}/30`);
+                const mocaLabels = ["Visuospatial/ executive function:", "Naming:", "Attention:", "Language:", "Abstraction:", "Delayed recall:", "Orientation:"];
+                form.querySelectorAll('.moca-score-input').forEach((inputEl, index) => {
+                    if (inputEl.value) {
+                        sectionB.push(`${mocaLabels[index]} ${inputEl.value}/${inputEl.getAttribute('max')}`);
+                    }
+                });
+                mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Cognitive Assessment\n` + "-----------------------\n" + sectionB.join('\n'));
+            }
+            
+            // --- Section C ---
+            const sectionC = [];
+            const badlIndLevel = getSelectValue('badlIndependenceLevel');
+            let badlReportText = `ADL Independent up to ${badlIndLevel}.`;
+            form.querySelectorAll('#badlDependentItemsContainer select').forEach(select => {
+                const task = select.name.replace('badlAssist_', '');
+                badlReportText += `\n- ${task}: ${select.value}`;
+            });
+            sectionC.push(badlReportText);
+            sectionC.push(`MBI: ${getTextValue('badlMbi') || '_'}/100`);
+            const badlRemarks = getTextValue('badlRemarks');
+            if(badlRemarks) sectionC.push(`Remarks: ${badlRemarks}`);
+            mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. BADL Assessment\n` + "------------------\n" + sectionC.join('\n'));
+
+            // --- Section D ---
+            const sectionD = [];
+            const cfnaDateRaw = getTextValue('cfnaDate');
+            if(cfnaDateRaw){
+                const parts = cfnaDateRaw.split('-');
+                sectionD.push(`Verbal assessment done on: ${parts[2]}/${parts[1]}/${parts[0]}`);
+            }
+            sectionD.push(`Total score: ${getTextValue('cfnaTotalScore') || '_'}/650 ${cfnaCutoffTextSpan.textContent} cut off at 605`);
+            sectionD.push(`Indicated patient showed ${getSelectValue('cfnaPerformance')} performance in independent living.`);
+            sectionD.push(`Patient demonstrated ${getSelectValue('cfnaSelfCareKnowledge')} knowledge in self-care and ${getSelectValue('cfnaCommunityKnowledge')} knowledge in community living skills.`);
+            sectionD.push(`\nSelf-care sub score: ${cfnaSelfCareScoreSpan.textContent || '0'}/175`);
+            const maxCfnaLabelLength = Math.max(...[...cfnaSelfCareItemsList, ...cfnaCommunityItemsList].map(item => item.length));
+            cfnaSelfCareItemsList.forEach(item => {
+                const idName = item.replace(/[^a-zA-Z0-9]/g, '');
+                sectionD.push(`${item.padEnd(maxCfnaLabelLength + 2, ' ')} ${getSelectValue(`cfna_score_${idName}`).padStart(2)}/25 ${getTextValue(`cfna_comment_${idName}`) ? `(${getTextValue(`cfna_comment_${idName}`)})` : ''}`);
+            });
+            sectionD.push(`\nCommunity living skill sub score: ${cfnaCommunityScoreSpan.textContent || '0'}/475`);
+            cfnaCommunityItemsList.forEach(item => {
+                const idName = item.replace(/[^a-zA-Z0-9]/g, '');
+                sectionD.push(`${item.padEnd(maxCfnaLabelLength + 2, ' ')} ${getSelectValue(`cfna_score_${idName}`).padStart(2)}/25 ${getTextValue(`cfna_comment_${idName}`) ? `(${getTextValue(`cfna_comment_${idName}`)})` : ''}`);
+            });
+            const cfnaRemarks = getTextValue('cfnaRemarks');
+            if(cfnaRemarks) sectionD.push(`Remarks: ${cfnaRemarks}`);
+            mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Functional Needs Assessment (CFNA)\n` + "---------------------------------------\n" + sectionD.join('\n'));
+
+            // --- Section E ---
+            const sectionE = [];
+            let ssProvider = getRadioValue('ssProvider');
+            if (ssProvider) {
+                if (ssProvider === 'other') ssProvider = getTextValue('ssProviderOther');
+                sectionE.push(`Social support was provided by: ${ssProvider}`);
+            }
+            let ssFreq = getSelectValue('ssFrequencyCount');
+            if (ssFreq) {
+                 if (ssFreq === 'other') ssFreq = getTextValue('ssFrequencyNum');
+                 if (ssFreq) sectionE.push(`Frequency: ${ssFreq} times per ${getSelectValue('ssFrequencyPeriod')}`);
+            }
+            const ssTask = getTextValue('ssTask');
+            if (ssTask) sectionE.push(`Task: ${ssTask}`);
+            const ssRemarks = getTextValue('ssRemarks');
+            if(ssRemarks) sectionE.push(`Remarks: ${ssRemarks}`);
+            if (sectionE.length > 0) mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Social Support\n` + "----------------\n" + sectionE.join('\n'));
+            
+            // --- Section F ---
+            const sectionF = [];
+            let plan = getRadioValue('plan');
+            if (plan) {
+                if (plan === 'live with') {
+                    let detail = getRadioValue('planLiveWithDetail');
+                    if (detail === 'other') detail = getTextValue('planLiveWithOther');
+                    plan = `live with: ${detail || '(not specified)'}`;
+                } else if (plan === 'other') plan = getTextValue('planOther');
+                sectionF.push(`Patient planned to ${plan} after discharge.`);
+            }
+            const planRemarks = getTextValue('planRemarks');
+            if(planRemarks) sectionF.push(`Remarks: ${planRemarks}`);
+            if (sectionF.length > 0) mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Patient’s Plan\n` + "----------------\n" + sectionF.join('\n'));
+            
+            // --- Section G ---
+            const sectionG = [];
+            let informant = getRadioValue('collateralInformant');
+            if (informant) {
+                if (informant === 'other') informant = getTextValue('collateralInformantOther');
+                sectionG.push(`Informant: ${informant}`);
+            }
+            const collateralInfo = getTextValue('collateralInfo');
+            if (collateralInfo) sectionG.push(`\n${collateralInfo}`);
+            if (sectionG.length > 0) mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Collateral Information\n` + "------------------------\n" + sectionG.join('\n'));
+
+            // --- Overall Comments and Management ---
+            const sectionOverall = [];
+            sectionOverall.push("Overall comments", "----------------");
+            let ocText = `Patient was ${getSelectValue('ocAdlLevel')} ${getSelectValue('ocAdlAid')} in basic ADL. `;
+            ocText += `Independent living skills assessment (CFNA) results indicated patient showed ${getSelectValue('ocCfnaSelfCare')} knowledge in self-care and ${getSelectValue('ocCfnaCommunity')} knowledge in community living. `;
+            let ocReco = getSelectValue('ocRecommendationType');
+            if (ocReco === 'independent living with support') {
+                const providers = getCheckboxValues('ocSupportProvider');
+                ocReco = `independent living (with support from ${providers || 'unspecified provider'})`;
+            }
+            ocText += `In view of present mental state, cognitive assessment and independent functioning assessment, ${ocReco} would be beneficial to patient’s ADL and IADL formulation and performance.`;
+            sectionOverall.push(ocText);
+            mainSections.push(sectionOverall.join('\n'));
+
+            const sectionMgmt = [];
+            sectionMgmt.push("Management", "----------");
+            let mgmt = getCheckboxValues('mgmt');
+            const mgmtOther = getTextValue('mgmtOther');
+            if (mgmt && mgmtOther) mgmt += ` / ${mgmtOther}`;
+            else if (mgmtOther) mgmt = mgmtOther;
+            sectionMgmt.push(mgmt || 'N/A');
+            mainSections.push(sectionMgmt.join('\n'));
+
+            generatedReportTextarea.value = "Occupational Therapy Report on Independent Living Skills\n\n" + mainSections.join('\n\n');
+
+        } catch (error) {
+            generatedReportTextarea.value = `A critical error occurred while generating the report.\n\nPlease contact support with this error message:\n\nError: ${error.message}\nStack: ${error.stack}`;
+            console.error("Report generation failed:", error);
+        }
+    });
+
+    copyReportBtn.addEventListener('click', () => {
+        if (!generatedReportTextarea.value) {
+            alert('No report generated to copy.');
+            return;
+        }
+        navigator.clipboard.writeText(generatedReportTextarea.value)
+            .then(() => alert('Report copied to clipboard!'))
+            .catch(err => {
+                console.error('Failed to copy report: ', err);
+                alert('Failed to copy report. Please copy manually.');
+            });
+    });
+
+    resetFormBtn.addEventListener('click', () => {
+        form.reset();
+        generatedReportTextarea.value = '';
+        lastClickedRadio = {}; // Reset the radio button tracking object
+        document.querySelectorAll('.exclusive-check, select, input[type="radio"]').forEach(el => el.dispatchEvent(new Event('change', { bubbles: true })));
+        calculateMocaTotal();
+        calculateCfnaScores();
+        updateBadlSection();
+        alert('Form has been reset.');
+    });
+    
+    // Initial calculation and UI setup on page load
+    calculateMocaTotal();
+    calculateCfnaScores();
+    updateBadlSection();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LD Hostel/Home Visit Report Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 950px;
+            margin: 20px auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        legend {
+            font-weight: bold;
+            color: #2980b9;
+            padding: 0 10px;
+            font-size: 1.3em;
+        }
+        .form-group, .sub-section {
+            margin-bottom: 15px;
+        }
+        label, .form-group > span, .standalone-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 15px;
+            margin-top: 5px;
+        }
+        .radio-group label, .checkbox-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+         .radio-group label input, .checkbox-group label input {
+            margin-right: 5px;
+            flex-shrink: 0;
+         }
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .action-buttons button {
+            padding: 12px 20px;
+            margin: 5px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+        .action-buttons button:hover {
+            opacity: 0.9;
+        }
+        .action-buttons button#copyReportBtn { background-color: #f39c12; }
+        .action-buttons button#resetFormBtn { background-color: #e74c3c; }
+
+        #generatedReport {
+            width: 100%;
+            min-height: 400px;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            background-color: #fdfdfd;
+        }
+        .inline-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .inline-input-group label, .inline-input-group span {
+            font-weight: normal;
+            margin-bottom: 0;
+            flex-shrink: 0;
+        }
+        .inline-input-group input[type="text"], .inline-input-group input[type="number"], .inline-input-group select {
+            width: auto;
+            flex-grow: 1;
+            min-width: 60px;
+        }
+        .score-input {
+            width: 80px !important;
+            text-align: center;
+        }
+        .sub-section-heading {
+            font-weight: bold;
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .inline-input-group { flex-direction: column; align-items: flex-start; }
+            .inline-input-group input, .inline-input-group select { width: 100% !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Report on LD Hostel / Home Visit Generator</h1>
+
+        <form id="ldReportForm">
+
+            <!-- VISIT DETAILS -->
+            <fieldset>
+                <legend>Visit Details</legend>
+                <div class="form-group inline-input-group">
+                    <select name="visitType" style="width: auto;">
+                        <option value="LD hostel visit">LD hostel visit</option>
+                        <option value="Home visit">Home visit</option>
+                    </select>
+                    <span> was done on </span>
+                    <input type="date" name="visitDate" style="width: auto;">
+                    <span> from </span>
+                    <input type="time" name="visitStartTime" style="width: auto;">
+                    <span> to </span>
+                    <input type="time" name="visitEndTime" style="width: auto;">
+                </div>
+                 <div class="form-group inline-input-group">
+                    <span>(with </span>
+                    <input type="text" name="visitWith" placeholder="e.g., patient's mother">
+                    <span>)</span>
+                </div>
+                <div class="form-group inline-input-group">
+                   <span>Case discussed with </span>
+                    <select name="staffRole" style="width: auto;">
+                        <option value="hostel SW">hostel SW</option>
+                        <option value="hostel OT">hostel OT</option>
+                        <option value="hostel staff">hostel staff</option>
+                        <option value="parent">parent</option>
+                    </select>
+                    <input type="text" name="staffName" placeholder="Staff/Parent Name">
+                </div>
+            </fieldset>
+
+            <!-- PERSONAL AND BEHAVIOURAL -->
+            <fieldset>
+                <legend>Personal and Behavioural</legend>
+                <div class="form-group inline-input-group">
+                    <span>Patient was a </span>
+                    <input type="number" name="patientAge" min="1" class="score-input">
+                    <span> year old </span>
+                    <select name="patientGender" style="width: auto;">
+                        <option value="male">male</option>
+                        <option value="female">female</option>
+                    </select>
+                    <span> with </span>
+                     <select name="learningDisability" style="width: auto;">
+                        <option value="mild">mild</option>
+                        <option value="moderate">moderate</option>
+                        <option value="severe">severe</option>
+                        <option value="profound">profound</option>
+                    </select>
+                    <span> learning disability.</span>
+                </div>
+                <div class="form-group">
+                    <label for="behaviourDescription">The major behavioural problem of patient was:</label>
+                    <textarea name="behaviourDescription" placeholder="Description of behaviour"></textarea>
+                </div>
+                <div class="form-group inline-input-group">
+                     <span>The behaviour was observed </span>
+                     <input type="text" name="behaviourFrequency" placeholder="e.g., daily, 2-3 times/week">
+                     <span> for </span>
+                     <input type="text" name="behaviourDuration" placeholder="e.g., 5-10 minutes">
+                     <span> in </span>
+                      <select name="behaviourLocation" style="width: auto;">
+                        <option value="hostel">hostel</option>
+                        <option value="at home">at home</option>
+                    </select>
+                    <span>.</span>
+                </div>
+                 <div class="form-group inline-input-group">
+                    <span>The behaviour would cause </span>
+                    <input type="text" name="behaviourIntensity" placeholder="e.g., mild distress, risk of injury">
+                    <span>.</span>
+                </div>
+                 <div class="form-group">
+                    <label>The trigger was observed to be:</label>
+                    <div class="inline-input-group">
+                        <input type="text" id="triggerAntecedent" name="triggerAntecedent" placeholder="Describe antecedent or click 'unknown'">
+                        <span>/</span>
+                         <label><input type="radio" name="triggerType" value="unknown"> unknown</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>The function of the behaviour was most likely to be:</label>
+                    <div class="checkbox-group" id="behaviourFunctionGroup" style="flex-direction: column; align-items: flex-start;">
+                        <label><input type="checkbox" name="behaviourFunction" value="sensory" data-target="sensoryGroup"> seeking sensory input</label>
+                        <div id="sensoryGroup" style="display: none; padding-left: 25px;">
+                             <input type="text" name="sensoryDetail" placeholder="Describe sensory input">
+                        </div>
+                        <label><input type="checkbox" name="behaviourFunction" value="escape" data-target="escapeGroup"> avoiding</label>
+                        <div id="escapeGroup" style="display: none; padding-left: 25px;">
+                             <input type="text" name="escapeDetail" placeholder="e.g., demands, specific activity">
+                        </div>
+                        <label><input type="checkbox" name="behaviourFunction" value="attention" data-target="attentionGroup"> seeking attention from</label>
+                        <div id="attentionGroup" style="display: none; padding-left: 25px;">
+                             <input type="text" name="attentionDetail" placeholder="e.g., staff, family members">
+                        </div>
+                        <label><input type="checkbox" name="behaviourFunction" value="tangible" data-target="tangibleGroup"> asking for</label>
+                         <div id="tangibleGroup" style="display: none; padding-left: 25px;">
+                             <input type="text" name="tangibleDetail" placeholder="e.g., food, specific item">
+                        </div>
+                        <label><input type="checkbox" name="behaviourFunction" value="unknown" class="exclusive-check"> unknown</label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- ENVIRONMENT -->
+            <fieldset>
+                <legend>Environment</legend>
+                 <div class="form-group inline-input-group">
+                    <select name="environmentType" style="width: auto;">
+                        <option value="The hostel">The hostel</option>
+                        <option value="The home">The home</option>
+                    </select>
+                    <span> lighting was </span>
+                     <select name="lighting" style="width: auto;">
+                        <option value="adequate">adequate</option>
+                        <option value="inadequate">inadequate</option>
+                        <option value="over-lighting">over-lighting</option>
+                    </select>
+                    <span>.</span>
+                </div>
+                <div class="form-group inline-input-group">
+                    <span>Noise level was </span>
+                    <select name="noiseLevel" style="width: auto;">
+                        <option value="low">low</option>
+                        <option value="moderate">moderate</option>
+                        <option value="high">high</option>
+                    </select>
+                     <span> noise.</span>
+                </div>
+                <div class="form-group inline-input-group">
+                    <span>Quiet zone/ Pad room </span>
+                    <select name="quietZone" style="width: auto;">
+                        <option value="was available">was available</option>
+                        <option value="was not available">was not available</option>
+                    </select>
+                    <span>.</span>
+                </div>
+                <div class="form-group inline-input-group">
+                    <span>Single room </span>
+                    <select name="singleRoom" style="width: auto;">
+                        <option value="was available">was available</option>
+                        <option value="was not available">was not available</option>
+                    </select>
+                    <span>.</span>
+                </div>
+                <div class="form-group">
+                    <label>Safety hazard:</label>
+                    <div class="inline-input-group">
+                        <select name="safetyHazard" style="width: auto;" data-shows-if-value="was presented" data-target="safetyHazardDescGroup">
+                            <option value="was not presented">was not presented</option>
+                            <option value="was presented">was presented</option>
+                        </select>
+                        <span>.</span>
+                    </div>
+                    <div id="safetyHazardDescGroup" style="display:none; margin-top:10px;">
+                        <textarea name="safetyHazardDescription" placeholder="Describe safety hazard"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="socialStimulation">Social over-stimulation (provocation/ isolation from co-resident, etc.):</label>
+                    <textarea name="socialStimulation" placeholder="Describe if any"></textarea>
+                </div>
+                 <div class="form-group">
+                    <label for="recentChange">Recent change in environment/ carer/ routine:</label>
+                    <textarea name="recentChange" placeholder="Specify if any"></textarea>
+                </div>
+                
+                <h4 class="sub-section-heading">Carer's Concerns</h4>
+                <div class="form-group inline-input-group">
+                    <select name="carerType" style="width: auto;">
+                        <option value="Hostel staff">Hostel staff</option>
+                        <option value="Parents">Parents</option>
+                    </select>
+                    <span> concerned about patient's behaviour of </span>
+                    <input type="text" name="concernedBehaviour" placeholder="most concerned behaviour">
+                    <span>.</span>
+                </div>
+                <div class="form-group">
+                    <label>In response to patient’s challenging behaviours, hostel staff/ parents would:</label>
+                    <div class="inline-input-group">
+                        <textarea name="carerMeasures" placeholder="staff/parent measures" style="min-height: 40px;"></textarea>
+                        <span> with </span>
+                        <select name="measureEffect" style="width: auto;">
+                            <option value="satisfactory">satisfactory</option>
+                            <option value="suboptimal">suboptimal</option>
+                        </select>
+                        <span> effect.</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Restrain:</label>
+                    <div class="inline-input-group">
+                       <select name="carerType2" style="width: auto;">
+                            <option value="Hostel staff">Hostel staff</option>
+                            <option value="Parent">Parent</option>
+                        </select>
+                        <select name="restrainProvided" style="width: auto;" data-shows-if-value="would" data-target="restrainTypeGroup">
+                            <option value="would not">would not</option>
+                            <option value="would">would</option>
+                        </select>
+                        <span> provide restrain.</span>
+                    </div>
+                     <div id="restrainTypeGroup" style="display:none; margin-top:10px;">
+                        <textarea name="restrainType" placeholder="Describe type of restrain"></textarea>
+                    </div>
+                </div>
+
+                <h4 class="sub-section-heading">Parental Visits</h4>
+                 <div class="form-group">
+                    <div class="inline-input-group">
+                       <span>Parents </span>
+                        <select name="parentalVisit" style="width: auto;" data-shows-if-value="would" data-target="parentalVisitDetailsGroup">
+                            <option value="would not">would not</option>
+                            <option value="would">would</option>
+                        </select>
+                        <span> provide visit to hostel.</span>
+                    </div>
+                    <div id="parentalVisitDetailsGroup" style="display:none; margin-top:10px; padding-left: 20px; border-left: 2px solid #eee;">
+                        <div class="inline-input-group">
+                            <span>(Frequency: </span>
+                            <input type="text" name="visitFrequency" placeholder="e.g., once a week">
+                            <span>)</span>
+                        </div>
+                        <div class="inline-input-group" style="margin-top:10px;">
+                           <select name="visitTiming" style="width:auto;">
+                               <option value="Before">Before</option>
+                               <option value="After">After</option>
+                               <option value="Before and after">Before and after</option>
+                           </select>
+                           <span> the visit, patient </span>
+                            <select name="patientStateAfterVisit" style="width: auto;" data-shows-if-value="showed challenging behaviour of" data-target="behaviourAfterVisitGroup">
+                                <option value="remained calm and settled">remained calm and settled</option>
+                                <option value="showed agitation">showed agitation</option>
+                                <option value="showed challenging behaviour of">showed challenging behaviour of</option>
+                            </select>
+                            <span>.</span>
+                        </div>
+                         <div id="behaviourAfterVisitGroup" style="display:none; margin-top:10px;">
+                            <input type="text" name="behaviourAfterVisit" placeholder="problem behaviour">
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <!-- OCCUPATION AND FUNCTIONING -->
+            <fieldset>
+                <legend>Occupation and Functioning</legend>
+                 <div class="form-group">
+                    <label>ADL:</label>
+                    <div class="inline-input-group">
+                       <span>Patient was </span>
+                        <select name="adlLevel" style="width: auto;" data-shows-if-value="partially assisted" data-target="adlAssistSpecifyGroup">
+                            <option value="independent">independent</option>
+                            <option value="needed supervision">needed supervision</option>
+                            <option value="partially assisted">partially assisted</option>
+                            <option value="dependent">dependent</option>
+                        </select>
+                        <span id="adlAssistSpecifyGroup" style="display:none;">(<input type="text" name="adlAssistSpecify" placeholder="specify">)</span>
+                        <span> in ADL.</span>
+                    </div>
+                     <div class="inline-input-group" style="margin-top: 5px;">
+                       <span>There </span>
+                        <select name="adlBehaviour" style="width: auto;" data-shows-if-value="was" data-target="adlBehaviourSpecifyGroup">
+                            <option value="was no">was no</option>
+                            <option value="was">was</option>
+                        </select>
+                        <span> challenging behaviour during ADL.</span>
+                         <span id="adlBehaviourSpecifyGroup" style="display:none;">(<input type="text" name="adlBehaviourSpecify" placeholder="specify">)</span>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label>Work/Training:</label>
+                    <div class="inline-input-group">
+                        <span>Patient received training </span>
+                        <input type="text" name="trainingFrequency" placeholder="daily/ __ times per week" value="daily">
+                        <span> in </span>
+                        <select name="trainingType" style="width: auto;">
+                            <option value="supported employment">supported employment</option>
+                            <option value="SWS">SWS</option>
+                            <option value="DAC">DAC</option>
+                        </select>
+                        <span>.</span>
+                    </div>
+                    <div class="form-group" style="margin-top:10px;">
+                        <label for="workTasks">Patient’s work tasks include:</label>
+                        <textarea name="workTasks" placeholder="specify"></textarea>
+                    </div>
+                     <div class="inline-input-group" style="margin-top: 5px;">
+                       <span>There </span>
+                        <select name="workBehaviour" style="width: auto;" data-shows-if-value="was" data-target="workBehaviourSpecifyGroup">
+                            <option value="was no">was no</option>
+                            <option value="was">was</option>
+                        </select>
+                        <span> challenging behaviour during work training.</span>
+                         <span id="workBehaviourSpecifyGroup" style="display:none;">(<input type="text" name="workBehaviourSpecify" placeholder="specify">)</span>
+                    </div>
+                    <div class="inline-input-group" style="margin-top: 10px;">
+                        <span>Patient showed </span>
+                         <select name="motivation" style="width: auto;"><option value="high">high</option><option value="average">average</option><option value="low">low</option></select>
+                         <span> motivation; </span>
+                         <select name="attention" style="width: auto;"><option value="good">good</option><option value="fair">fair</option><option value="poor">poor</option></select>
+                         <span> attention and </span>
+                         <select name="tolerance" style="width: auto;"><option value="good">good</option><option value="fair">fair</option><option value="poor">poor</option></select>
+                         <span> tolerance to training.</span>
+                    </div>
+                     <div class="form-group" style="margin-top:10px;">
+                        <label for="nonProductiveBehaviour">Non-productive behaviour was elicited:</label>
+                        <textarea name="nonProductiveBehaviour" placeholder="specify"></textarea>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label for="leisureTasks">Leisure: Patient enjoyed</label>
+                    <textarea name="leisureTasks" placeholder="leisure tasks"></textarea>
+                </div>
+            </fieldset>
+
+            <!-- PLAN -->
+            <fieldset>
+                <legend>Plan</legend>
+                 <div class="checkbox-group" style="flex-direction: column; align-items: flex-start;">
+                    <label><input type="checkbox" name="plan" value="Continue ward OT training for behaviour management" checked> Continue ward OT training for behaviour management</label>
+                     <div class="inline-input-group">
+                        <label><input type="checkbox" name="plan" value="Liaise" data-target="liaiseGroup" checked> Liaise with...</label>
+                        <div id="liaiseGroup" style="display:none;">
+                            <select name="liaiseWith" style="width:auto;">
+                                <option value="hostel">hostel</option>
+                                <option value="parents">parents</option>
+                            </select>
+                            <span> prn</span>
+                        </div>
+                     </div>
+                    <label><input type="checkbox" name="plan" value="other" data-target="planOtherGroup"> Others:</label>
+                    <div id="planOtherGroup" style="display:none; padding-left: 25px; width: 100%;">
+                        <textarea name="planOther" placeholder="Specify other plans..."></textarea>
+                    </div>
+                </div>
+                <div class="form-group inline-input-group" style="margin-top: 10px;">
+                    <span>(Scheduled next hostel/ home visit on </span>
+                    <input type="date" name="nextVisitDate" style="width: auto;">
+                    <span>)</span>
+                </div>
+            </fieldset>
+
+            <!-- ACTION BUTTONS -->
+            <div class="action-buttons">
+                <button type="button" id="generateReportBtn">Generate Report</button>
+                <button type="button" id="copyReportBtn">Copy Report</button>
+                <button type="button" id="resetFormBtn">Reset Form</button>
+            </div>
+        </form>
+
+        <textarea id="generatedReport" readonly placeholder="Generated report will appear here..."></textarea>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('ldReportForm');
+    const generateReportBtn = document.getElementById('generateReportBtn');
+    const copyReportBtn = document.getElementById('copyReportBtn');
+    const resetFormBtn = document.getElementById('resetFormBtn'); 
+    const generatedReportTextarea = document.getElementById('generatedReport');
+
+    // --- Interactive UI Logic ---
+    let lastClickedRadio = {}; 
+    form.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('click', function (e) {
+            const name = this.name;
+            if (lastClickedRadio[name] && lastClickedRadio[name] === this) {
+                this.checked = false;
+                lastClickedRadio[name] = null;
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+            } else {
+                lastClickedRadio[name] = this;
+            }
+        });
+    });
+    
+    form.addEventListener('change', (e) => {
+        const el = e.target;
+        if ((el.tagName.toLowerCase() === 'select' || el.type === 'checkbox' || el.type === 'radio') && el.dataset.target) {
+            const targetId = el.dataset.target;
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                const shouldShow = el.type === 'checkbox' ? el.checked : (el.value === el.dataset.showsIfValue);
+                targetElement.style.display = shouldShow ? 'inline-block' : 'none';
+                
+                if (el.value === 'other' || ['parentalVisitDetailsGroup', 'planOtherGroup', 'sensoryGroup', 'escapeGroup', 'attentionGroup', 'tangibleGroup'].includes(targetId)) {
+                    targetElement.style.display = shouldShow ? 'block' : 'none';
+                }
+            }
+        }
+    });
+
+    const behaviourFunctionGroup = document.getElementById('behaviourFunctionGroup');
+    const unknownCheckbox = behaviourFunctionGroup.querySelector('.exclusive-check');
+    const otherCheckboxes = behaviourFunctionGroup.querySelectorAll('input[type="checkbox"]:not(.exclusive-check)');
+
+    unknownCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            otherCheckboxes.forEach(cb => {
+                cb.checked = false;
+                cb.disabled = true;
+                cb.dispatchEvent(new Event('change', { bubbles: true })); 
+            });
+        } else {
+            otherCheckboxes.forEach(cb => {
+                cb.disabled = false;
+            });
+        }
+    });
+
+    otherCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const anyOtherChecked = Array.from(otherCheckboxes).some(c => c.checked);
+            unknownCheckbox.disabled = anyOtherChecked;
+            if (anyOtherChecked) {
+                unknownCheckbox.checked = false;
+            }
+        });
+    });
+
+    const triggerAntecedentInput = document.getElementById('triggerAntecedent');
+    form.querySelector('input[name="triggerType"][value="unknown"]').addEventListener('change', function(e) {
+        if (e.target.checked) {
+            triggerAntecedentInput.value = '';
+            triggerAntecedentInput.disabled = true;
+            triggerAntecedentInput.placeholder = 'disabled as "unknown" is selected';
+        }
+    });
+    triggerAntecedentInput.addEventListener('input', function() {
+        const unknownRadio = form.querySelector('input[name="triggerType"][value="unknown"]');
+        if (unknownRadio.checked) {
+            unknownRadio.checked = false;
+            lastClickedRadio[unknownRadio.name] = null;
+        }
+        triggerAntecedentInput.disabled = false;
+        triggerAntecedentInput.placeholder = 'Describe antecedent or click \'unknown\'';
+    });
+
+
+    // --- Report Generation ---
+    generateReportBtn.addEventListener('click', () => {
+        try {
+            const getRadioValue = name => form.querySelector(`input[name="${name}"]:checked`)?.value || '';
+            const getTextValue = name => form.querySelector(`[name="${name}"]`)?.value.trim() || '';
+            const getSelectValue = name => form.querySelector(`select[name="${name}"]`)?.value || '';
+            const getCheckboxValues = name => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
+
+            let report = [];
+            const visitType = getSelectValue('visitType');
+            
+            const visitDateRaw = getTextValue('visitDate');
+            const visitDate = visitDateRaw ? `${visitDateRaw.split('-')[2]}/${visitDateRaw.split('-')[1]}/${visitDateRaw.split('-')[0]}` : '(Day)/(Month)/(Year)';
+            const visitStartTime = getTextValue('visitStartTime') || '(Time)';
+            const visitEndTime = getTextValue('visitEndTime') || '(Time)';
+            const visitWith = getTextValue('visitWith');
+            
+            let headerLine = `${visitType} was done on ${visitDate} from ${visitStartTime} to ${visitEndTime}`;
+            if (visitWith) headerLine += ` (with ${visitWith})`;
+            report.push(headerLine);
+            
+            const staffRole = getSelectValue('staffRole');
+            const staffName = getTextValue('staffName');
+            if (staffName) report.push(`Case discussed with ${staffRole} (${staffName})`);
+            
+            report.push('\nPersonal and behavioural:');
+            const patientAge = getTextValue('patientAge') || '__';
+            const patientGender = getSelectValue('patientGender');
+            const ldLevel = getSelectValue('learningDisability');
+            report.push(`Patient was a ${patientAge} year old ${patientGender} with ${ldLevel} learning disability.`);
+            
+            const behaviourDesc = getTextValue('behaviourDescription');
+            if(behaviourDesc) report.push(`The major behavioural problem of patient was ${behaviourDesc}.`);
+            
+            const behFreq = getTextValue('behaviourFrequency') || '_____________(frequency)';
+            const behDur = getTextValue('behaviourDuration') || '__________(duration)';
+            const behLoc = getSelectValue('behaviourLocation');
+            const locationPhrase = behLoc === 'at home' ? 'at home' : `in ${behLoc}`;
+            report.push(`The behaviour was observed ${behFreq} for ${behDur} ${locationPhrase}.`);
+
+            const behIntensity = getTextValue('behaviourIntensity');
+            if(behIntensity) report.push(`The behaviour would cause ${behIntensity}.`);
+
+            const triggerUnknown = getRadioValue('triggerType') === 'unknown';
+            const triggerAntecedent = getTextValue('triggerAntecedent');
+            if(triggerAntecedent && !triggerUnknown) {
+                report.push(`The trigger was observed to be ${triggerAntecedent}.`);
+            } else {
+                 report.push('The trigger was unknown.');
+            }
+
+            const behFuncs = getCheckboxValues('behaviourFunction');
+            let funcSentence = 'The function of the behaviour was most likely to be ';
+            if (behFuncs.includes('unknown') || behFuncs.length === 0) {
+                funcSentence += 'unknown.';
+            } else {
+                const funcParts = behFuncs.map(func => {
+                    switch(func) {
+                        case 'sensory': return `seeking sensory input (${getTextValue('sensoryDetail') || 'details not specified'})`;
+                        case 'escape': return `avoiding (${getTextValue('escapeDetail') || 'details not specified'})`;
+                        case 'attention': return `seeking attention from (${getTextValue('attentionDetail') || 'details not specified'})`;
+                        case 'tangible': return `asking for (${getTextValue('tangibleDetail') || 'details not specified'})`;
+                        default: return '';
+                    }
+                });
+                funcSentence += funcParts.join(', ') + '.';
+            }
+            report.push(funcSentence);
+            
+            report.push('\nEnvironment:');
+            const envType = getSelectValue('environmentType');
+            const lighting = getSelectValue('lighting');
+            report.push(`${envType} lighting was ${lighting}.`);
+
+            const noise = getSelectValue('noiseLevel');
+            report.push(`Noise level was ${noise} noise.`);
+            
+            const quietZone = getSelectValue('quietZone');
+            report.push(`Quiet zone/ Pad room ${quietZone}.`);
+
+            const singleRoom = getSelectValue('singleRoom');
+            report.push(`Single room ${singleRoom}.`);
+
+            const safetyHazard = getSelectValue('safetyHazard');
+            let hazardSentence = `Safety hazard ${safetyHazard}.`;
+            if (safetyHazard === 'was presented') {
+                const hazardDesc = getTextValue('safetyHazardDescription');
+                if (hazardDesc) hazardSentence += ` (${hazardDesc})`;
+            }
+            report.push(hazardSentence);
+
+            const socialStim = getTextValue('socialStimulation');
+            if(socialStim) report.push(`There was ${socialStim}.`);
+
+            const recentChange = getTextValue('recentChange');
+            if(recentChange) report.push(`There was recent change in environment/ carer/ routine: ${recentChange}.`);
+
+            const carerType = getSelectValue('carerType');
+            const concernedBeh = getTextValue('concernedBehaviour');
+            if (concernedBeh) report.push(`${carerType} concerned about patient's behaviour of ${concernedBeh}.`);
+
+            const carerMeasures = getTextValue('carerMeasures');
+            const measureEffect = getSelectValue('measureEffect');
+            const carerTypeLower = carerType === 'Parents' ? 'parents' : 'hostel staff';
+            if (carerMeasures) report.push(`In response to patient’s challenging behaviours, ${carerTypeLower} would ${carerMeasures} with ${measureEffect} effect.`);
+            
+            const carerType2 = getSelectValue('carerType2');
+            const restrainProv = getSelectValue('restrainProvided');
+            let restrainSentence = `${carerType2} ${restrainProv} provide restrain`;
+            if (restrainProv === 'would') {
+                 const restrainType = getTextValue('restrainType');
+                 if(restrainType) restrainSentence += ` (${restrainType})`;
+            }
+            restrainSentence += '.';
+            report.push(restrainSentence);
+
+            const parentalVisit = getSelectValue('parentalVisit');
+            let visitSentence = `Parents ${parentalVisit} provide visit to hostel.`;
+            if (parentalVisit === 'would') {
+                const visitFreq = getTextValue('visitFrequency');
+                if (visitFreq) {
+                    visitSentence = visitSentence.slice(0, -1) + ` (frequency: ${visitFreq}).`;
+                }
+                report.push(visitSentence);
+                
+                const visitTiming = getSelectValue('visitTiming');
+                const stateAfterVisit = getSelectValue('patientStateAfterVisit');
+                let stateSentence = `${visitTiming} the visit, patient ${stateAfterVisit}`;
+                if (stateAfterVisit.includes('challenging behaviour')) {
+                    const behAfterVisit = getTextValue('behaviourAfterVisit');
+                    if(behAfterVisit) stateSentence += ` ${behAfterVisit}`;
+                }
+                stateSentence += '.';
+                report.push(stateSentence);
+            } else {
+                 report.push(visitSentence);
+            }
+
+            report.push('\nOccupation and functioning');
+            let adlLevel = getSelectValue('adlLevel');
+            let adlSentence;
+            if (adlLevel === 'needed supervision') {
+                adlSentence = 'Patient needed supervision in ADL.';
+            } else {
+                let adlDesc = adlLevel;
+                if (adlLevel === 'partially assisted') {
+                    const adlSpecify = getTextValue('adlAssistSpecify');
+                    if(adlSpecify) adlDesc += ` (specify: ${adlSpecify})`;
+                }
+                 adlSentence = `Patient was ${adlDesc} in ADL.`;
+            }
+            report.push(adlSentence);
+
+            const adlBeh = getSelectValue('adlBehaviour');
+            let adlBehSentence = `There ${adlBeh} challenging behaviour during ADL.`;
+            if (adlBeh === 'was') {
+                const adlBehSpecify = getTextValue('adlBehaviourSpecify');
+                if(adlBehSpecify) adlBehSentence += ` (specify: ${adlBehSpecify})`;
+            }
+            report.push(adlBehSentence);
+            
+            const trainFreq = getTextValue('trainingFrequency') || '__ times per week';
+            const trainType = getSelectValue('trainingType');
+            report.push(`Patient received training ${trainFreq} in ${trainType}.`);
+
+            const workTasks = getTextValue('workTasks');
+            if(workTasks) report.push(`Patient’s work tasks include ${workTasks}.`);
+            
+            const workBeh = getSelectValue('workBehaviour');
+            let workBehSentence = `There ${workBeh} challenging behaviour during work training.`;
+            if (workBeh === 'was') {
+                const workBehSpecify = getTextValue('workBehaviourSpecify');
+                if(workBehSpecify) workBehSentence += ` (specify: ${workBehSpecify})`;
+            }
+            report.push(workBehSentence);
+
+            const motivation = getSelectValue('motivation');
+            const attention = getSelectValue('attention');
+            const tolerance = getSelectValue('tolerance');
+            report.push(`Patient showed ${motivation} motivation; ${attention} attention and ${tolerance} tolerance to training.`);
+
+            const nonProdBeh = getTextValue('nonProductiveBehaviour');
+            if(nonProdBeh) report.push(`Non-productive behaviour was elicited (specify: ${nonProdBeh}).`);
+
+            const leisure = getTextValue('leisureTasks');
+            if(leisure) report.push(`Patient enjoyed ${leisure} as leisure.`);
+
+            report.push('\nPlan:');
+            const planItems = getCheckboxValues('plan');
+            planItems.forEach(item => {
+                if(item === 'Liaise'){
+                    const liaiseWith = getSelectValue('liaiseWith');
+                    report.push(`Liaise with ${liaiseWith} prn`);
+                } else if(item === 'other'){
+                    const otherPlan = getTextValue('planOther');
+                    if(otherPlan) report.push(`Others: ${otherPlan}`);
+                } else {
+                    report.push(item);
+                }
+            });
+
+            const nextVisitDateRaw = getTextValue('nextVisitDate');
+            if (nextVisitDateRaw) {
+                const nextVisitDate = `${nextVisitDateRaw.split('-')[2]}/${nextVisitDateRaw.split('-')[1]}/${nextVisitDateRaw.split('-')[0]}`;
+                report.push(`(Scheduled next hostel/ home visit on ${nextVisitDate})`);
+            } else {
+                 report.push('(Scheduled next hostel/ home visit on __/__/_____)');
+            }
+
+            const mainHeading = `Report on ${visitType}\n\n`;
+            generatedReportTextarea.value = mainHeading + report.join('\n');
+
+        } catch (error) {
+            generatedReportTextarea.value = `A critical error occurred while generating the report.\n\nPlease contact support with this error message:\n\nError: ${error.message}\nStack: ${error.stack}`;
+            console.error("Report generation failed:", error);
+        }
+    });
+
+    copyReportBtn.addEventListener('click', () => {
+        if (!generatedReportTextarea.value) {
+            alert('No report generated to copy.');
+            return;
+        }
+        navigator.clipboard.writeText(generatedReportTextarea.value)
+            .then(() => alert('Report copied to clipboard!'))
+            .catch(err => {
+                console.error('Failed to copy report: ', err);
+                alert('Failed to copy report. Please copy manually.');
+            });
+    });
+
+    resetFormBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset the entire form?')) {
+            form.reset();
+            generatedReportTextarea.value = '';
+            lastClickedRadio = {}; 
+            form.querySelectorAll('select, input[type="radio"], input[type="checkbox"]').forEach(el => {
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            triggerAntecedentInput.disabled = false;
+            triggerAntecedentInput.placeholder = 'Describe antecedent or click \'unknown\'';
+            alert('Form has been reset.');
+        }
+    });
+
+    // Initial setup on page load
+    form.querySelectorAll('select, input[type="radio"], input[type="checkbox"]').forEach(el => {
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGT Intake Form</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 900px; margin: auto; }
+        h1, h2 { color: #0056b3; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 30px; }
+        h3 { color: #333; margin-top: 20px; margin-bottom: 10px; font-size: 1.1em; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .input-group { margin-bottom: 15px; }
+        .input-group > label, .section-title { font-weight: bold; display: block; margin-bottom: 5px; }
+        .input-group .sub-item label, .checkbox-group label, .radio-group label { font-weight: normal; display: inline-block; margin-right: 10px; margin-bottom: 5px; }
+        .input-group input[type="text"], .input-group input[type="number"], .input-group textarea, .input-group input[type="date"], .input-group select {
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .input-group input[type="text"].full-width, .input-group textarea.full-width { width: 100%; }
+        .input-group input[type="text"].inline-text, .input-group input[type="number"].inline-text, .input-group select.inline-text {
+            width: auto; display: inline-block; margin-left: 5px; vertical-align: middle;
+        }
+        .input-group textarea { height: 60px; resize: vertical; }
+        .checkbox-group input[type="checkbox"], .radio-group input[type="radio"] { margin-right: 5px; vertical-align: middle; }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        button:hover { background-color: #0056b3; }
+        button#resetFormButton { background-color: #dc3545; }
+        button#resetFormButton:hover { background-color: #c82333; }
+        button#copyReportButton { background-color: #fd7e14; } /* Orange color */
+        button#copyReportButton:hover { background-color: #e66a00; }
+        .mbi-toggle-btn { font-size: 12px; padding: 5px 10px; margin-top: 5px; background-color: #6c757d; }
+        .mbi-toggle-btn:hover { background-color: #5a6268; }
+        #reportOutputContainer { margin-top: 30px; }
+        #reportOutput {
+            padding: 15px;
+            border: 1px dashed #ccc;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .sub-item { margin-left: 0px; margin-bottom: 10px; padding-left: 15px; border-left: 2px solid #eee; }
+        .field-separator { margin: 0 5px; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .grid-item { display: flex; flex-direction: column; }
+        .total-score-display { font-weight: bold; margin-left: 10px; color: #0056b3; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>PGT Intake Form</h1>
+    <form id="intakeForm">
+        
+        <h2>Basic Information</h2>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Diagnosis:</span>
+            <label><input type="checkbox" name="diagnosis" value="Dementia"> Dementia</label>
+            <label><input type="checkbox" name="diagnosis" value="Dementia with BPSD"> Dementia with BPSD</label>
+            <label><input type="checkbox" name="diagnosis" value="Schizophrenia"> Schizophrenia</label>
+            <label><input type="checkbox" name="diagnosis" value="BAD"> BAD</label>
+            <label><input type="checkbox" name="diagnosis" value="Depression"> Depression</label>
+            <label>
+                <input type="checkbox" name="diagnosis_other_cb" value="Others"> Others:
+                <input type="text" id="diagnosis_other_text" name="diagnosis_other_text" class="inline-text auto-check-trigger" placeholder="Details">
+            </label>
+        </div>
+        <div class="grid-container">
+            <div class="input-group">
+                <label for="date_admission">Date of Admission:</label>
+                <input type="date" id="date_admission" name="date_admission" class="full-width">
+            </div>
+            <div class="input-group">
+                <label for="date_referral">Date of Referral:</label>
+                <input type="date" id="date_referral" name="date_referral" class="full-width">
+            </div>
+            <div class="input-group">
+                <label for="date_intake">Date of Intake:</label>
+                <input type="date" id="date_intake" name="date_intake" class="full-width">
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="roa">ROA:</label>
+            <input type="text" id="roa" name="roa" class="full-width" placeholder="Details">
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">SCS Status:</span>
+            <label><input type="radio" name="scs_status" value="CC"> CC</label>
+            <label><input type="radio" name="scs_status" value="SC"> SC</label>
+            <label><input type="radio" name="scs_status" value="IC"> IC</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Legal Status:</span>
+            <label><input type="checkbox" name="legal_status" value="F123"> F123</label>
+            <label><input type="checkbox" name="legal_status" value="Vol"> Vol</label>
+            <label><input type="checkbox" name="legal_status" value="Informal"> Informal</label>
+            <label><input type="checkbox" name="legal_status" value="F7"> F7</label>
+            <label><input type="checkbox" name="legal_status" value="F12"> F12</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Precautions:</span>
+            <label><input type="checkbox" name="precautions" value="SO"> SO</label>
+            <label><input type="checkbox" name="precautions" value="CO (unpredictable)"> CO (unpredictable)</label>
+            <label><input type="checkbox" name="precautions" value="CO (aggression)"> CO (aggression)</label>
+            <label><input type="checkbox" name="precautions" value="Epilepsy"> Epilepsy</label>
+            <label><input type="checkbox" name="precautions" value="Choking risk"> Choking risk</label>
+            <label><input type="checkbox" name="precautions" value="Infection Control"> Infection Control</label>
+            <label><input type="checkbox" name="precautions" value="DM"> DM</label>
+            <label>
+                <input type="checkbox" name="precautions_other_cb" value="Others"> Others:
+                <input type="text" id="precautions_other_text" name="precautions_other_text" class="inline-text auto-check-trigger" placeholder="Details">
+            </label>
+        </div>
+
+        <h2>History</h2>
+        <h3>Psychiatric History:</h3>
+        <div class="input-group radio-group">
+            <label><input type="radio" name="psych_hx_status" value="New to MHS"> New to MHS</label>
+            <label>
+                <input type="radio" name="psych_hx_status" value="Known to MHS since"> Known to MHS since:
+                <input type="number" id="psych_hx_known_year" name="psych_hx_known_year" class="inline-text auto-check-trigger" placeholder="YYYY" min="1900" max="2100">
+            </label>
+        </div>
+        <div class="input-group radio-group">
+            <label><input type="radio" name="psych_hx_admission" value="1st admission"> 1st admission</label>
+            <label>
+                <input type="radio" name="psych_hx_admission" value="Previous admission"> Previous admission:
+                <input type="text" id="psych_hx_admission_details" name="psych_hx_admission_details" class="inline-text auto-check-trigger" placeholder="Details">
+            </label>
+        </div>
+        <div class="input-group checkbox-group">
+            <label><input type="checkbox" name="psych_hx_fu" value="FU OPD"> FU OPD</label>
+            <label><input type="checkbox" name="psych_hx_fu" value="Private"> Private</label>
+        </div>
+
+        <div class="grid-container">
+            <div class="input-group radio-group">
+                <span class="section-title">Forensic Record:</span>
+                <label><input type="radio" name="forensic_record" value="nil"> nil</label>
+                <label><input type="radio" name="forensic_record" value="details"> <input type="text" id="forensic_record_details" class="inline-text auto-check-trigger" placeholder="Details"></label>
+            </div>
+            <div class="input-group radio-group">
+                <span class="section-title">SA Hx:</span>
+                <label><input type="radio" name="sa_hx" value="nil"> nil</label>
+                <label><input type="radio" name="sa_hx" value="details"> <input type="text" id="sa_hx_details" class="inline-text auto-check-trigger" placeholder="Details"></label>
+            </div>
+            <div class="input-group radio-group">
+                <span class="section-title">Family History of MI:</span>
+                <label><input type="radio" name="family_mi_hx" value="nil"> nil</label>
+                <label><input type="radio" name="family_mi_hx" value="details"> <input type="text" id="family_mi_hx_details" class="inline-text auto-check-trigger" placeholder="Details"></label>
+            </div>
+            <div class="input-group radio-group">
+                <span class="section-title">Suicidal History:</span>
+                <label><input type="radio" name="suicidal_hx" value="nil"> nil</label>
+                <label><input type="radio" name="suicidal_hx" value="details"> <input type="text" id="suicidal_hx_details" class="inline-text auto-check-trigger" placeholder="Details"></label>
+            </div>
+             <div class="input-group radio-group">
+                <span class="section-title">Violent History:</span>
+                <label><input type="radio" name="violent_hx" value="nil"> nil</label>
+                <label><input type="radio" name="violent_hx" value="details"> <input type="text" id="violent_hx_details" class="inline-text auto-check-trigger" placeholder="Details"></label>
+            </div>
+        </div>
+
+        <h3>Past Medical History:</h3>
+        <div class="input-group checkbox-group">
+            <label><input type="checkbox" name="pmh" value="CVA"> CVA</label>
+            <label><input type="checkbox" name="pmh" value="AF"> AF</label>
+            <label><input type="checkbox" name="pmh" value="IHD"> IHD</label>
+            <label><input type="checkbox" name="pmh" value="Parkinsonism"> Parkinsonism</label>
+            <label><input type="checkbox" name="pmh" value="DM"> DM</label>
+            <label><input type="checkbox" name="pmh" value="HT"> HT</label>
+            <label><input type="checkbox" name="pmh" value="COAD"> COAD</label>
+            <label><input type="checkbox" name="pmh" value="Hyperlipidaemia"> Hyperlipidaemia</label>
+            <label><input type="checkbox" name="pmh" value="GPH"> GPH</label>
+            <label><input type="checkbox" name="pmh_fracture_cb" value="#"> #: <input type="text" id="pmh_fracture_text" class="inline-text auto-check-trigger" placeholder="Details"></label>
+            <label><input type="checkbox" name="pmh_other_cb" value="Others"> Others: <input type="text" id="pmh_other_text" class="inline-text auto-check-trigger" placeholder="Details"></label>
+        </div>
+
+        <h3>Lifestyle:</h3>
+        <div class="input-group checkbox-group">
+            <label><input type="checkbox" name="lifestyle" value="Smoker"> Smoker</label>
+            <label><input type="checkbox" name="lifestyle" value="Ex-smoker"> Ex-smoker</label>
+            <label><input type="checkbox" name="lifestyle" value="Drinker"> Drinker</label>
+            <label><input type="checkbox" name="lifestyle" value="Ex-drinker"> Ex-drinker</label>
+        </div>
+        <div class="input-group">
+            <label for="other_conditions">Other Conditions:</label>
+            <input type="text" id="other_conditions" name="other_conditions" class="full-width" placeholder="Details">
+        </div>
+
+        <h2>Mental State and General Observations</h2>
+        <div class="input-group radio-group">
+            <span class="section-title">Mood:</span>
+            <label><input type="radio" name="ms_mood" value="Neutral"> Neutral</label>
+            <label><input type="radio" name="ms_mood" value="Depressed"> Depressed</label>
+            <label><input type="radio" name="ms_mood" value="Dysthymic"> Dysthymic</label>
+            <label><input type="radio" name="ms_mood" value="Elated"> Elated</label>
+            <label><input type="radio" name="ms_mood" value="Irritable"> Irritable</label>
+            <label><input type="radio" name="ms_mood" value="Anxious"> Anxious</label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">Affect:</span>
+            <label><input type="radio" name="ms_affect" value="Congruent"> Congruent</label>
+            <label><input type="radio" name="ms_affect" value="Labile"> Labile</label>
+            <label><input type="radio" name="ms_affect" value="Shallow"> Shallow</label>
+            <label><input type="radio" name="ms_affect" value="Blunted"> Blunted</label>
+            <label><input type="radio" name="ms_affect" value="Restricted"> Restricted</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Speech:</span>
+            <label><input type="checkbox" name="ms_speech" value="Relevant"> Relevant</label>
+            <label><input type="checkbox" name="ms_speech" value="Coherent"> Coherent</label>
+            <label><input type="checkbox" name="ms_speech" value="Spontaneous"> Spontaneous</label>
+            <label><input type="checkbox" name="ms_speech" value="Pressured"> Pressured</label>
+            <label><input type="checkbox" name="ms_speech" value="Slurred"> Slurred</label>
+            <label><input type="checkbox" name="ms_speech" value="Circumstantial"> Circumstantial</label>
+            <label><input type="checkbox" name="ms_speech" value="Tangential"> Tangential</label>
+            <label><input type="checkbox" name="ms_speech" value="Confabulation"> Confabulation</label>
+            <label><input type="checkbox" name="ms_speech" value="Disorganized"> Disorganized</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Hallucination:</span>
+            <label><input type="checkbox" name="ms_hallucination" value="Auditory"> Auditory</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Visual"> Visual</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Olfactory"> Olfactory</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Tactile"> Tactile</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Gustatory"> Gustatory</label>
+            <label><input type="checkbox" name="ms_hallucination" value="Nil"> Nil</label>
+            <input type="text" id="ms_hallucination_details" name="ms_hallucination_details" class="inline-text" placeholder="Details">
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Thought:</span>
+            <label><input type="checkbox" name="ms_thought" value="Persecutory"> Persecutory</label>
+            <label><input type="checkbox" name="ms_thought" value="Delusional"> Delusional</label>
+            <label><input type="checkbox" name="ms_thought" value="Somatic"> Somatic</label>
+            <label><input type="checkbox" name="ms_thought" value="Grandiose"> Grandiose</label>
+            <label><input type="checkbox" name="ms_thought" value="Idea of reference"> Idea of reference</label>
+            <label><input type="checkbox" name="ms_thought" value="Thought broadcasting"> Thought broadcasting</label>
+            <label><input type="checkbox" name="ms_thought" value="Being control"> Being control</label>
+            <label><input type="checkbox" name="ms_thought_other_cb" value="Other"> Other: <input type="text" id="ms_thought_other_text" name="ms_thought_other_text" class="inline-text auto-check-trigger" placeholder="Specify other"></label>
+            <label><input type="checkbox" name="ms_thought" value="Nil"> Nil</label>
+            <input type="text" id="ms_thought_details" name="ms_thought_details" class="inline-text" placeholder="Details">
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Behavior:</span>
+            <label><input type="checkbox" name="ms_behavior" value="Normal"> Normal</label>
+            <label><input type="checkbox" name="ms_behavior" value="Bizarre"> Bizarre</label>
+            <label><input type="checkbox" name="ms_behavior" value="Self-muttering"> Self-muttering</label>
+            <label><input type="checkbox" name="ms_behavior" value="Self-giggling"> Self-giggling</label>
+            <label><input type="checkbox" name="ms_behavior" value="Disturbing"> Disturbing</label>
+            <label><input type="checkbox" name="ms_behavior" value="Disorganized"> Disorganized</label>
+            <label><input type="checkbox" name="ms_behavior" value="Disinhibited"> Disinhibited</label>
+            <label><input type="checkbox" name="ms_behavior" value="Yelling"> Yelling</label>
+            <label><input type="checkbox" name="ms_behavior" value="Sundowning"> Sundowning</label>
+            <input type="text" id="ms_behavior_details" name="ms_behavior_details" class="inline-text" placeholder="Details">
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Cognitive:</span>
+            <label><input type="checkbox" name="ms_cognitive" value="Oriented"> Oriented</label>
+            <label><input type="checkbox" name="ms_cognitive" value="Disoriented"> Disoriented</label>
+            <label><input type="checkbox" name="ms_cognitive" value="Able to understand instructions"> Able to understand instructions</label>
+            <label><input type="checkbox" name="ms_cognitive" value="Difficult to understand instructions"> Difficult to understand instructions</label>
+            <label><input type="checkbox" name="ms_cognitive" value="Able to follow commands"> Able to follow commands</label>
+            <label><input type="checkbox" name="ms_cognitive" value="Not able to follow commands"> Not able to follow commands</label>
+            / Follow
+            <label><input type="checkbox" name="ms_cognitive_follow" value="1-step"> 1-step</label>
+            <label><input type="checkbox" name="ms_cognitive_follow" value="2-step"> 2-step</label>
+            <label><input type="checkbox" name="ms_cognitive_follow" value="3-step"> 3-step</label>
+             commands
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Risk:</span>
+            <label><input type="checkbox" name="ms_risk" value="Suicidal"> Suicidal</label>
+            <label><input type="checkbox" name="ms_risk" value="Homicidal"> Homicidal</label>
+            <label><input type="checkbox" name="ms_risk" value="Self-harm"> Self-harm</label>
+            <label><input type="checkbox" name="ms_risk" value="Self-neglect"> Self-neglect</label>
+            <label><input type="checkbox" name="ms_risk" value="Violent"> Violent</label>
+            <label><input type="checkbox" name="ms_risk" value="Fall"> Fall</label>
+            <label><input type="checkbox" name="ms_risk" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">Insight:</span>
+            <label><input type="radio" name="ms_insight" value="Full"> Full</label>
+            <label><input type="radio" name="ms_insight" value="Partial"> Partial</label>
+            <label><input type="radio" name="ms_insight" value="Limited"> Limited</label>
+            <label><input type="radio" name="ms_insight" value="Poor"> Poor</label>
+        </div>
+
+        <h2>Physical Condition</h2>
+        <div class="input-group">
+            <label for="mmt">MMT:</label>
+            <textarea id="mmt" name="mmt" class="full-width"></textarea>
+        </div>
+        <div class="input-group">
+            <label for="functional_balance">Functional balance:</label>
+            <textarea id="functional_balance" name="functional_balance" class="full-width"></textarea>
+        </div>
+        <h3>Risk of Fall:</h3>
+        <div class="input-group">
+            <span class="section-title">Fall History:</span>
+            <div class="sub-item radio-group">
+                3 months: <label><input type="radio" name="fall_hx_3m" value="Yes"> Yes</label> <label><input type="radio" name="fall_hx_3m" value="No"> No</label>
+            </div>
+             <div class="sub-item radio-group">
+                6 months: <label><input type="radio" name="fall_hx_6m" value="Yes"> Yes</label> <label><input type="radio" name="fall_hx_6m" value="No"> No</label>
+            </div>
+             <div class="sub-item radio-group">
+                9 months: <label><input type="radio" name="fall_hx_9m" value="Yes"> Yes</label> <label><input type="radio" name="fall_hx_9m" value="No"> No</label>
+            </div>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">FROP-COM Screen:</span>
+            <label><input type="radio" name="frop_com" value="Low Risk"> Low Risk</label>
+            <label><input type="radio" name="frop_com" value="Moderate Risk"> Moderate Risk</label>
+            <label><input type="radio" name="frop_com" value="High Risk"> High Risk</label>
+        </div>
+        <div class="input-group">
+            <label for="fes">FES:</label>
+            <input type="text" id="fes" name="fes" class="inline-text" placeholder="e.g. 45"> / 64
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Risk Factors:</span>
+            <label><input type="checkbox" name="fall_risk_factors" value="Person"> Person</label>
+            <label><input type="checkbox" name="fall_risk_factors" value="Environment"> Environment</label>
+            <label><input type="checkbox" name="fall_risk_factors" value="Occupation"> Occupation</label>
+        </div>
+
+        <h2>Cognitive Function</h2>
+        <div class="input-group">
+            <span class="section-title">HK-MoCA:</span>
+            <div class="sub-item">
+                <div class="radio-group">
+                    <label><input type="radio" name="hkmoca_version" value="original version"> original version</label>
+                    <label><input type="radio" name="hkmoca_version" value="alternative version"> alternative version</label>
+                </div>
+                <div style="margin-top: 10px;">
+                    Score: <input type="text" id="hkmoca_total" name="hkmoca_total" class="inline-text" style="width: 40px; font-weight: bold;" readonly> / 30
+                    <select id="hkmoca_operator" name="hkmoca_operator" class="inline-text">
+                        <option value=">">></option>
+                        <option value="<"><</option>
+                        <option value="=">=</option>
+                    </select>
+                    <select id="hkmoca_percentile" name="hkmoca_percentile" class="inline-text">
+                        <option value="2">2</option>
+                        <option value="7">7</option>
+                        <option value="16">16</option>
+                    </select> percentile,
+                    education level: <input type="number" id="hkmoca_edu_level" name="hkmoca_edu_level" class="inline-text" style="width: 50px;" placeholder="years"> years
+                </div>
+                <div class="grid-container" style="margin-top:15px;">
+                    <div class="grid-item">
+                        <label for="hkmoca_exec">Executive/Visuospatial:</label>
+                        <input type="number" id="hkmoca_exec" name="hkmoca_exec" class="inline-text hkmoca-subscore" max="5" min="0" style="width: 60px;"> / 5
+                    </div>
+                     <div class="grid-item">
+                        <label for="hkmoca_naming">Naming:</label>
+                        <input type="number" id="hkmoca_naming" name="hkmoca_naming" class="inline-text hkmoca-subscore" max="3" min="0" style="width: 60px;"> / 3
+                    </div>
+                    <div class="grid-item">
+                        <label for="hkmoca_attention">Attention:</label>
+                        <input type="number" id="hkmoca_attention" name="hkmoca_attention" class="inline-text hkmoca-subscore" max="6" min="0" style="width: 60px;"> / 6
+                    </div>
+                    <div class="grid-item">
+                        <label for="hkmoca_lang">Language:</label>
+                        <input type="number" id="hkmoca_lang" name="hkmoca_lang" class="inline-text hkmoca-subscore" max="3" min="0" style="width: 60px;"> / 3
+                    </div>
+                    <div class="grid-item">
+                        <label for="hkmoca_abstract">Abstraction:</label>
+                        <input type="number" id="hkmoca_abstract" name="hkmoca_abstract" class="inline-text hkmoca-subscore" max="2" min="0" style="width: 60px;"> / 2
+                    </div>
+                     <div class="grid-item">
+                        <label for="hkmoca_recall_sp">Delayed recall (spont.):</label>
+                        <input type="number" id="hkmoca_recall_sp" name="hkmoca_recall_sp" class="inline-text hkmoca-subscore" max="5" min="0" style="width: 60px;"> / 5
+                    </div>
+                    <div class="grid-item">
+                        <label for="hkmoca_recall_cue">Delayed recall (cues):</label>
+                        <input type="number" id="hkmoca_recall_cue" name="hkmoca_recall_cue" class="inline-text" max="5" min="0" style="width: 60px;"> / 5
+                    </div>
+                     <div class="grid-item">
+                        <label for="hkmoca_orient_date">Orientation (date):</label>
+                        <input type="number" id="hkmoca_orient_date" name="hkmoca_orient_date" class="inline-text hkmoca-subscore" max="4" min="0" style="width: 60px;"> / 4
+                    </div>
+                     <div class="grid-item">
+                        <label for="hkmoca_orient_place">Orientation (place):</label>
+                        <input type="number" id="hkmoca_orient_place" name="hkmoca_orient_place" class="inline-text hkmoca-subscore" max="2" min="0" style="width: 60px;"> / 2
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Overall performance:</span>
+            <label><input type="checkbox" name="cog_overall_performance" value="intact"> intact</label>
+            <label><input type="checkbox" name="cog_overall_performance" value="impaired"> impaired</label>
+            cognitive functions on
+            <label><input type="checkbox" name="cog_overall_domain" value="visuospatial/executive function"> visuospatial/executive function</label>
+            <label><input type="checkbox" name="cog_overall_domain" value="attention"> attention</label>
+            <label><input type="checkbox" name="cog_overall_domain" value="language"> language</label>
+            <label><input type="checkbox" name="cog_overall_domain" value="abstract thinking"> abstract thinking</label>
+            <label><input type="checkbox" name="cog_overall_domain" value="delayed recall"> delayed recall</label>
+            <label><input type="checkbox" name="cog_overall_domain" value="orientation"> orientation</label>
+            <label><input type="checkbox" name="cog_overall_domain" value="working memory"> working memory</label>
+            <label><input type="checkbox" name="cog_overall_domain" value="long term memory"> long term memory</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Communication Barriers:</span>
+            <label><input type="checkbox" name="comm_barriers" value="Speech"> Speech</label>
+            <label><input type="checkbox" name="comm_barriers" value="Vision"> Vision</label>
+            <label><input type="checkbox" name="comm_barriers" value="Hearing"> Hearing</label>
+        </div>
+         <div class="input-group radio-group">
+            <span class="section-title">Daily functioning:</span>
+            <label><input type="radio" name="daily_functioning" value="Not affected"> Not affected</label>
+            <label><input type="radio" name="daily_functioning" value="Affected"> Affected</label>
+            <label><input type="radio" name="daily_functioning" value="Doubtful"> Doubtful</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Potential risk:</span>
+            <label><input type="checkbox" name="potential_risk" value="getting lost"> getting lost</label>
+            <label><input type="checkbox" name="potential_risk" value="forgetting to turn off stove or tap"> forgetting to turn off stove or tap</label>
+            <label><input type="checkbox" name="potential_risk" value="fall"> fall</label>
+            <label><input type="checkbox" name="potential_risk_other_cb" value="others"> others: <input type="text" id="potential_risk_other_text" name="potential_risk_other_text" class="inline-text auto-check-trigger"></label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Specific cognitive assessment:</span>
+            <label><input type="checkbox" name="spec_cog_assess_cfab_cb" value="CFAB"> CFAB <input type="text" id="spec_cog_assess_cfab_score" name="spec_cog_assess_cfab_score" class="inline-text auto-check-trigger" style="width:40px;"> /18</label>
+            <label><input type="checkbox" name="spec_cog_assess_ncse_cb" value="NCSE"> NCSE: <input type="text" id="spec_cog_assess_ncse_score" name="spec_cog_assess_ncse_score" class="inline-text auto-check-trigger" style="width:60px;"></label>
+            <label><input type="checkbox" name="spec_cog_assess_rbmt_cb" value="RBMT"> RBMT: <input type="text" id="spec_cog_assess_rbmt_score" name="spec_cog_assess_rbmt_score" class="inline-text auto-check-trigger" style="width:60px;"></label>
+            <label><input type="checkbox" name="spec_cog_assess_others_cb" value="Others"> Others: <input type="text" id="spec_cog_assess_others_text" name="spec_cog_assess_others_text" class="inline-text auto-check-trigger" style="width:100px;"></label>
+            <label><input type="checkbox" name="spec_cog_assess_nil_cb" value="Nil"> Nil.</label>
+        </div>
+        
+        <h2>Functional Performance</h2>
+        <h3>Premorbid Functional Status:</h3>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Role:</span>
+            <label><input type="checkbox" name="premorbid_role" value="Caregiver"> Caregiver</label>
+            <label><input type="checkbox" name="premorbid_role" value="Homemaker"> Homemaker</label>
+            <label><input type="checkbox" name="premorbid_role" value="Self-maintainer"> Self-maintainer</label>
+            <label><input type="checkbox" name="premorbid_role" value="Care Recipient"> Care Recipient</label>
+            <input type="text" id="premorbid_role_specify" name="premorbid_role_specify" class="inline-text" placeholder="Specify Role">
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">ADL:</span>
+            <label><input type="radio" name="premorbid_adl" value="Independent"> Independent</label>
+            <label><input type="radio" name="premorbid_adl" value="Assisted"> Assisted</label>
+            <label><input type="radio" name="premorbid_adl" value="Supervision"> Supervision</label>
+            <label><input type="radio" name="premorbid_adl" value="Dependent"> Dependent</label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">IADL:</span>
+            <label><input type="radio" name="premorbid_iadl" value="Independent"> Independent</label>
+            <label><input type="radio" name="premorbid_iadl" value="Assisted"> Assisted</label>
+            <label><input type="radio" name="premorbid_iadl" value="Supervision"> Supervision</label>
+            <label><input type="radio" name="premorbid_iadl" value="Dependent"> Dependent</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Activity Level:</span>
+            <label><input type="checkbox" name="premorbid_activity" value="Outdoor (Regular)"> Outdoor (Regular)</label>
+            <label><input type="checkbox" name="premorbid_activity" value="Outdoor (Occasional)"> Outdoor (Occasional)</label>
+            <label><input type="checkbox" name="premorbid_activity" value="Home bound"> Home bound</label>
+            <label><input type="checkbox" name="premorbid_activity" value="Chair bound"> Chair bound</label>
+            <label><input type="checkbox" name="premorbid_activity" value="Bed bound"> Bed bound</label>
+        </div>
+        <div class="input-group">
+            <span class="section-title">Mobility Status:</span>
+            <div class="sub-item">
+                Indoors: <input type="text" id="mobility_indoors" name="mobility_indoors" class="inline-text" placeholder="Mode">
+            </div>
+            <div class="sub-item">
+                Outdoors: <input type="text" id="mobility_outdoors" name="mobility_outdoors" class="inline-text" placeholder="Mode">
+            </div>
+            <div class="sub-item radio-group">
+                Aid:
+                <label><input type="radio" name="mobility_aid" value="unaided"> unaided</label>
+                <label><input type="radio" name="mobility_aid" value="stick"> stick</label>
+                <label><input type="radio" name="mobility_aid" value="umbrella"> umbrella</label>
+                <label><input type="radio" name="mobility_aid" value="quadripod"> quadripod</label>
+                <label><input type="radio" name="mobility_aid" value="frame"> frame</label>
+                <label><input type="radio" name="mobility_aid" value="wheelchair"> wheelchair</label>
+            </div>
+        </div>
+
+        <h3>ADL Function by Modified Barthel Index (MBI) <span id="mbi_total_display" class="total-score-display">Total: 0 / 100</span></h3>
+        <div class="grid-container">
+            <div class="grid-item"><label>Feeding: <select name="mbi_feeding" class="mbi-score"><option value="0">0</option><option value="2">2</option><option value="5">5</option><option value="8">8</option><option value="10">10</option></select></label></div>
+            <div class="grid-item"><label>Grooming: <select name="mbi_grooming" class="mbi-score"><option value="0">0</option><option value="1">1</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label></div>
+            <div class="grid-item"><label>Bed/chair transfer: <select name="mbi_transfer" class="mbi-score"><option value="0">0</option><option value="3">3</option><option value="8">8</option><option value="12">12</option><option value="15">15</option></select></label></div>
+            <div class="grid-item"><label>Dressing: <select name="mbi_dressing" class="mbi-score"><option value="0">0</option><option value="2">2</option><option value="5">5</option><option value="8">8</option><option value="10">10</option></select></label></div>
+            <div class="grid-item"><label>Toileting: <select name="mbi_toileting" class="mbi-score"><option value="0">0</option><option value="2">2</option><option value="5">5</option><option value="8">8</option><option value="10">10</option></select></label></div>
+            <div class="grid-item"><label>Bladder: <select name="mbi_bladder" class="mbi-score"><option value="0">0</option><option value="2">2</option><option value="5">5</option><option value="8">8</option><option value="10">10</option></select></label></div>
+            <div class="grid-item"><label>Bowel: <select name="mbi_bowel" class="mbi-score"><option value="0">0</option><option value="2">2</option><option value="5">5</option><option value="8">8</option><option value="10">10</option></select></label></div>
+            <div class="grid-item"><label>Bathing: <select name="mbi_bathing" class="mbi-score"><option value="0">0</option><option value="1">1</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label></div>
+            <div class="grid-item" id="mbi_ambulation_container"><label>Ambulation: <select name="mbi_ambulation" class="mbi-score"><option value="0">0</option><option value="3">3</option><option value="8">8</option><option value="12">12</option><option value="15">15</option></select></label></div>
+            <div class="grid-item" id="mbi_wheelchair_container" style="display: none;"><label>Wheelchair: <select name="mbi_wheelchair" class="mbi-score"><option value="0">0</option><option value="1">1</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label></div>
+            <div class="grid-item"><label>Stairs: <select name="mbi_stairs" class="mbi-score"><option value="0">0</option><option value="2">2</option><option value="5">5</option><option value="8">8</option><option value="10">10</option></select></label></div>
+        </div>
+        <div>
+            <button type="button" id="toggleToWheelchairBtn" class="mbi-toggle-btn">Use Wheelchair Score</button>
+            <button type="button" id="toggleToAmbulationBtn" class="mbi-toggle-btn" style="display: none;">Use Ambulation Score</button>
+        </div>
+
+        <h3>Lawton’s Instrumental Activities of Daily Living (IADL) <span id="iadl_total_display" class="total-score-display">Total: 0 / 27</span></h3>
+        <div class="grid-container">
+            <div class="grid-item"><label>Use of telephone: <select name="iadl_telephone" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Shopping: <select name="iadl_shopping" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Food preparation: <select name="iadl_food" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Housekeeping: <select name="iadl_housekeeping" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Laundry: <select name="iadl_laundry" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Transport: <select name="iadl_transport" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Medication: <select name="iadl_medication" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Handling finance: <select name="iadl_finance" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+            <div class="grid-item"><label>Household maintenance: <select name="iadl_maintenance" class="iadl-score"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+        </div>
+
+        <h2>Home Environment</h2>
+        <div class="input-group radio-group">
+            <span class="section-title">Accommodation:</span>
+            <label><input type="radio" name="accommodation" value="PHU"> PHU</label>
+            <label><input type="radio" name="accommodation" value="HOS Flat"> HOS Flat</label>
+            <label><input type="radio" name="accommodation" value="Private flat"> Private flat</label>
+            <label><input type="radio" name="accommodation" value="OAH/C&A"> OAH/C&A</label>
+            <label><input type="radio" name="accommodation" value="Village House/hut"> Village House/hut</label>
+            <label><input type="radio" name="accommodation_other_cb" value="Other"> Other: <input type="text" id="accommodation_other_text" name="accommodation_other_text" class="inline-text auto-check-trigger" placeholder="Specify"></label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Accessibility:</span>
+            <label><input type="checkbox" name="accessibility" value="G/F"> G/F</label>
+            <label><input type="checkbox" name="accessibility" value="Direct lift-landing"> Direct lift-landing</label>
+            <label><input type="checkbox" name="accessibility" value="Non-direct lift-landing FOS"> Non-direct lift-landing FOS</label>
+            <label><input type="checkbox" name="accessibility" value="Non-lift landing FOS"> Non-lift landing FOS</label>
+            <label><input type="checkbox" name="accessibility" value="steps"> steps</label>
+            <label><input type="checkbox" name="accessibility" value="slopes"> slopes</label>
+            <label><input type="checkbox" name="accessibility" value="Uneven ground"> Uneven ground</label>
+        </div>
+         <div class="input-group checkbox-group">
+            <span class="section-title">Toilet:</span>
+            <label><input type="checkbox" name="toilet" value="Sitting"> Sitting</label>
+            <label><input type="checkbox" name="toilet" value="Squatting"> Squatting</label>
+            <label><input type="checkbox" name="toilet" value="Commode"> Commode</label>
+            <label><input type="checkbox" name="toilet" value="Urinal/bedpan"> Urinal/bedpan</label>
+            <label><input type="checkbox" name="toilet" value="Napkin"> Napkin</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Bathroom:</span>
+            <label><input type="checkbox" name="bathroom" value="Shower"> Shower</label>
+            <label><input type="checkbox" name="bathroom" value="Bathtub"> Bathtub</label>
+            <label><input type="checkbox" name="bathroom" value="Shower Tub"> Shower Tub</label>
+            <label><input type="checkbox" name="bathroom" value="Basin/bucket"> Basin/bucket</label>
+            <label><input type="checkbox" name="bathroom" value="Shower chair"> Shower chair</label>
+            <label><input type="checkbox" name="bathroom" value="Hot water system"> Hot water system</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Aid/Equipment:</span>
+            <label><input type="checkbox" name="aid_equipment" value="Handrail"> Handrail</label>
+            <label><input type="checkbox" name="aid_equipment" value="Bedrail"> Bedrail</label>
+            <label><input type="checkbox" name="aid_equipment" value="Commode Chair"> Commode Chair</label>
+            <label><input type="checkbox" name="aid_equipment_other_cb" value="Others"> Others: <input type="text" id="aid_equipment_other_text" name="aid_equipment_other_text" class="inline-text auto-check-trigger" placeholder="Specify"></label>
+        </div>
+
+        <h2>Formal / Informal Caregivers Identification</h2>
+        <div class="input-group radio-group">
+            <span class="section-title">Living with:</span>
+            <label><input type="radio" name="living_with" value="Alone"> Alone</label>
+            <label><input type="radio" name="living_with" value="Family"> Family: <input type="text" id="living_with_family_members" name="living_with_family_members" class="inline-text auto-check-trigger" placeholder="Members"></label>
+            <label><input type="radio" name="living_with" value="Maid"> Maid</label>
+            <label><input type="radio" name="living_with_other_cb" value="Others"> Others: <input type="text" id="living_with_other_text" name="living_with_other_text" class="inline-text auto-check-trigger" placeholder="Specify"></label>
+        </div>
+        <div class="input-group radio-group">
+            <span class="section-title">Level of Support:</span>
+            <label><input type="radio" name="support_level" value="Full-time"> Full-time</label>
+            <label><input type="radio" name="support_level" value="Daytime only"> Daytime only</label>
+            <label><input type="radio" name="support_level" value="Night-time only"> Night-time only</label>
+            <label><input type="radio" name="support_level" value="N/A"> N/A</label>
+            <label><input type="radio" name="support_level_other_cb" value="Others"> Others: <input type="text" id="support_level_other_text" name="support_level_other_text" class="inline-text auto-check-trigger" placeholder="Specify"></label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Assistance Provided:</span>
+            <label><input type="checkbox" name="assistance_provided" value="ADL"> ADL</label>
+            <label><input type="checkbox" name="assistance_provided" value="IADL"> IADL</label>
+            <label><input type="checkbox" name="assistance_provided" value="Medication/Medical procedure admin."> Medication/Medical procedure admin.</label>
+            <label><input type="checkbox" name="assistance_provided" value="Coordinate Medical procedures"> Coordinate Medical procedures</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Community Service:</span>
+            <label><input type="checkbox" name="community_service" value="EHCCS"> EHCCS</label>
+            <label><input type="checkbox" name="community_service" value="IHCS"> IHCS</label>
+            <label><input type="checkbox" name="community_service" value="DCC"> DCC</label>
+            <label><input type="checkbox" name="community_service" value="DAC"> DAC</label>
+            <label><input type="checkbox" name="community_service" value="PG CPN"> PG CPN</label>
+            <label><input type="checkbox" name="community_service" value="ESPP"> ESPP</label>
+            <label><input type="checkbox" name="community_service" value="PGDH"> PGDH</label>
+            <label><input type="checkbox" name="community_service" value="NEC"> NEC</label>
+            <label><input type="checkbox" name="community_service" value="Nil"> Nil</label>
+            <label><input type="checkbox" name="community_service_other_cb" value="Others"> Others: <input type="text" id="community_service_other_text" name="community_service_other_text" class="inline-text auto-check-trigger"></label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Financial Support:</span>
+            <label><input type="checkbox" name="financial_support" value="CSSA"> CSSA</label>
+            <label><input type="checkbox" name="financial_support" value="DA"> DA</label>
+            <label><input type="checkbox" name="financial_support" value="OALA"> OALA</label>
+            <label><input type="checkbox" name="financial_support" value="Pension/Saving"> Pension/Saving</label>
+            <label><input type="checkbox" name="financial_support" value="Family"> Family</label>
+            <label><input type="checkbox" name="financial_support_voucher_cb" value="Voucher"> Voucher: <input type="text" id="financial_support_voucher_text" name="financial_support_voucher_text" class="inline-text auto-check-trigger" placeholder="Type"></label>
+        </div>
+        
+        <h2>Caregiver’s Difficulties</h2>
+        <div class="input-group radio-group">
+            <span class="section-title">Own health issue:</span>
+            <label><input type="radio" name="caregiver_health" value="Nil"> Nil</label>
+            <label><input type="radio" name="caregiver_health" value="details"> Details: <input type="text" id="caregiver_health_details" name="caregiver_health_details" class="inline-text auto-check-trigger" placeholder="Specify"></label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">BPSD characteristics:</span>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Sleep disturbance"> Sleep disturbance</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Repetition"> Repetition</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Sadness/Depress"> Sadness/Depress</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Combativeness"> Combativeness</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Hallucinations"> Hallucinations</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Sundowning"> Sundowning</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Suspicious"> Suspicious</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Screaming/noise"> Screaming/noise</label>
+            <label><input type="checkbox" name="caregiver_bpsd" value="Disinhibition"> Disinhibition</label>
+            <label><input type="checkbox" name="caregiver_bpsd_other_cb" value="Other"> Other: <input type="text" id="caregiver_bpsd_other_text" name="caregiver_bpsd_other_text" class="inline-text auto-check-trigger"></label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">ADL aspects:</span>
+            <label><input type="checkbox" name="caregiver_adl" value="Dressing"> Dressing</label>
+            <label><input type="checkbox" name="caregiver_adl" value="Bathing"> Bathing</label>
+            <label><input type="checkbox" name="caregiver_adl" value="Eating"> Eating</label>
+            <label><input type="checkbox" name="caregiver_adl" value="Grooming"> Grooming</label>
+            <label><input type="checkbox" name="caregiver_adl" value="Toileting"> Toileting</label>
+            <label><input type="checkbox" name="caregiver_adl" value="Taking medicine"> Taking medicine</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">IADL aspects:</span>
+            <label><input type="checkbox" name="caregiver_iadl" value="Wandering"> Wandering</label>
+            <label><input type="checkbox" name="caregiver_iadl" value="Get lost"> Get lost</label>
+            <label><input type="checkbox" name="caregiver_iadl" value="Financial management"> Financial management</label>
+            <label><input type="checkbox" name="caregiver_iadl_other_cb" value="Other"> Other: <input type="text" id="caregiver_iadl_other_text" name="caregiver_iadl_other_text" class="inline-text auto-check-trigger"></label>
+        </div>
+        
+        <h2>Family’s / Client’s Goals</h2>
+        <div class="input-group checkbox-group">
+            <h3>Health Management:</h3>
+            <label><input type="checkbox" name="goals_health" value="Symptom control"> Symptom control</label>
+            <label><input type="checkbox" name="goals_health" value="Medication adherence"> Medication adherence</label>
+            <label><input type="checkbox" name="goals_health" value="Prevent complications"> Prevent complications</label>
+            <label><input type="checkbox" name="goals_health_manage_cb" value="Manage"> Manage: <input type="text" id="goals_health_manage_text" class="inline-text auto-check-trigger" placeholder="Specific Condition"></label>
+        </div>
+        <div class="input-group checkbox-group">
+            <h3>Functional Independence:</h3>
+            <label><input type="checkbox" name="goals_functional" value="Improve mobility"> Improve mobility</label>
+            <label><input type="checkbox" name="goals_functional" value="ADL independence"> ADL independence</label>
+            <label><input type="checkbox" name="goals_functional" value="IADL competence"> IADL competence</label>
+            <label><input type="checkbox" name="goals_functional" value="Reduce caregiver dependence"> Reduce caregiver dependence</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <h3>Psychosocial Well-being:</h3>
+            <label><input type="checkbox" name="goals_psychosocial" value="Reduce isolation"> Reduce isolation</label>
+            <label><input type="checkbox" name="goals_psychosocial" value="Engage socially"> Engage socially</label>
+            <label><input type="checkbox" name="goals_psychosocial" value="Manage BPSD"> Manage BPSD</label>
+            <label><input type="checkbox" name="goals_psychosocial" value="Improve mood"> Improve mood</label>
+            <label><input type="checkbox" name="goals_psychosocial" value="Maintain hobbies"> Maintain hobbies</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <h3>Safety & Care:</h3>
+            <label><input type="checkbox" name="goals_safety" value="Home safety modifications"> Home safety modifications</label>
+            <label><input type="checkbox" name="goals_safety" value="Fall prevention"> Fall prevention</label>
+            <label><input type="checkbox" name="goals_safety" value="Wandering management"> Wandering management</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <h3>Long-Term Planning:</h3>
+            <label><input type="checkbox" name="goals_longterm" value="Respite care"> Respite care</label>
+            <label><input type="checkbox" name="goals_longterm" value="Residential placement"> Residential placement</label>
+            <label><input type="checkbox" name="goals_longterm" value="Advance directives"> Advance directives</label>
+            <label><input type="checkbox" name="goals_longterm" value="Financial planning"> Financial planning</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <h3>Caregiver Support:</h3>
+            <label><input type="checkbox" name="goals_caregiver_training_cb" value="Training in"> Training in: <input type="text" id="goals_caregiver_training_text" class="inline-text auto-check-trigger" placeholder="Skill"></label>
+            <label><input type="checkbox" name="goals_caregiver" value="Stress management"> Stress management</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <h3>Community Integration</h3>
+        </div>
+        <div class="input-group">
+            <label for="goals_others">Others:</label>
+            <textarea id="goals_others" name="goals_others" class="full-width" placeholder="Details"></textarea>
+        </div>
+
+        <h2>Strengths & Problems</h2>
+        <div class="input-group">
+            <label for="strengths">Strengths:</label>
+            <textarea id="strengths" name="strengths" class="full-width"></textarea>
+        </div>
+        <div class="input-group">
+            <label for="problems_identified">Problem Identified:</label>
+            <textarea id="problems_identified" name="problems_identified" class="full-width"></textarea>
+        </div>
+
+        <h2>Conclusion and Recommendations</h2>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Cognitive Training:</span>
+            <label><input type="checkbox" name="rec_cognitive" value="Cognitive assessment & training"> Cognitive assessment & training</label>
+            <label><input type="checkbox" name="rec_cognitive" value="Computerized cognitive training"> Computerized cognitive training</label>
+            <label><input type="checkbox" name="rec_cognitive" value="Cognitive stimulation therapy"> Cognitive stimulation therapy</label>
+            <label><input type="checkbox" name="rec_cognitive" value="Cognitive stimulation activities"> Cognitive stimulation activities</label>
+            <label><input type="checkbox" name="rec_cognitive" value="Compensatory strategies education"> Compensatory strategies education</label>
+            <label><input type="checkbox" name="rec_cognitive" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Self-management Training:</span>
+            <label><input type="checkbox" name="rec_self_management" value="ADL Assessment & training"> ADL Assessment & training</label>
+            <label><input type="checkbox" name="rec_self_management" value="IADL Assessment & training"> IADL Assessment & training</label>
+            <label><input type="checkbox" name="rec_self_management" value="Community re-integration"> Community re-integration</label>
+            <label><input type="checkbox" name="rec_self_management" value="Cooking assessment & training"> Cooking assessment & training</label>
+            <label><input type="checkbox" name="rec_self_management" value="Illness management"> Illness management</label>
+            <label><input type="checkbox" name="rec_self_management" value="Medication packing training"> Medication packing training</label>
+            <label><input type="checkbox" name="rec_self_management" value="Relaxation training"> Relaxation training</label>
+            <label><input type="checkbox" name="rec_self_management" value="Stress management"> Stress management</label>
+            <label><input type="checkbox" name="rec_self_management" value="Energy conservation education"> Energy conservation education</label>
+            <label><input type="checkbox" name="rec_self_management" value="Activity adaptation education"> Activity adaptation education</label>
+            <label><input type="checkbox" name="rec_self_management" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Life Coaching:</span>
+            <label><input type="checkbox" name="rec_life_coaching" value="Counseling"> Counseling</label>
+            <label><input type="checkbox" name="rec_life_coaching" value="Cognitive behavioural therapy"> Cognitive behavioural therapy</label>
+            <label><input type="checkbox" name="rec_life_coaching" value="Health Qi-gong"> Health Qi-gong</label>
+            <label><input type="checkbox" name="rec_life_coaching" value="Life coaching"> Life coaching</label>
+            <label><input type="checkbox" name="rec_life_coaching" value="Lifestyle re-design"> Lifestyle re-design</label>
+            <label><input type="checkbox" name="rec_life_coaching" value="Motivational interviewing"> Motivational interviewing</label>
+            <label><input type="checkbox" name="rec_life_coaching" value="Wellness program"> Wellness program</label>
+            <label><input type="checkbox" name="rec_life_coaching" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Behavioural Management Training:</span>
+            <label><input type="checkbox" name="rec_behavioral" value="Education and intervention on BPSD"> Education and intervention on BPSD</label>
+            <label><input type="checkbox" name="rec_behavioral" value="Multi-sensory stimulation"> Multi-sensory stimulation</label>
+            <label><input type="checkbox" name="rec_behavioral" value="Impulse control"> Impulse control</label>
+            <label><input type="checkbox" name="rec_behavioral" value="Temper management"> Temper management</label>
+            <label><input type="checkbox" name="rec_behavioral" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Functional Training:</span>
+            <label><input type="checkbox" name="rec_functional" value="Gross motor training"> Gross motor training</label>
+            <label><input type="checkbox" name="rec_functional" value="Fine motor training"> Fine motor training</label>
+            <label><input type="checkbox" name="rec_functional" value="UL functional training"> UL functional training</label>
+            <label><input type="checkbox" name="rec_functional" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <label><input type="checkbox" name="rec_carer_ed" value="Carer Education"> Carer Education</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Home Assessment & Modification:</span>
+            <label><input type="checkbox" name="rec_home" value="Home assessment"> Home assessment</label>
+            <label><input type="checkbox" name="rec_home" value="Home visit"> Home visit</label>
+            <label><input type="checkbox" name="rec_home" value="Home adaptation advice and intervention"> Home adaptation advice and intervention</label>
+            <label><input type="checkbox" name="rec_home" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+            <span class="section-title">Aids Prescription and Training:</span>
+            <label><input type="checkbox" name="rec_aids" value="Aids prescription & training"> Aids prescription & training</label>
+            <label><input type="checkbox" name="rec_aids" value="Pressure relieving devices"> Pressure relieving devices</label>
+            <label><input type="checkbox" name="rec_aids" value="Pressure therapy (garment)"> Pressure therapy (garment)</label>
+            <label><input type="checkbox" name="rec_aids" value="Seating assessment & prescription"> Seating assessment & prescription</label>
+            <label><input type="checkbox" name="rec_aids" value="Splintage"> Splintage</label>
+            <label><input type="checkbox" name="rec_aids" value="Wheelchair prescription & training"> Wheelchair prescription & training</label>
+            <label><input type="checkbox" name="rec_aids" value="Nil"> Nil</label>
+        </div>
+        <div class="input-group checkbox-group">
+             <label><input type="checkbox" name="rec_eedpp" value="Enhanced Elderly Discharge Preparation Program"> Enhanced Elderly Discharge Preparation Program</label>
+        </div>
+        
+        <button type="button" id="generateReportButton">Generate Report</button>
+        <button type="button" id="copyReportButton">Copy Report</button>
+        <button type="button" id="resetFormButton">Reset Form</button>
+    </form>
+
+    <div id="reportOutputContainer" style="display:none;">
+        <h2>Generated Report</h2>
+        <pre id="reportOutput"></pre>
+    </div>
+</div>
+
+<script>
+// --- UTILITY FUNCTIONS ---
+function setupRadioUncheck() {
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('mousedown', function(e) {
+            this.dataset.wasChecked = this.checked ? "true" : "false";
+        });
+        radio.addEventListener('click', function(e) {
+            if (this.dataset.wasChecked === "true") {
+                this.checked = false;
+                this.dataset.wasChecked = "false";
+            } else {
+                this.dataset.wasChecked = "true";
+            }
+        });
+    });
+}
+
+function setupAutoCheckboxTicking() {
+    document.querySelectorAll('.auto-check-trigger').forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                // Find associated checkbox/radio
+                let control = this.closest('label').querySelector('input[type="checkbox"], input[type="radio"]');
+                if (control) {
+                    control.checked = true;
+                }
+            }
+        });
+    });
+}
+
+function formatDateToDDMMYYYY(dateString) {
+    if (!dateString) return '';
+    const parts = dateString.split('-'); // YYYY-MM-DD
+    if (parts.length !== 3) return dateString; // Return original if not in expected format
+    return `${parts[2]}-${parts[1]}-${parts[0]}`; // DD-MM-YYYY
+}
+
+// --- DYNAMIC SCORE CALCULATIONS ---
+function calculateHkmocaTotal() {
+    let total = 0;
+    document.querySelectorAll('.hkmoca-subscore').forEach(input => {
+        total += Number(input.value) || 0;
+    });
+    document.getElementById('hkmoca_total').value = total > 30 ? 30 : total;
+}
+
+function calculateMbiTotal() {
+    let total = 0;
+    document.querySelectorAll('.mbi-score').forEach(select => {
+        total += Number(select.value) || 0;
+    });
+    document.getElementById('mbi_total_display').textContent = `Total: ${total} / 100`;
+    return total;
+}
+
+function calculateIadlTotal() {
+    let total = 0;
+    document.querySelectorAll('.iadl-score').forEach(select => {
+        total += Number(select.value) || 0;
+    });
+    document.getElementById('iadl_total_display').textContent = `Total: ${total} / 27`;
+    return total;
+}
+
+function toggleMbiMobility(mode) {
+    const ambulationContainer = document.getElementById('mbi_ambulation_container');
+    const wheelchairContainer = document.getElementById('mbi_wheelchair_container');
+    const ambulationSelect = document.querySelector('[name="mbi_ambulation"]');
+    const wheelchairSelect = document.querySelector('[name="mbi_wheelchair"]');
+    const toWheelchairBtn = document.getElementById('toggleToWheelchairBtn');
+    const toAmbulationBtn = document.getElementById('toggleToAmbulationBtn');
+
+    if (mode === 'wheelchair') {
+        ambulationContainer.style.display = 'none';
+        ambulationSelect.value = '0';
+        wheelchairContainer.style.display = 'block';
+        toWheelchairBtn.style.display = 'none';
+        toAmbulationBtn.style.display = 'inline-block';
+    } else { // mode === 'ambulation'
+        wheelchairContainer.style.display = 'none';
+        wheelchairSelect.value = '0';
+        ambulationContainer.style.display = 'block';
+        toWheelchairBtn.style.display = 'inline-block';
+        toAmbulationBtn.style.display = 'none';
+    }
+    calculateMbiTotal();
+}
+
+
+// --- EVENT LISTENERS ---
+document.addEventListener('DOMContentLoaded', function() {
+    setupRadioUncheck();
+    setupAutoCheckboxTicking();
+
+    document.querySelectorAll('.hkmoca-subscore').forEach(input => input.addEventListener('input', calculateHkmocaTotal));
+    document.querySelectorAll('.mbi-score').forEach(select => select.addEventListener('change', calculateMbiTotal));
+    document.querySelectorAll('.iadl-score').forEach(select => select.addEventListener('change', calculateIadlTotal));
+
+    document.getElementById('toggleToWheelchairBtn').addEventListener('click', () => toggleMbiMobility('wheelchair'));
+    document.getElementById('toggleToAmbulationBtn').addEventListener('click', () => toggleMbiMobility('ambulation'));
+
+    document.getElementById('generateReportButton').addEventListener('click', generateReport);
+    document.getElementById('resetFormButton').addEventListener('click', resetForm);
+    document.getElementById('copyReportButton').addEventListener('click', copyReport);
+});
+
+
+// --- FORM ACTIONS ---
+function resetForm() {
+    document.getElementById('intakeForm').reset();
+    document.getElementById('reportOutput').textContent = '';
+    document.getElementById('reportOutputContainer').style.display = 'none';
+    
+    calculateHkmocaTotal();
+    toggleMbiMobility('ambulation'); // Resets to default state
+    calculateMbiTotal();
+    calculateIadlTotal();
+    
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.dataset.wasChecked = "false";
+    });
+}
+
+function copyReport() {
+    const reportText = document.getElementById('reportOutput').textContent;
+    if (!reportText || reportText === "No data entered.") {
+        alert("Please generate a report first.");
+        return;
+    }
+    navigator.clipboard.writeText(reportText).then(() => {
+        alert('Report copied to clipboard!');
+    }, (err) => {
+        console.error('Could not copy text: ', err);
+        alert('Could not copy text. See console for error.');
+    });
+}
+
+// --- REPORT GENERATION LOGIC ---
+function generateReport() {
+    const form = document.getElementById('intakeForm');
+
+    function getRadioValue(name) {
+        const radio = form.querySelector(`input[name="${name}"]:checked`);
+        return radio ? radio.value : "";
+    }
+    
+    function getSelectedCheckboxValues(name) {
+        const checkboxes = form.querySelectorAll(`input[name="${name}"]:checked`);
+        return Array.from(checkboxes).map(cb => cb.value).join(', ');
+    }
+
+    function getTextValue(id) {
+        const element = form.querySelector(`#${id}`);
+        return element ? element.value.trim() : "";
+    }
+    
+    function getSelectValue(id) {
+        const element = form.querySelector(`#${id}`);
+        return element ? element.value : "";
+    }
+
+    function formatLine(label, value) {
+        const strValue = String(value || '').trim();
+        if (strValue) {
+            return `${label}: ${strValue}\n`;
+        }
+        return "";
+    }
+
+    function formatSection(title, content) {
+        const strContent = String(content || '').trim();
+        if (strContent) {
+            return `${title}\n${strContent}\n\n`;
+        }
+        return "";
+    }
+    
+    function formatSubSection(title, content) {
+        const strContent = String(content || '').trim();
+        if (strContent) {
+            return `${title}\n${strContent}\n`;
+        }
+        return "";
+    }
+    
+    let overallReport = "";
+
+    // --- BUILD REPORT SECTIONS ---
+
+    // Basic Information
+    let basicInfoContent = "";
+    let diagnosis = getSelectedCheckboxValues('diagnosis');
+    if (form.querySelector('input[name="diagnosis_other_cb"]:checked')) {
+        const otherText = getTextValue('diagnosis_other_text');
+        if (otherText) diagnosis += (diagnosis ? ', ' : '') + `Others [${otherText}]`;
+    }
+    basicInfoContent += formatLine('Diagnosis', diagnosis);
+    basicInfoContent += formatLine('Date of Admission', formatDateToDDMMYYYY(getTextValue('date_admission')));
+    basicInfoContent += formatLine('Date of Referral', formatDateToDDMMYYYY(getTextValue('date_referral')));
+    basicInfoContent += formatLine('Date of Intake', formatDateToDDMMYYYY(getTextValue('date_intake')));
+    basicInfoContent += formatLine('ROA', getTextValue('roa'));
+    basicInfoContent += formatLine('SCS Status', getRadioValue('scs_status'));
+    basicInfoContent += formatLine('Legal Status', getSelectedCheckboxValues('legal_status'));
+    let precautions = getSelectedCheckboxValues('precautions');
+    if (form.querySelector('input[name="precautions_other_cb"]:checked')) {
+        const otherText = getTextValue('precautions_other_text');
+        if (otherText) precautions += (precautions ? ', ' : '') + `Others [${otherText}]`;
+    }
+    basicInfoContent += formatLine('Precautions', precautions);
+    overallReport += formatSection('Basic Information', basicInfoContent);
+
+    // History
+    let historyContent = "";
+    let psychHxContent = "";
+    let psychHxStatus = getRadioValue('psych_hx_status');
+    if (psychHxStatus === 'Known to MHS since' && getTextValue('psych_hx_known_year')) {
+        psychHxStatus += ` (${getTextValue('psych_hx_known_year')})`;
+    } else if (psychHxStatus === 'Known to MHS since') {
+        psychHxStatus = ""; // Don't show if year is empty
+    }
+    psychHxContent += formatLine('  - Status', psychHxStatus);
+    let psychHxAdmission = getRadioValue('psych_hx_admission');
+    if (psychHxAdmission === 'Previous admission' && getTextValue('psych_hx_admission_details')) {
+        psychHxAdmission += ` [${getTextValue('psych_hx_admission_details')}]`;
+    } else if (psychHxAdmission === 'Previous admission') {
+        psychHxAdmission = ""; // Don't show if details are empty
+    }
+    psychHxContent += formatLine('  - Admission', psychHxAdmission);
+    psychHxContent += formatLine('  - FU', getSelectedCheckboxValues('psych_hx_fu'));
+    historyContent += formatSubSection('Psychiatric History:', psychHxContent);
+
+    const simpleHxFields = [
+        { label: 'Forensic Record', name: 'forensic_record', detailId: 'forensic_record_details' },
+        { label: 'SA Hx', name: 'sa_hx', detailId: 'sa_hx_details' },
+        { label: 'Family History of MI', name: 'family_mi_hx', detailId: 'family_mi_hx_details' },
+        { label: 'Suicidal History', name: 'suicidal_hx', detailId: 'suicidal_hx_details' },
+        { label: 'Violent History', name: 'violent_hx', detailId: 'violent_hx_details' }
+    ];
+    simpleHxFields.forEach(field => {
+        let value = getRadioValue(field.name);
+        if (value === 'details') value = getTextValue(field.detailId);
+        else if (value === 'nil') value = 'nil';
+        else value = '';
+        historyContent += formatLine(field.label, value);
+    });
+    
+    let pmhContent = "";
+    let pmh = getSelectedCheckboxValues('pmh');
+    if (form.querySelector('input[name="pmh_fracture_cb"]:checked') && getTextValue('pmh_fracture_text')) pmh += (pmh ? ', ' : '') + `# [${getTextValue('pmh_fracture_text')}]`;
+    if (form.querySelector('input[name="pmh_other_cb"]:checked') && getTextValue('pmh_other_text')) pmh += (pmh ? ', ' : '') + `Others [${getTextValue('pmh_other_text')}]`;
+    pmhContent += formatLine('Past Medical History', pmh);
+    
+    let lifestyleContent = "";
+    lifestyleContent += formatLine('Lifestyle', getSelectedCheckboxValues('lifestyle'));
+    
+    historyContent += formatSubSection('', pmhContent + lifestyleContent); // Add without header
+    historyContent += formatLine('Other Conditions', getTextValue('other_conditions'));
+    overallReport += formatSection('History', historyContent);
+
+    // Mental State
+    let msContent = "";
+    msContent += formatLine('Mood', getRadioValue('ms_mood'));
+    msContent += formatLine('Affect', getRadioValue('ms_affect'));
+    msContent += formatLine('Speech', getSelectedCheckboxValues('ms_speech'));
+    
+    let hallucination = getSelectedCheckboxValues('ms_hallucination');
+    let hallucinationDetails = getTextValue('ms_hallucination_details');
+    if (hallucinationDetails) hallucination += (hallucination ? ', ' : '') + hallucinationDetails;
+    msContent += formatLine('Hallucination', hallucination);
+    
+    let thought = getSelectedCheckboxValues('ms_thought');
+    if (form.querySelector('input[name="ms_thought_other_cb"]:checked') && getTextValue('ms_thought_other_text')) thought += (thought ? ', ' : '') + `Other: ${getTextValue('ms_thought_other_text')}`;
+    let thoughtDetails = getTextValue('ms_thought_details');
+    if (thoughtDetails) thought += (thought ? ', ' : '') + thoughtDetails;
+    msContent += formatLine('Thought', thought);
+
+    let behavior = getSelectedCheckboxValues('ms_behavior');
+    let behaviorDetails = getTextValue('ms_behavior_details');
+    if (behaviorDetails) behavior += (behavior ? ' ' : '') + behaviorDetails;
+    msContent += formatLine('Behavior', behavior);
+    
+    let cognitive = getSelectedCheckboxValues('ms_cognitive');
+    let follow = getSelectedCheckboxValues('ms_cognitive_follow');
+    if (follow) cognitive += (cognitive ? ' / ' : '') + `Follow ${follow} commands`;
+    msContent += formatLine('Cognitive', cognitive);
+    msContent += formatLine('Risk', getSelectedCheckboxValues('ms_risk'));
+    msContent += formatLine('Insight', getRadioValue('ms_insight'));
+    overallReport += formatSection('Mental State and General Observations', msContent);
+    
+    // Physical Condition
+    let pcContent = "";
+    pcContent += formatLine('MMT', getTextValue('mmt'));
+    pcContent += formatLine('Functional balance', getTextValue('functional_balance'));
+    let fallRiskContent = "";
+    let fallHxContent = "";
+    fallHxContent += formatLine('  - Fall History (3m)', getRadioValue('fall_hx_3m'));
+    fallHxContent += formatLine('  - Fall History (6m)', getRadioValue('fall_hx_6m'));
+    fallHxContent += formatLine('  - Fall History (9m)', getRadioValue('fall_hx_9m'));
+    if(fallHxContent.trim()) fallRiskContent += 'Fall History:\n' + fallHxContent;
+
+    fallRiskContent += formatLine('FROP-COM Screen', getRadioValue('frop_com'));
+    let fesScore = getTextValue('fes');
+    if(fesScore) fallRiskContent += formatLine('FES', `${fesScore} / 64`);
+    fallRiskContent += formatLine('Risk Factors', getSelectedCheckboxValues('fall_risk_factors'));
+    pcContent += formatSubSection('Risk of Fall:', fallRiskContent);
+    overallReport += formatSection('Physical Condition', pcContent);
+
+    // Cognitive Function
+    let cfContent = "";
+    let hkmocaTotal = getTextValue('hkmoca_total');
+    if (hkmocaTotal && hkmocaTotal !== '0') {
+        let hkmocaLine = `HK-MoCA (${getRadioValue('hkmoca_version') || 'N/A'}) = ${hkmocaTotal} / 30`;
+        if(getSelectValue('hkmoca_operator') && getSelectValue('hkmoca_percentile')) hkmocaLine += ` (${getSelectValue('hkmoca_operator')}${getSelectValue('hkmoca_percentile')} percentile)`;
+        if(getTextValue('hkmoca_edu_level')) hkmocaLine += `, education level: ${getTextValue('hkmoca_edu_level')} years`;
+        hkmocaLine += "\n";
+        
+        let subscores = [
+            {label: 'Executive/Visuospatial', id: 'hkmoca_exec', max: 5},
+            {label: 'Naming', id: 'hkmoca_naming', max: 3},
+            {label: 'Attention', id: 'hkmoca_attention', max: 6},
+            {label: 'Language', id: 'hkmoca_lang', max: 3},
+            {label: 'Abstraction', id: 'hkmoca_abstract', max: 2},
+        ];
+        subscores.forEach(s => {
+            const val = getTextValue(s.id);
+            if(val) hkmocaLine += `  - ${s.label}: ${val}/${s.max}\n`;
+        });
+        const recallSp = getTextValue('hkmoca_recall_sp');
+        const recallCue = getTextValue('hkmoca_recall_cue');
+        if(recallSp || recallCue) hkmocaLine += `  - Delayed recall: ${recallSp || '0'}/5 (spontaneous), ${recallCue || '0'}/5 (with cues)\n`;
+        const orientDate = getTextValue('hkmoca_orient_date');
+        const orientPlace = getTextValue('hkmoca_orient_place');
+        if(orientDate || orientPlace) hkmocaLine += `  - Orientation: ${orientDate || '0'}/4 (date), ${orientPlace || '0'}/2 (place)`;
+        
+        cfContent += hkmocaLine.trim() + "\n";
+    }
+    let overallPerf = getSelectedCheckboxValues('cog_overall_performance');
+    let overallDomain = getSelectedCheckboxValues('cog_overall_domain');
+    if (overallPerf) cfContent += formatLine('Overall performance', `${overallPerf}` + (overallDomain ? ` cognitive functions on ${overallDomain}`: ''));
+    cfContent += formatLine('Communication Barriers', getSelectedCheckboxValues('comm_barriers'));
+    cfContent += formatLine('Daily functioning', getRadioValue('daily_functioning'));
+    let potRisk = getSelectedCheckboxValues('potential_risk');
+    if(form.querySelector('input[name="potential_risk_other_cb"]:checked') && getTextValue('potential_risk_other_text')) potRisk += (potRisk ? ', ' : '') + `others: ${getTextValue('potential_risk_other_text')}`;
+    cfContent += formatLine('Potential risk', potRisk);
+    
+    let specAssess = [];
+    if(form.querySelector('input[name="spec_cog_assess_cfab_cb"]:checked') && getTextValue('spec_cog_assess_cfab_score')) specAssess.push(`CFAB ${getTextValue('spec_cog_assess_cfab_score')}/18`);
+    if(form.querySelector('input[name="spec_cog_assess_ncse_cb"]:checked') && getTextValue('spec_cog_assess_ncse_score')) specAssess.push(`NCSE: ${getTextValue('spec_cog_assess_ncse_score')}`);
+    if(form.querySelector('input[name="spec_cog_assess_rbmt_cb"]:checked') && getTextValue('spec_cog_assess_rbmt_score')) specAssess.push(`RBMT: ${getTextValue('spec_cog_assess_rbmt_score')}`);
+    if(form.querySelector('input[name="spec_cog_assess_others_cb"]:checked') && getTextValue('spec_cog_assess_others_text')) specAssess.push(`Others: ${getTextValue('spec_cog_assess_others_text')}`);
+    if(form.querySelector('input[name="spec_cog_assess_nil_cb"]:checked')) specAssess = ['Nil.'];
+    if(specAssess.length > 0) cfContent += formatLine('Specific cognitive assessment', specAssess.join(' / '));
+    overallReport += formatSection('Cognitive Function', cfContent);
+
+    // Functional Performance
+    let fpContent = "";
+    let premorbidContent = "";
+    let premorbidRole = getSelectedCheckboxValues('premorbid_role');
+    if(getTextValue('premorbid_role_specify')) premorbidRole += (premorbidRole ? ', ' : '') + `[${getTextValue('premorbid_role_specify')}]`;
+    premorbidContent += formatLine('  - Role', premorbidRole);
+    premorbidContent += formatLine('  - ADL', getRadioValue('premorbid_adl'));
+    premorbidContent += formatLine('  - IADL', getRadioValue('premorbid_iadl'));
+    premorbidContent += formatLine('  - Activity Level', getSelectedCheckboxValues('premorbid_activity'));
+    let mobilityIndoors = getTextValue('mobility_indoors');
+    let mobilityOutdoors = getTextValue('mobility_outdoors');
+    let mobilityAid = getRadioValue('mobility_aid');
+    if (mobilityIndoors || mobilityOutdoors || mobilityAid) {
+        let mobility = `Indoors [${mobilityIndoors || 'N/A'}] / Outdoors [${mobilityOutdoors || 'N/A'}] (aid: ${mobilityAid || 'N/A'})`;
+        premorbidContent += formatLine('  - Mobility Status', mobility);
+    }
+    fpContent += formatSubSection('Premorbid Functional Status:', premorbidContent);
+
+    let mbiTotal = calculateMbiTotal();
+    if (mbiTotal > 0 || document.querySelector('[name="mbi_ambulation"]').value > 0 || document.querySelector('[name="mbi_wheelchair"]').value > 0) {
+        fpContent += formatLine('ADL Function by Modified Bathel Index (MBI)', `Total Score: ${mbiTotal} / 100`);
+    }
+    let iadlTotal = calculateIadlTotal();
+    if(iadlTotal > 0) {
+        fpContent += formatLine('Lawton’s Instrumental Activities of Daily Living (IADL)', `Total Score: ${iadlTotal} / 27`);
+    }
+    overallReport += formatSection('Functional Performance', fpContent);
+
+    // Home Environment
+    let heContent = "";
+    let accommodation = getRadioValue('accommodation');
+    if(form.querySelector('input[name="accommodation_other_cb"]:checked') && getTextValue('accommodation_other_text')) accommodation = `Other: ${getTextValue('accommodation_other_text')}`;
+    heContent += formatLine('Accommodation', accommodation);
+    heContent += formatLine('Accessibility', getSelectedCheckboxValues('accessibility'));
+    heContent += formatLine('Toilet', getSelectedCheckboxValues('toilet'));
+    heContent += formatLine('Bathroom', getSelectedCheckboxValues('bathroom'));
+    let aidEquip = getSelectedCheckboxValues('aid_equipment');
+    if(form.querySelector('input[name="aid_equipment_other_cb"]:checked') && getTextValue('aid_equipment_other_text')) aidEquip += (aidEquip ? ', ' : '') + `Others: ${getTextValue('aid_equipment_other_text')}`;
+    heContent += formatLine('Aid/Equipment', aidEquip);
+    overallReport += formatSection('Home Environment', heContent);
+    
+    // Caregivers
+    let cgContent = "";
+    let livingWith = getRadioValue('living_with');
+    if(livingWith === 'Family' && getTextValue('living_with_family_members')) livingWith += ` [${getTextValue('living_with_family_members')}]`;
+    else if(form.querySelector('input[name="living_with_other_cb"]:checked') && getTextValue('living_with_other_text')) livingWith = `Others: ${getTextValue('living_with_other_text')}`;
+    cgContent += formatLine('Living with', livingWith);
+    let supportLevel = getRadioValue('support_level');
+    if(form.querySelector('input[name="support_level_other_cb"]:checked') && getTextValue('support_level_other_text')) supportLevel = `Others: ${getTextValue('support_level_other_text')}`;
+    cgContent += formatLine('Level of Support', supportLevel);
+    cgContent += formatLine('Assistance Provided', getSelectedCheckboxValues('assistance_provided'));
+    let communitySvc = getSelectedCheckboxValues('community_service');
+    if(form.querySelector('input[name="community_service_other_cb"]:checked') && getTextValue('community_service_other_text')) communitySvc += (communitySvc ? ', ' : '') + `Others: ${getTextValue('community_service_other_text')}`;
+    cgContent += formatLine('Community Service', communitySvc);
+    let financialSup = getSelectedCheckboxValues('financial_support');
+    if(form.querySelector('input[name="financial_support_voucher_cb"]:checked') && getTextValue('financial_support_voucher_text')) financialSup += (financialSup ? ', ' : '') + `Voucher: ${getTextValue('financial_support_voucher_text')}`;
+    cgContent += formatLine('Financial Support', financialSup);
+    overallReport += formatSection('Formal / Informal Caregivers Identification', cgContent);
+
+    // Caregiver Difficulties
+    let cdContent = "";
+    let caregiverHealth = getRadioValue('caregiver_health');
+    if(caregiverHealth === 'details' && getTextValue('caregiver_health_details')) caregiverHealth = getTextValue('caregiver_health_details');
+    else if(caregiverHealth !== 'Nil') caregiverHealth = '';
+    cdContent += formatLine('Own health issue', caregiverHealth);
+    let bpsd = getSelectedCheckboxValues('caregiver_bpsd');
+    if(form.querySelector('input[name="caregiver_bpsd_other_cb"]:checked') && getTextValue('caregiver_bpsd_other_text')) bpsd += (bpsd ? ', ' : '') + `Other: ${getTextValue('caregiver_bpsd_other_text')}`;
+    cdContent += formatLine('BPSD characteristics', bpsd);
+    cdContent += formatLine('ADL aspects', getSelectedCheckboxValues('caregiver_adl'));
+    let iadlAspects = getSelectedCheckboxValues('caregiver_iadl');
+    if(form.querySelector('input[name="caregiver_iadl_other_cb"]:checked') && getTextValue('caregiver_iadl_other_text')) iadlAspects += (iadlAspects ? ', ' : '') + `Other: ${getTextValue('caregiver_iadl_other_text')}`;
+    cdContent += formatLine('IADL aspects', iadlAspects);
+    overallReport += formatSection('Caregiver’s Difficulties', cdContent);
+    
+    // Goals
+    let goalsContent = "";
+    let healthGoals = getSelectedCheckboxValues('goals_health');
+    if(form.querySelector('input[name="goals_health_manage_cb"]:checked') && getTextValue('goals_health_manage_text')) healthGoals += (healthGoals ? ', ' : '') + `Manage [${getTextValue('goals_health_manage_text')}]`;
+    if(healthGoals) goalsContent += formatLine('Health Management', healthGoals);
+    let functionalGoals = getSelectedCheckboxValues('goals_functional');
+    if(functionalGoals) goalsContent += formatLine('Functional Independence', functionalGoals);
+    let psychosocialGoals = getSelectedCheckboxValues('goals_psychosocial');
+    if(psychosocialGoals) goalsContent += formatLine('Psychosocial Well-being', psychosocialGoals);
+    let safetyGoals = getSelectedCheckboxValues('goals_safety');
+    if(safetyGoals) goalsContent += formatLine('Safety & Care', safetyGoals);
+    let longtermGoals = getSelectedCheckboxValues('goals_longterm');
+    if(longtermGoals) goalsContent += formatLine('Long-Term Planning', longtermGoals);
+    let caregiverGoals = getSelectedCheckboxValues('goals_caregiver');
+    if(form.querySelector('input[name="goals_caregiver_training_cb"]:checked') && getTextValue('goals_caregiver_training_text')) caregiverGoals += (caregiverGoals ? ', ' : '') + `Training in [${getTextValue('goals_caregiver_training_text')}]`;
+    if(caregiverGoals) goalsContent += formatLine('Caregiver Support', caregiverGoals);
+    let otherGoals = getTextValue('goals_others');
+    if(otherGoals) goalsContent += formatLine('Others', otherGoals);
+    overallReport += formatSection('Family’s / Client’s Goals', goalsContent);
+    
+    // Strengths & Problems
+    let spContent = "";
+    spContent += formatLine('Strengths', getTextValue('strengths'));
+    spContent += formatLine('Problem Identified', getTextValue('problems_identified'));
+    overallReport += formatSection('Strengths & Problems', spContent);
+
+    // Recommendations
+    let recContent = "";
+    recContent += formatLine('Cognitive Training', getSelectedCheckboxValues('rec_cognitive'));
+    recContent += formatLine('Self-management Training', getSelectedCheckboxValues('rec_self_management'));
+    recContent += formatLine('Life Coaching', getSelectedCheckboxValues('rec_life_coaching'));
+    recContent += formatLine('Behavioural Management Training', getSelectedCheckboxValues('rec_behavioral'));
+    recContent += formatLine('Functional Training', getSelectedCheckboxValues('rec_functional'));
+    if(form.querySelector('input[name="rec_carer_ed"]:checked')) recContent += formatLine('Carer Education', 'Yes');
+    recContent += formatLine('Home Assessment & Modification', getSelectedCheckboxValues('rec_home'));
+    recContent += formatLine('Aids Prescription and Training', getSelectedCheckboxValues('rec_aids'));
+    if(form.querySelector('input[name="rec_eedpp"]:checked')) recContent += formatLine('EEDPP', 'Yes');
+    overallReport += formatSection('Conclusion and Recommendations', recContent);
+
+    const finalReport = overallReport.trim();
+    document.getElementById('reportOutput').textContent = finalReport || "No data entered.";
+    document.getElementById('reportOutputContainer').style.display = 'block';
+    window.scrollTo(0, document.body.scrollHeight);
+}
+</script>
+</body>
+</html>

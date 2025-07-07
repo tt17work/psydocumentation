@@ -81,7 +81,7 @@
             margin-right: 5px;
             flex-shrink: 0;
          }
-        .form-group .radio-group .iadl-item-block {
+        .form-group .multi-choice-item-block {
             width: 100%; 
             display: flex; 
             align-items: center;
@@ -201,7 +201,7 @@
             .form-group .checkbox-group label, 
             .form-group .radio-group label,   
             .form-group .radio-group .radio-option-wrapper, 
-            .form-group .radio-group .iadl-item-block, 
+            .form-group .multi-choice-item-block, 
             .work-v-item .work-v-rating label {
                  width: 100%; 
              }
@@ -403,38 +403,62 @@
                 </div>
                 <div class="form-group">
                     <label>IADL:</label>
-                    <div class="radio-group">
-                        <div class="iadl-item-block radio-option-wrapper"><label><input type="radio" name="iadlMode" value="CFNA: Independent living"> CFNA: Independent living</label></div>
-                        <div class="iadl-item-block radio-option-wrapper"><label><input type="radio" name="iadlMode" value="CFNA: Supervised living"> CFNA: Supervised living</label></div>
-                        <div class="iadl-item-block radio-option-wrapper">
+                    <div class="checkbox-group" id="iadlCheckboxGroup">
+                        <div class="multi-choice-item-block"><label><input type="checkbox" name="iadlOption" value="Independent living"> Independent living</label></div>
+                        <div class="multi-choice-item-block"><label><input type="checkbox" name="iadlOption" value="Supervised living"> Supervised living</label></div>
+                        <div class="multi-choice-item-block">
                             <label>
-                                <input type="radio" name="iadlMode" value="CFNA_Score"> CFNA 
+                                <input type="checkbox" name="iadlOption" value="CFNA_Score"> CFNA 
                                 <input type="text" name="iadlCfnaScoreVal" class="inline-input small-input" placeholder="Score"> /650
                             </label>
                         </div>
-                        <div class="iadl-item-block radio-option-wrapper">
+                        <div class="multi-choice-item-block">
                             <label>
-                                <input type="radio" name="iadlMode" value="AssistedBy"> Assisted by: 
+                                <input type="checkbox" name="iadlOption" value="AssistedBy"> Assisted by: 
                                 <input type="text" name="iadlAssistedByVal" class="inline-input" placeholder="Details">
                             </label>
                         </div>
-                        <div class="iadl-item-block radio-option-wrapper">
+                        <div class="multi-choice-item-block">
                             <label>
-                                <input type="radio" name="iadlMode" value="SIBR"> SIB-R: 
+                                <input type="checkbox" name="iadlOption" value="SIBR"> SIB-R: 
                                 <input type="text" name="iadlSibrVal" class="inline-input" placeholder="Score/Details">
                             </label>
                         </div>
-                        <div class="iadl-item-block radio-option-wrapper"><label><input type="radio" name="iadlMode" value="Nil"> Nil</label></div>
+                        <div class="multi-choice-item-block"><label><input type="checkbox" name="iadlOption" value="Nil" id="iadlNilChk"> Nil</label></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Cognitive:</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="cognitiveTest" value="Hk-MoCA 5"> Hk-MoCA 5 <input type="text" name="cognitiveScore_hkMoca5" class="inline-input small-input"> /30</label>
-                        <label><input type="radio" name="cognitiveTest" value="AMT"> AMT <input type="text" name="cognitiveScore_amt" class="inline-input small-input"> /10</label>
-                        <label><input type="radio" name="cognitiveTest" value="CFAB"> CFAB <input type="text" name="cognitiveScore_cfab" class="inline-input small-input"> /18</label>
-                        <label><input type="radio" name="cognitiveTest" value="DSQIID"> DSQIID <input type="text" name="cognitiveScore_dsqiid" class="inline-input small-input"> /22</label>
-                        <label><input type="radio" name="cognitiveTest" value="Nil"> Nil</label>
+                    <div class="checkbox-group" id="cognitiveCheckboxGroup">
+                        <div class="multi-choice-item-block">
+                            <label>
+                                <input type="checkbox" name="cognitiveTestOption" value="Hk-MoCA 5"> Hk-MoCA 5 
+                                <input type="text" name="cognitiveScore_hkMoca5" class="inline-input small-input" disabled> /30
+                            </label>
+                        </div>
+                        <div class="multi-choice-item-block">
+                            <label>
+                                <input type="checkbox" name="cognitiveTestOption" value="AMT"> AMT 
+                                <input type="text" name="cognitiveScore_amt" class="inline-input small-input" disabled> /10
+                            </label>
+                        </div>
+                        <div class="multi-choice-item-block">
+                             <label>
+                                <input type="checkbox" name="cognitiveTestOption" value="CFAB"> CFAB 
+                                <input type="text" name="cognitiveScore_cfab" class="inline-input small-input" disabled> /18
+                            </label>
+                        </div>
+                        <div class="multi-choice-item-block">
+                            <label>
+                                <input type="checkbox" name="cognitiveTestOption" value="DSQIID"> DSQIID 
+                                <input type="text" name="cognitiveScore_dsqiid" class="inline-input small-input" disabled> /22
+                            </label>
+                        </div>
+                        <div class="multi-choice-item-block">
+                            <label>
+                                <input type="checkbox" name="cognitiveTestOption" value="Nil" id="cognitiveNilChk"> Nil
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -813,24 +837,19 @@
                             currentRadio.checked = false;
                             currentRadio.dataset.waschecked = 'false';
                         } else {
-                            // Unset waschecked for all in the same group
                             document.querySelectorAll(`input[type="radio"][name="${currentRadio.name}"]`).forEach(r => {
                                 r.dataset.waschecked = 'false';
                             });
-                            // Set current one as checked and waschecked
-                            currentRadio.checked = true; // browser default might do this, but explicit is fine
+                            currentRadio.checked = true;
                             currentRadio.dataset.waschecked = 'true';
                         }
-                         // If part of work V-ratings, and a selection is made (not unselection)
-                        // ensure the overall work nil is unchecked
                         if (currentRadio.name.startsWith('workV_rating_') && currentRadio.checked) {
                             if (workOverallNilRadio) {
                                 workOverallNilRadio.checked = false;
-                                workOverallNilRadio.dataset.waschecked = 'false'; // Sync its toggle state
-                                updateOverallNilEffect(false); // Update dependent elements
+                                workOverallNilRadio.dataset.waschecked = 'false';
+                                updateOverallNilEffect(false);
                             }
                         }
-                        // If BWAP radio selected, ensure overall work nil is unchecked
                         if (currentRadio.name === 'bwap2Adjustment' && currentRadio.checked) {
                              if (workOverallNilRadio) {
                                 workOverallNilRadio.checked = false;
@@ -838,7 +857,6 @@
                                 updateOverallNilEffect(false);
                             }
                         }
-                         // If workOverallNilRadio is selected, trigger its effect
                         if (currentRadio === workOverallNilRadio && currentRadio.checked) {
                             updateOverallNilEffect(true);
                         }
@@ -846,6 +864,55 @@
                 });
             }
             makeRadiosToggleable();
+            
+            function setupExclusiveCheckboxGroup(containerId, nilCheckboxId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                const nilCheckbox = document.getElementById(nilCheckboxId);
+                const otherCheckboxes = container.querySelectorAll(`input[type="checkbox"]:not(#${nilCheckboxId})`);
+
+                if (nilCheckbox) {
+                    nilCheckbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            otherCheckboxes.forEach(cb => {
+                                cb.checked = false;
+                                cb.disabled = true;
+                                const associatedInput = cb.closest('label').querySelector('input[type="text"]');
+                                if (associatedInput) {
+                                    associatedInput.disabled = true;
+                                    associatedInput.value = '';
+                                }
+                            });
+                        } else {
+                            otherCheckboxes.forEach(cb => {
+                                cb.disabled = false;
+                                const associatedInput = cb.closest('label').querySelector('input[type="text"]');
+                                if (associatedInput) {
+                                    // Re-enable only if the parent checkbox is checked
+                                    associatedInput.disabled = !cb.checked;
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                otherCheckboxes.forEach(cb => {
+                    cb.addEventListener('change', function() {
+                        if (this.checked && nilCheckbox) {
+                            nilCheckbox.checked = false;
+                        }
+                        const associatedInput = this.closest('label').querySelector('input[type="text"]');
+                        if (associatedInput) {
+                            associatedInput.disabled = !this.checked;
+                            if(!this.checked) associatedInput.value = '';
+                        }
+                    });
+                });
+            }
+            
+            setupExclusiveCheckboxGroup('iadlCheckboxGroup', 'iadlNilChk');
+            setupExclusiveCheckboxGroup('cognitiveCheckboxGroup', 'cognitiveNilChk');
 
 
             function getCheckboxValues(name) {
@@ -865,41 +932,57 @@
             }
             
             function getCognitiveTestValue() {
-                const selectedTestRadio = ldForm.querySelector('input[name="cognitiveTest"]:checked');
-                if (!selectedTestRadio || selectedTestRadio.value === "Nil") return selectedTestRadio ? "Nil" : ""; 
+                if (document.getElementById('cognitiveNilChk')?.checked) return "Nil";
 
-                const testName = selectedTestRadio.value;
-                let scoreInputName, suffix;
-                switch(testName) {
-                    case "Hk-MoCA 5": scoreInputName = "cognitiveScore_hkMoca5"; suffix = "/30"; break;
-                    case "AMT": scoreInputName = "cognitiveScore_amt"; suffix = "/10"; break;
-                    case "CFAB": scoreInputName = "cognitiveScore_cfab"; suffix = "/18"; break;
-                    case "DSQIID": scoreInputName = "cognitiveScore_dsqiid"; suffix = "/22"; break;
-                    default: return ""; 
-                }
-                const score = ldForm.querySelector(`input[name="${scoreInputName}"]`).value.trim();
-                return score ? `${testName} ${score}${suffix}` : `${testName} (score not entered)`;
+                const parts = [];
+                const cognitiveOptions = ldForm.querySelectorAll('input[name="cognitiveTestOption"]:checked');
+                
+                cognitiveOptions.forEach(chk => {
+                    const testName = chk.value;
+                    if (testName === "Nil") return;
+
+                    let score = "", suffix = "";
+                    switch(testName) {
+                        case "Hk-MoCA 5": score = getTextValue("cognitiveScore_hkMoca5", true); suffix = "/30"; break;
+                        case "AMT": score = getTextValue("cognitiveScore_amt", true); suffix = "/10"; break;
+                        case "CFAB": score = getTextValue("cognitiveScore_cfab", true); suffix = "/18"; break;
+                        case "DSQIID": score = getTextValue("cognitiveScore_dsqiid", true); suffix = "/22"; break;
+                    }
+                    parts.push(score ? `${testName} ${score}${suffix}` : `${testName} (score not entered)`);
+                });
+                
+                return parts.join(' / ');
             }
 
             function getIadlValue() {
-                const iadlMode = getRadioValue('iadlMode');
-                if (!iadlMode) return "";
-                if (iadlMode === "Nil") return "Nil";
-                if (iadlMode === "CFNA: Independent living" || iadlMode === "CFNA: Supervised living") return iadlMode;
+                if (document.getElementById('iadlNilChk')?.checked) return "Nil";
 
-                if (iadlMode === "CFNA_Score") {
-                    const score = getTextValue('iadlCfnaScoreVal', true);
-                    return score ? `CFNA ${score}/650` : "CFNA (score not entered)";
-                }
-                if (iadlMode === "AssistedBy") {
-                    const details = getTextValue('iadlAssistedByVal', true);
-                    return details ? `Assisted by: ${details}` : "Assisted by (details not specified)";
-                }
-                if (iadlMode === "SIBR") {
-                    const details = getTextValue('iadlSibrVal', true);
-                    return details ? `SIB-R: ${details}` : "SIB-R (details not specified)";
-                }
-                return "";
+                const parts = [];
+                const iadlOptions = ldForm.querySelectorAll('input[name="iadlOption"]:checked');
+
+                iadlOptions.forEach(chk => {
+                    const value = chk.value;
+                    switch(value) {
+                        case "Independent living":
+                        case "Supervised living":
+                            parts.push(value);
+                            break;
+                        case "CFNA_Score":
+                             const score = getTextValue('iadlCfnaScoreVal', true);
+                             parts.push(score ? `CFNA ${score}/650` : "CFNA (score not entered)");
+                            break;
+                        case "AssistedBy":
+                            const details = getTextValue('iadlAssistedByVal', true);
+                            parts.push(details ? `Assisted by: ${details}` : "Assisted by (details not specified)");
+                            break;
+                        case "SIBR":
+                            const sibrDetails = getTextValue('iadlSibrVal', true);
+                            parts.push(sibrDetails ? `SIB-R: ${sibrDetails}` : "SIB-R (details not specified)");
+                            break;
+                    }
+                });
+
+                return parts.join(' / ');
             }
 
             function addReportLine(currentReport, label, value) {
@@ -1072,23 +1155,23 @@
                 ldForm.reset(); 
                 generatedReportTextarea.value = ''; 
                 
-                // Reset data-waschecked for all radio buttons
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.dataset.waschecked = 'false';
                 });
-
-                if (workOverallNilRadio) { // This will call updateOverallNilEffect which handles disabling/enabling
-                    workOverallNilRadio.dataset.waschecked = 'false'; // Ensure its toggle state is also reset
-                    updateOverallNilEffect(false); // Reset to non-nil state effect
+                
+                // Manually trigger change events on Nil checkboxes to reset their groups
+                document.getElementById('iadlNilChk')?.dispatchEvent(new Event('change'));
+                document.getElementById('cognitiveNilChk')?.dispatchEvent(new Event('change'));
+                
+                if (workOverallNilRadio) {
+                    updateOverallNilEffect(false);
                 }
-                // Ensure V-item radios are disabled correctly after reset if their parent checkbox is not checked
                  workVCheckboxes.forEach(vCheckbox => { 
                     const vId = vCheckbox.value;
                     const ratingRadios = ldForm.querySelectorAll(`input[name="workV_rating_${vId}"]`);
                     ratingRadios.forEach(radio => {
                         radio.disabled = !vCheckbox.checked; 
                         radio.checked = false; 
-                        radio.dataset.waschecked = 'false';
                     });
                 });
 

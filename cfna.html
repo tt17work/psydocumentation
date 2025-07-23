@@ -49,6 +49,7 @@
             font-weight: bold;
         }
         input[type="text"],
+        input[type="number"],
         input[type="date"],
         textarea,
         select {
@@ -129,7 +130,7 @@
             min-width: 60px;
         }
         .score-input {
-            width: 60px !important;
+            width: 80px !important;
             text-align: center;
         }
         .sub-section-heading {
@@ -293,36 +294,19 @@
                     <label>Total score:</label>
                     <input type="text" id="mocaTotal" name="mocaTotal" class="score-input readonly-score" readonly> /30
                 </div>
-                 <div class="sub-section">
-                    <div class="form-group inline-input-group">
-                        <label style="width:200px">Visuospatial/ executive function:</label> 
-                        <input type="number" class="score-input moca-score-input" min="0" max="5"> /5
-                    </div>
-                    <div class="form-group inline-input-group">
-                        <label style="width:200px">Naming:</label> 
-                        <input type="number" class="score-input moca-score-input" min="0" max="3"> /3
-                    </div>
-                    <div class="form-group inline-input-group">
-                        <label style="width:200px">Attention:</label> 
-                        <input type="number" class="score-input moca-score-input" min="0" max="6"> /6
-                    </div>
-                    <div class="form-group inline-input-group">
-                        <label style="width:200px">Language:</label> 
-                        <input type="number" class="score-input moca-score-input" min="0" max="3"> /3
-                    </div>
-                    <div class="form-group inline-input-group">
-                        <label style="width:200px">Abstraction:</label> 
-                        <input type="number" class="score-input moca-score-input" min="0" max="2"> /2
-                    </div>
-                    <div class="form-group inline-input-group">
-                        <label style="width:200px">Delayed recall:</label> 
-                        <input type="number" class="score-input moca-score-input" min="0" max="5"> /5
-                    </div>
-                    <div class="form-group inline-input-group">
-                        <label style="width:200px">Orientation:</label> 
-                        <input type="number" class="score-input moca-score-input" min="0" max="6"> /6
-                    </div>
+                 <div id="mocaSubItemsContainer" class="sub-section">
+                    <!-- MoCA sub-items will be generated here by JS -->
                  </div>
+                 <div class="form-group inline-input-group">
+                    <label for="mocaAge">Age:</label>
+                    <input type="number" id="mocaAge" name="mocaAge" min="0" style="width: 100px !important;">
+                    <label for="mocaEducation" style="margin-left: 15px;">Education (years):</label>
+                    <input type="number" id="mocaEducation" name="mocaEducation" min="0" style="flex-grow: 1;">
+                 </div>
+                 <div class="form-group inline-input-group">
+                    <label>Result:</label>
+                    <span id="mocaPercentileResult" class="readonly-score"></span>
+                </div>
             </fieldset>
 
             <!-- SECTION C: BADL -->
@@ -609,6 +593,27 @@ document.addEventListener('DOMContentLoaded', function () {
     const generatedReportTextarea = document.getElementById('generatedReport');
 
     // --- Dynamic UI Population ---
+    const mocaSubItemsContainer = document.getElementById('mocaSubItemsContainer');
+    const mocaItems = [
+        { label: "Visuospatial/ executive function:", max: 5 }, { label: "Naming:", max: 3 },
+        { label: "Attention:", max: 6 }, { label: "Language:", max: 3 },
+        { label: "Abstraction:", max: 2 }, { label: "Delayed recall:", max: 5 },
+        { label: "Orientation:", max: 6 }
+    ];
+
+    mocaSubItemsContainer.innerHTML = mocaItems.map(item => {
+        let options = '<option value="">_</option>';
+        for (let i = 0; i <= item.max; i++) {
+            options += `<option value="${i}">${i}</option>`;
+        }
+        return `
+            <div class="form-group inline-input-group">
+                <label style="width:200px">${item.label}</label> 
+                <select class="score-input moca-score-input">${options}</select> /${item.max}
+            </div>`;
+    }).join('');
+
+
     const cfnaSelfCareContainer = document.getElementById('cfnaSelfCareItems');
     const cfnaCommunityContainer = document.getElementById('cfnaCommunityItems');
     const cfnaSelfCareItemsList = ["Toileting Skills", "Bathing Skills", "Personal Hygiene", "Dressing Skills", "Dining Skills", "Care of Living Quarters", "Tasks Skills"];
@@ -656,14 +661,57 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Auto-Calculation Logic ---
     const mocaTotalInput = document.getElementById('mocaTotal');
+    const mocaAgeInput = document.getElementById('mocaAge');
+    const mocaEducationInput = document.getElementById('mocaEducation');
+    const mocaPercentileResultSpan = document.getElementById('mocaPercentileResult');
     const cfnaSelfCareScoreSpan = document.getElementById('cfnaSelfCareScore');
     const cfnaCommunityScoreSpan = document.getElementById('cfnaCommunityScore');
     const cfnaTotalScoreInput = document.getElementById('cfnaTotalScore');
     const cfnaCutoffTextSpan = document.getElementById('cfnaCutoffText');
     
+    const calculateMocaPercentile = () => {
+        const score = parseInt(mocaTotalInput.value, 10);
+        const age = parseInt(mocaAgeInput.value, 10);
+        const edu = parseInt(mocaEducationInput.value, 10);
+
+        mocaPercentileResultSpan.textContent = '';
+        if (isNaN(score) || isNaN(age) || isNaN(edu)) {
+            return;
+        }
+
+        let a, b, c;
+        if (age >= 65 && age <= 69) {
+            if (edu >= 0 && edu <= 3) { a = 17; b = 14; c = 9; }
+            else if (edu >= 4 && edu <= 6) { a = 19; b = 18; c = 13; }
+            else if (edu >= 7 && edu <= 9) { a = 21; b = 19; c = 16; }
+            else if (edu >= 10 && edu <= 12) { a = 22; b = 20; c = 17; }
+            else if (edu > 12) { a = 25; b = 23; c = 21; }
+        } else if (age >= 70 && age <= 79) {
+            if (edu >= 0 && edu <= 3) { a = 15; b = 14; c = 11; }
+            else if (edu >= 4 && edu <= 6) { a = 18; b = 15; c = 10; }
+            else if (edu >= 7 && edu <= 9) { a = 20; b = 18; c = 15; }
+            else if (edu >= 10 && edu <= 12) { a = 22; b = 19; c = 18; }
+            else if (edu > 12) { a = 22; b = 20; c = 16; }
+        } else if (age >= 80) {
+            if (edu >= 0 && edu <= 6) { a = 13; b = 13; c = 10; }
+            else if (edu > 6) { a = 17; b = 15; c = 13; }
+        }
+
+        if (a !== undefined) {
+            if (score > a) { mocaPercentileResultSpan.textContent = '>16th percentile cutoff'; }
+            else if (score === a) { mocaPercentileResultSpan.textContent = '=16th percentile cutoff'; }
+            else if (score > b) { mocaPercentileResultSpan.textContent = '<16th percentile cutoff'; }
+            else if (score === b) { mocaPercentileResultSpan.textContent = '=7th percentile cutoff'; }
+            else if (score > c) { mocaPercentileResultSpan.textContent = '<7th percentile cutoff'; }
+            else if (score === c) { mocaPercentileResultSpan.textContent = '=2nd percentile cutoff'; }
+            else { mocaPercentileResultSpan.textContent = '<2nd percentile cutoff'; }
+        }
+    };
+
     const calculateMocaTotal = () => {
         const total = Array.from(form.querySelectorAll('.moca-score-input')).reduce((sum, input) => sum + (Number(input.value) || 0), 0);
         mocaTotalInput.value = total;
+        calculateMocaPercentile();
     };
     
     const calculateCfnaScores = () => {
@@ -687,12 +735,14 @@ document.addEventListener('DOMContentLoaded', function () {
             cfnaCutoffTextSpan.textContent = 'above';
         }
     };
-    form.addEventListener('input', (e) => {
-        if (e.target.classList.contains('moca-score-input')) calculateMocaTotal();
-    });
+    
     form.addEventListener('change', (e) => {
+        if (e.target.classList.contains('moca-score-input')) calculateMocaTotal();
         if (e.target.classList.contains('cfna-score-input')) calculateCfnaScores();
     });
+    mocaAgeInput.addEventListener('input', calculateMocaPercentile);
+    mocaEducationInput.addEventListener('input', calculateMocaPercentile);
+
 
     // --- Interactive UI Logic ---
     let lastClickedRadio = {};
@@ -780,12 +830,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     sectionB.push(`HK-MoCA done on: ${parts[2]}/${parts[1]}/${parts[0]}`);
                 }
                 sectionB.push(`Total score: ${getTextValue('mocaTotal') || '_'}/30`);
-                const mocaLabels = ["Visuospatial/ executive function:", "Naming:", "Attention:", "Language:", "Abstraction:", "Delayed recall:", "Orientation:"];
                 form.querySelectorAll('.moca-score-input').forEach((inputEl, index) => {
                     if (inputEl.value) {
-                        sectionB.push(`${mocaLabels[index]} ${inputEl.value}/${inputEl.getAttribute('max')}`);
+                        sectionB.push(`${mocaItems[index].label} ${inputEl.value}/${mocaItems[index].max}`);
                     }
                 });
+                const mocaAge = getTextValue('mocaAge');
+                if(mocaAge) sectionB.push(`Age: ${mocaAge}`);
+                const mocaEducation = getTextValue('mocaEducation');
+                if(mocaEducation) sectionB.push(`Education (years): ${mocaEducation}`);
+                const percentileResult = mocaPercentileResultSpan.textContent;
+                if (percentileResult) sectionB.push(`Result: ${percentileResult}`);
+
                 mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Cognitive Assessment\n` + "-----------------------\n" + sectionB.join('\n'));
             }
             
@@ -878,7 +934,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const collateralInfo = getTextValue('collateralInfo');
             if (collateralInfo) sectionG.push(`\n${collateralInfo}`);
             if (sectionG.length > 0) mainSections.push(`${String.fromCharCode(sectionLetterCode++)}. Collateral Information\n` + "------------------------\n" + sectionG.join('\n'));
-
+            
             // --- Overall Comments and Management ---
             const sectionOverall = [];
             sectionOverall.push("Overall comments", "----------------");

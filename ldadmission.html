@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LD Assessment Form & Report Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; font-size: 16px; }
+        .container { background-color: #fff; padding: 15px; margin: 10px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; margin-top:15px; margin-bottom: 25px; font-size: 1.8em; }
+        h2, h3, h4, h5 { color: #333; margin-top: 20px; }
+        h4 { font-size: 1.2em; margin-bottom: 10px;}
+        h5 { margin-top: 15px; margin-bottom: 8px; font-size: 1.05em; }
+        fieldset { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        legend { font-weight: bold; color: #555; padding: 0 10px; font-size: 1.1em; }
+        label { display: block; margin-bottom: 5px; font-weight: 500;}
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        textarea { min-height: 80px; }
+        .checkbox-group label, .radio-group label { display: inline-block; margin-right: 15px; margin-bottom: 8px; font-weight: normal;}
+        .checkbox-group input[type="checkbox"], .radio-group input[type="radio"] { margin-right: 5px; vertical-align: middle; }
+        .inline-fields label { display: inline-block; margin-right: 5px; }
+        .inline-fields input[type="text"], .inline-fields input[type="number"], .inline-fields select { width: auto; display: inline-block; margin-right:10px; }
+        .report-output { margin-top: 30px; }
+        .report-output textarea { width: 100%; height: 500px; font-family: monospace; font-size: 0.9em; }
+        button#generateReportBtn {
+            background-color: #007bff; color: white; padding: 12px 18px;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 1.1em; display: block; width: 100%; margin-top: 20px;
+        }
+        button#generateReportBtn:hover { background-color: #0056b3; }
+        button#copyReportBtn {
+            background-color: #28a745; color: white; padding: 10px 15px;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 1em; margin-top: 10px;
+        }
+        button#copyReportBtn:hover { background-color: #218838; }
+        button#resetBtn {
+            background-color: #ff0000; color: white; padding: 10px 15px;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 1em; margin-top: 10px;
+        }
+        button#resetBtn:hover { background-color: #cc0000; }
+        #copyMessage { margin-left: 10px; color: green; font-style: italic; display: none; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .grid-item { }
+        .sub-section { margin-left: 10px; border-left: 2px solid #eee; padding-left: 10px; }
+        .form-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start; margin-bottom:15px;}
+        .form-row > div { flex: 1; min-width: 250px;}
+        .form-row label { margin-bottom: 3px; }
+        .fine-motor-grid {
+            display: grid;
+            grid-template-columns: auto repeat(4, 1fr);
+            gap: 5px 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .fine-motor-grid label { margin-bottom: 0; font-weight: normal; }
+        .fine-motor-grid > span { font-weight: bold; }
+        .fine-motor-grid select { width: 60px; padding: 5px; }
+        .fm-header { text-align: center;}
+        .mas-function-group { border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
+        .mas-function-group div { margin-bottom: 8px; display: flex; flex-wrap: wrap; align-items: center;}
+        .mas-function-group div label { display: inline-block; width: 130px; font-weight: normal; margin-bottom:0; }
+        .mas-function-group div input { width: 120px; display: inline-block; padding: 6px; font-size: 0.95em; margin-bottom: 0; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 0.95em;}
+        th { background-color: #f2f2f2; }
+        /* Range & Contracture/Deformity Styling */
+        .limb-range-section .form-row { /* Reset for header only */
+            display: flex;
+            flex-wrap: nowrap; /* Prevent header from wrapping */
+            font-weight: bold;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+        .limb-range-section .form-row > div {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+        }
+         .limb-range-section .form-row > div:first-child { text-align: left; flex-basis: 100px; flex-grow: 0;}
+        .limb-data-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .limb-data-row > div {
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .limb-name { flex-basis: 100px; flex-grow: 0; font-weight: bold;}
+        .arom-group, .prom-group, .contracture-group { flex: 1; min-width: 150px; }
+        .functional-cb-label { font-weight: normal; display: inline-flex; align-items: center; margin-left:5px;}
+        .functional-cb-label input[type="checkbox"] { margin-right: 5px; width: auto;}
+        @media (max-width: 768px) {
+            .container { margin: 5px; padding: 10px;}
+            .form-row > div { min-width: 100%; }
+            .fine-motor-grid { grid-template-columns: auto repeat(2, 1fr); }
+            .mas-function-group div label { width: 100%; margin-bottom: 3px;}
+            .mas-function-group div input { width: 100%; }
+            .checkbox-group label, .radio-group label { margin-right: 10px;}
+            .limb-range-section .form-row { display: none; } /* Hide desktop header */
+            .limb-data-row { flex-direction: column; align-items: stretch; }
+            .limb-name { flex-basis: auto; margin-bottom: 10px; text-align: left; }
+            .arom-group, .prom-group, .contracture-group { min-width: 100%; margin-bottom: 10px;}
+            .arom-group input[type="text"], .prom-group input[type="text"] { width: 100%;}
+            .functional-cb-label { display: block; margin-left:0; margin-top: 5px;}
+        }
+        @media (max-width: 480px) {
+            .fine-motor-grid { grid-template-columns: 1fr; }
+            .fine-motor-grid > span { grid-column: 1 / -1; text-align: left; margin-top: 10px;}
+            .fm-header { font-weight: normal !important; margin-left: 15px; display:block; text-align: left !important;}
+            .fine-motor-grid > .limb-header ~ label { margin-left: 15px;}
+            .inline-fields input[type="text"], .inline-fields input[type="number"], .inline-fields select { width: 100%; margin-bottom: 8px;}
+            .checkbox-group label, .radio-group label { display: block; }
+        }
+        .required-asterisk { color: red; margin-left: 2px; }
+        .disabled { pointer-events: none; opacity: 0.5; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>LD Assessment Form</h1>
+    <fieldset>
+        <legend>Clinical Information</legend>
+        <div class="form-row">
+            <div>
+                <label for="admissionDate">Date of Admission:</label>
+                <input type="date" id="admissionDate" name="admissionDate">
+            </div>
+            <div>
+                <label for="referralDate">Date of Referral:</label>
+                <input type="date" id="referralDate" name="referralDate">
+            </div>
+            <div>
+                <label for="intakeDate">Date of Intake:</label>
+                <input type="date" id="intakeDate" name="intakeDate">
+            </div>
+        </div>
+        <label for="referralReason">Reason of referral:</label>
+        <textarea id="referralReason" name="referralReason" placeholder="According to referral letter"></textarea>
+       
+        <label>Present Diagnosis:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="diagnosis" value="Borderline IQ">Borderline IQ</label>
+            <label><input type="checkbox" name="diagnosis" value="Mild Learning Disability">Mild Learning Disability</label>
+            <label><input type="checkbox" name="diagnosis" value="Moderate Learning Disability">Moderate Learning Disability</label>
+            <label><input type="checkbox" name="diagnosis" value="Severe Learning Disability">Severe Learning Disability</label>
+            <label><input type="checkbox" name="diagnosis" value="Profound Learning Disability">Profound Learning Disability</label>
+            <label><input type="checkbox" name="diagnosis" value="ASD">ASD</label>
+            <label><input type="checkbox" name="diagnosis" value="ADHD">ADHD</label>
+            <label><input type="checkbox" name="diagnosis" value="Schizophrenia">Schizophrenia</label>
+            <label><input type="checkbox" name="diagnosis" value="Depression">Depression</label>
+            <label><input type="checkbox" name="diagnosis" value="BAD">BAD</label>
+            <label><input type="checkbox" name="diagnosis" value="Dementia">Dementia</label>
+        </div>
+        <input type="text" id="diagnosis_others" name="diagnosis_others" placeholder="Others">
+        <div class="form-row">
+            <div>
+                <label>SCS Status:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="scs_status" value="Conventional Care">Conventional Care</label>
+                    <label><input type="radio" name="scs_status" value="Special Care">Special Care</label>
+                    <label><input type="radio" name="scs_status" value="Intensive Care">Intensive Care</label>
+                </div>
+            </div>
+            <div>
+                <label>Legal Status:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="legal_status" value="Compulsory (F123)">Compulsory (F123)</label>
+                    <label><input type="radio" name="legal_status" value="Voluntary">Voluntary</label>
+                    <label><input type="radio" name="legal_status" value="Informal">Informal</label>
+                    <label><input type="radio" name="legal_status" value="Minor Vol">Minor Vol</label>
+                </div>
+            </div>
+        </div>
+        <label>Precautions:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="precautions" value="Suicidal Observation">Suicidal Observation</label>
+            <label><input type="checkbox" name="precautions" value="Close Observation">Close Observation</label>
+            <label><input type="checkbox" name="precautions" value="Epilepsy">Epilepsy</label>
+            <label><input type="checkbox" name="precautions" value="Swallowing">Swallowing</label>
+            <label><input type="checkbox" name="precautions" value="Infection Control">Infection Control</label>
+            <label><input type="checkbox" name="precautions" value="Diabetes Mellitus">Diabetes Mellitus</label>
+            <label><input type="checkbox" name="precautions" value="Fall">Fall</label>
+        </div>
+        <label for="admissionReason">Reason of Admission:</label>
+        <textarea id="admissionReason" name="admissionReason"></textarea>
+        <label for="psychiatricHistory">Psychiatric History:</label>
+        <textarea id="psychiatricHistory" name="psychiatricHistory"></textarea>
+        <label for="medicalHistory">Past Medical History:</label>
+        <textarea id="medicalHistory" name="medicalHistory"></textarea>
+    </fieldset>
+    <!-- Patient seen at (Compulsory) -->
+    <fieldset style="background-color: #fff8f8; border-color: #ffcccc;">
+        <label for="patientSeenTime">Patient seen at <span class="required-asterisk">*</span>:</label>
+        <div class="form-row">
+            <select id="patientSeenHour" name="patientSeenHour">
+                <option value="">Hour</option>
+                <option value="00">00</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+            </select>
+            <select id="patientSeenMinute" name="patientSeenMinute">
+                <option value="">Minute</option>
+                <option value="00">00</option>
+                <option value="05">05</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+                <option value="35">35</option>
+                <option value="40">40</option>
+                <option value="45">45</option>
+                <option value="50">50</option>
+                <option value="55">55</option>
+            </select>
+        </div>
+    </fieldset>
+    <!-- 1. Mental State Examination -->
+    <fieldset>
+        <legend>1. Mental State Examination</legend>
+        <div class="form-row">
+            <div>
+                <label>General Condition:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="general_condition" value="Overall stable">Overall stable</label>
+                    <label><input type="checkbox" name="general_condition" value="Unstable">Unstable</label>
+                    <label><input type="checkbox" name="general_condition" value="Clean and tidy">Clean and tidy</label>
+                    <label><input type="checkbox" name="general_condition" value="Unkempt">Unkempt</label>
+                    <label><input type="checkbox" name="general_condition" value="Inappropriate clothing">Inappropriate clothing</label>
+                    <label><input type="checkbox" name="general_condition" value="Excessive make-up">Excessive make-up</label>
+                    <label><input type="checkbox" name="general_condition" value="Tired">Tired</label>
+                    <label><input type="checkbox" name="general_condition" value="Pre-occupied">Pre-occupied</label>
+                    <label><input type="checkbox" name="general_condition" value="Confused">Confused</label>
+                    <label><input type="checkbox" name="general_condition" value="Perplexed">Perplexed</label>
+                    <label><input type="checkbox" name="general_condition" value="Cheerful">Cheerful</label>
+                    <label><input type="checkbox" name="general_condition" value="Bright looking">Bright looking</label>
+                    <label><input type="checkbox" name="general_condition" value="Cooperative">Cooperative</label>
+                    <label><input type="checkbox" name="general_condition" value="Friendly">Friendly</label>
+                    <label><input type="checkbox" name="general_condition" value="Evasive">Evasive</label>
+                    <label><input type="checkbox" name="general_condition" value="Guarded">Guarded</label>
+                    <label><input type="checkbox" name="general_condition" value="Challenging on approach">Challenging on approach</label>
+                    <label><input type="checkbox" name="general_condition" value="Overfriendly">Overfriendly</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Mood:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="mood" value="Neutral">Neutral</label>
+                    <label><input type="checkbox" name="mood" value="Euthymic">Euthymic</label>
+                    <label><input type="checkbox" name="mood" value="Dysphoric">Dysphoric</label>
+                    <label><input type="checkbox" name="mood" value="Depressed">Depressed</label>
+                    <label><input type="checkbox" name="mood" value="Dysthymic">Dysthymic</label>
+                    <label><input type="checkbox" name="mood" value="Anxious">Anxious</label>
+                    <label><input type="checkbox" name="mood" value="Elated">Elated</label>
+                    <label><input type="checkbox" name="mood" value="Irritable">Irritable</label>
+                    <label><input type="checkbox" name="mood" value="Agitated">Agitated</label>
+                    <label><input type="checkbox" name="mood" value="Labile">Labile</label>
+                </div>
+                <label for="mood_others">Others:</label>
+                <input type="text" id="mood_others" name="mood_others">
+            </div>
+            <div>
+                <label>Affect:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="affect" value="Congruent">Congruent</label>
+                    <label><input type="checkbox" name="affect" value="Incongruent">Incongruent</label>
+                    <label><input type="checkbox" name="affect" value="Labile">Labile</label>
+                    <label><input type="checkbox" name="affect" value="Shallow">Shallow</label>
+                    <label><input type="checkbox" name="affect" value="Blunted">Blunted</label>
+                    <label><input type="checkbox" name="affect" value="Restricted">Restricted</label>
+                    <label><input type="checkbox" name="affect" value="Reactive">Reactive</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Receptive Speech:</label>
+                <div class="inline-fields checkbox-group">
+                    <label>Follow</label> <input type="number" id="receptive_steps" name="receptive_steps" style="width: 70px;" min="0" oninput="checkMinMax(this)"> <label>step</label>
+                    <select id="receptive_command_type" name="receptive_command_type" style="width: auto;">
+                        <option value="verbal">verbal</option>
+                        <option value="gestural">gestural</option>
+                    </select> <label>command</label>
+                    <br>
+                    <label><input type="checkbox" name="receptive_speech_options" value="Repeat verbal command">Repeat verbal command</label>
+                    <label><input type="checkbox" name="receptive_speech_options" value="Not following command">Not following command</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Expressive Speech:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="expressive_speech" value="Relevant">Relevant</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Coherent">Coherent</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Spontaneous">Spontaneous</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Pressured">Pressured</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Slurred">Slurred</label>
+                    <br>
+                    <label><input type="checkbox" name="expressive_speech" value="Circumstantial">Circumstantial</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Tangential">Tangential</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Brief">Brief</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Echolalia">Echolalia</label>
+                    <label><input type="checkbox" name="expressive_speech" value="No meaningful speech">No meaningful speech</label>
+                    <label><input type="checkbox" name="expressive_speech" value="Mute">Mute</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Hallucination:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="hallucination" value="Auditory">Auditory</label>
+                    <label><input type="checkbox" name="hallucination" value="Visual">Visual</label>
+                    <label><input type="checkbox" name="hallucination" value="Olfactory">Olfactory</label>
+                    <label><input type="checkbox" name="hallucination" value="Tactile">Tactile</label>
+                    <label><input type="checkbox" name="hallucination" value="Gustatory">Gustatory</label>
+                    <label><input type="checkbox" id="hallucination_nil" name="hallucination" value="Nil">Nil</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Abnormal Thought:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="abnormal_thought" value="Persecutory">Persecutory</label>
+                    <label><input type="checkbox" name="abnormal_thought" value="Delusional">Delusional</label>
+                    <label><input type="checkbox" name="abnormal_thought" value="Somatic">Somatic</label>
+                    <label><input type="checkbox" name="abnormal_thought" value="Grandiose">Grandiose</label>
+                    <label><input type="checkbox" name="abnormal_thought" value="Idea of reference">Idea of reference</label>
+                    <br>
+                    <label><input type="checkbox" name="abnormal_thought" value="Thought broadcasting">Thought broadcasting</label>
+                    <label><input type="checkbox" name="abnormal_thought" value="Being control">Being control</label>
+                    <label><input type="checkbox" id="abnormal_thought_nil" name="abnormal_thought" value="Nil">Nil</label>
+                </div>
+                <label for="abnormal_thought_others">Other, please specify:</label>
+                <input type="text" id="abnormal_thought_others" name="abnormal_thought_others">
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Suicidal / Negative Thought:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="suicidal_thought" value="Expressed suicidal thought">Expressed suicidal thought</label>
+                    <label><input type="checkbox" name="suicidal_thought" value="Negative cognition of sense of uselessness">Negative cognition of sense of uselessness</label>
+                    <label><input type="checkbox" name="suicidal_thought" value="Hopelessness">Hopelessness</label>
+                    <label><input type="checkbox" name="suicidal_thought" value="Helplessness">Helplessness</label>
+                    <label><input type="checkbox" name="suicidal_thought" value="Worthlessness">Worthlessness</label>
+                    <label><input type="checkbox" id="suicidal_denied" name="suicidal_thought" value="Denied suicidal / negative thought">Denied suicidal / negative thought</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Behaviour:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="behaviour" value="Normal">Normal</label>
+                    <label><input type="checkbox" name="behaviour" value="Bizarre">Bizarre</label>
+                    <label><input type="checkbox" name="behaviour" value="Self-muttering">Self-muttering</label>
+                    <label><input type="checkbox" name="behaviour" value="Self-giggling">Self-giggling</label>
+                    <label><input type="checkbox" name="behaviour" value="Disturbing">Disturbing</label>
+                    <br>
+                    <label><input type="checkbox" name="behaviour" value="Disorganized">Disorganized</label>
+                    <label><input type="checkbox" name="behaviour" value="Disinhibited">Disinhibited</label>
+                    <label><input type="checkbox" name="behaviour" value="Violent">Violent</label>
+                    <label><input type="checkbox" name="behaviour" value="Self-stimulating">Self-stimulating</label>
+                </div>
+                <label for="behaviour_others">Others:</label>
+                <input type="text" id="behaviour_others" name="behaviour_others">
+            </div>
+            <div>
+                <label>Cognitive:</label>
+                <table>
+                    <tr><th>Orientation</th><th>Oriented</th><th>Disoriented</th></tr>
+                    <tr><td>Time</td><td><input type="radio" name="cognitive_time" value="Oriented"></td><td><input type="radio" name="cognitive_time" value="Disoriented"></td></tr>
+                    <tr><td>Place</td><td><input type="radio" name="cognitive_place" value="Oriented"></td><td><input type="radio" name="cognitive_place" value="Disoriented"></td></tr>
+                    <tr><td>Person</td><td><input type="radio" name="cognitive_person" value="Oriented"></td><td><input type="radio" name="cognitive_person" value="Disoriented"></td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Sleep:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="sleep_normal" name="sleep" value="Normal">Normal</label>
+                </div>
+                <input type="text" id="sleep_details" name="sleep_details" placeholder="Details if abnormal">
+            </div>
+            <div>
+                <label>Appetite:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="appetite_normal" name="appetite" value="Normal">Normal</label>
+                </div>
+                <input type="text" id="appetite_details" name="appetite_details" placeholder="Details if abnormal">
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label>Risk:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="risk" value="Suicidal">Suicidal</label>
+                    <label><input type="checkbox" name="risk" value="Homicidal">Homicidal</label>
+                    <label><input type="checkbox" name="risk" value="Self-harm">Self-harm</label>
+                    <label><input type="checkbox" name="risk" value="Self-neglect">Self-neglect</label>
+                    <label><input type="checkbox" name="risk" value="Violent">Violent</label>
+                    <label><input type="checkbox" name="risk" value="Environmental destruction">Environmental destruction</label>
+                    <label><input type="checkbox" id="risk_nil" name="risk" value="Nil">Nil</label>
+                </div>
+            </div>
+            <div>
+                <label>Insight:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="insight" value="Full">Full</label>
+                    <label><input type="checkbox" name="insight" value="Partial">Partial</label>
+                    <label><input type="checkbox" name="insight" value="Limited">Limited</label>
+                    <label><input type="checkbox" name="insight" value="Poor">Poor</label>
+                </div>
+            </div>
+        </div>
+        <label for="mse_others_remarks">Others/Remarks:</label>
+        <textarea id="mse_others_remarks" name="mse_others_remarks"></textarea>
+    </fieldset>
+    <!-- 2. Physical Assessment -->
+    <fieldset>
+        <legend>2. Physical Assessment</legend>
+        <h4>General</h4>
+        <div class="form-row">
+            <div>
+                <label>Wound:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="wound_present" value="Y" onclick="toggleWoundFields(this)">Y</label>
+                    <label><input type="radio" name="wound_present" value="N" onclick="toggleWoundFields(this)">N</label>
+                </div>
+            </div>
+            <div id="wound_type_section" class="disabled">
+                <label>Type:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="wound_type" value="Abrasion">Abrasion</label>
+                    <label><input type="checkbox" name="wound_type" value="Laceration">Laceration</label>
+                    <label><input type="checkbox" name="wound_type" value="Scratch">Scratch</label>
+                    <label><input type="checkbox" name="wound_type" value="Bruise">Bruise</label>
+                    <label><input type="checkbox" name="wound_type" value="Hematoma">Hematoma</label>
+                    <label><input type="checkbox" name="wound_type" value="Blister">Blister</label>
+                </div>
+                <label for="wound_type_others">Others:</label>
+                <input type="text" id="wound_type_others" name="wound_type_others">
+            </div>
+        </div>
+        <div class="form-row">
+            <div id="wound_location_section" class="disabled">
+                <label for="wound_location">Location:</label>
+                <input type="text" id="wound_location" name="wound_location">
+            </div>
+             <div id="wound_dressing_section" class="disabled">
+                <label>On dressing:</label>
+                 <div class="radio-group">
+                    <label><input type="radio" name="wound_dressing" value="Yes">Yes</label>
+                    <label><input type="radio" name="wound_dressing" value="No" checked>No</label>
+                </div>
+            </div>
+        </div>
+        <div id="general_other_section" class="disabled">
+            <label for="general_other_observation">Other observation:</label>
+            <textarea id="general_other_observation" name="general_other_observation"></textarea>
+        </div>
+        <div class="limb-range-section">
+            <h4>Range & Contracture/Deformity</h4>
+            <div class="form-row"> <!-- Desktop Header -->
+                <div>Limb</div>
+                <div>AROM / Functional</div>
+                <div>PROM</div>
+                <div>Contracture/Deformity</div>
+            </div>
+            <!-- RUL -->
+            <div class="limb-data-row">
+                <div class="limb-name">RUL:</div>
+                <div class="arom-group">
+                    <label for="rul_arom">AROM:</label>
+                    <input type="text" id="rul_arom" name="rul_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="rul_arom_functional" name="rul_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="rul_prom">PROM:</label>
+                    <input type="text" id="rul_prom" name="rul_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="rul_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="rul_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- LUL -->
+            <div class="limb-data-row">
+                <div class="limb-name">LUL:</div>
+                <div class="arom-group">
+                    <label for="lul_arom">AROM:</label>
+                    <input type="text" id="lul_arom" name="lul_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="lul_arom_functional" name="lul_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="lul_prom">PROM:</label>
+                    <input type="text" id="lul_prom" name="lul_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="lul_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="lul_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- RLL -->
+            <div class="limb-data-row">
+                <div class="limb-name">RLL:</div>
+                <div class="arom-group">
+                    <label for="rll_arom">AROM:</label>
+                    <input type="text" id="rll_arom" name="rll_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="rll_arom_functional" name="rll_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="rll_prom">PROM:</label>
+                    <input type="text" id="rll_prom" name="rll_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="rll_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="rll_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+            <!-- LLL -->
+            <div class="limb-data-row">
+                <div class="limb-name">LLL:</div>
+                <div class="arom-group">
+                    <label for="lll_arom">AROM:</label>
+                    <input type="text" id="lll_arom" name="lll_arom">
+                    <label class="functional-cb-label"><input type="checkbox" id="lll_arom_functional" name="lll_arom_functional"> Functional</label>
+                </div>
+                <div class="prom-group">
+                    <label for="lll_prom">PROM:</label>
+                    <input type="text" id="lll_prom" name="lll_prom">
+                </div>
+                <div class="contracture-group">
+                    <label>Contracture/Deformity:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="lll_contracture" value="Y">Y</label>
+                        <label><input type="radio" name="lll_contracture" value="N" checked>N</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <label for="pa_contracture_details">Contracture/Deformity details (e.g. specific joints):</label>
+        <input type="text" id="pa_contracture_details" name="pa_contracture_details">
+        <h4>Strength (MMT)</h4>
+        <div class="form-row">
+            <div><label for="rul_mmt">RUL MMT:</label><input type="text" id="rul_mmt" name="rul_mmt"></div>
+            <div><label for="lul_mmt">LUL MMT:</label><input type="text" id="lul_mmt" name="lul_mmt"></div>
+            <div><label for="rll_mmt">RLL MMT:</label><input type="text" id="rll_mmt" name="rll_mmt"></div>
+            <div><label for="lll_mmt">LLL MMT:</label><input type="text" id="lll_mmt" name="lll_mmt"></div>
+        </div>
+        <h4>Fine Motor</h4>
+        <p>Check if present (√, ⍻, X)</p>
+        <div class="fine-motor-grid">
+            <span></span><span class="fm-header">Grasp</span><span class="fm-header">Opposition</span><span class="fm-header">Pinch grip</span><span class="fm-header">Hand writing</span>
+            <span class="limb-header">RUL:</span>
+            <select id="rul_grasp"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+            <select id="rul_opposition"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+            <select id="rul_pinch_grip"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+            <select id="rul_hand_writing"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+           
+            <span class="limb-header">LUL:</span>
+            <select id="lul_grasp"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+            <select id="lul_opposition"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+            <select id="lul_pinch_grip"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+            <select id="lul_hand_writing"><option value=""></option><option value="√">√</option><option value="⍻">⍻</option><option value="X">X</option></select>
+        </div>
+    </fieldset>
+    <!-- 3. Sensory Assessment -->
+    <fieldset>
+        <legend>3. Sensory Assessment</legend>
+        <table>
+            <thead><tr><th>Observation</th><th>Hypersensitivity</th><th>Hyposensitivity</th><th>Sensory Seeking</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Auditory</strong></td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="auditory_hyper" value="Covering ears">Covering ears to block out sounds</label><br>
+                        <label><input type="checkbox" name="auditory_hyper" value="Overwhelmed by loud/unexpected noises">Overwhelmed by loud or unexpected noises</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="auditory_hypo" value="Not responding to sounds">Not responding to sounds</label><br>
+                        <label><input type="checkbox" name="auditory_hypo" value="Unaware of salient auditory stimuli">Unaware of auditory stimuli that are salient to others</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="auditory_seeking" value="Enjoying loud noises">Enjoying loud noises and making them</label><br>
+                        <label><input type="checkbox" name="auditory_seeking" value="Thriving in loud environments">Thriving in loud environments</label>
+                    </td></tr>
+                <tr><td><strong>Visual</strong></td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="visual_hyper" value="Discomfort with bright lights/patterns">Discomfort with bright lights or certain visual patterns</label><br>
+                        <label><input type="checkbox" name="visual_hyper" value="Avoiding eye contact/shielding eyes">Avoiding eye contact or shielding eyes</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="visual_hypo" value="Lack of response to visual stimuli">Lack of response to visual stimuli</label><br>
+                        <label><input type="checkbox" name="visual_hypo" value="Not noticing objects">Not noticing objects in their environment</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="visual_seeking" value="Staring at shiny/colourful objects">Staring at shiny or colourful objects</label><br>
+                        <label><input type="checkbox" name="visual_seeking" value="Waving/placing objects close to eyes">Waving or placing objects very close to their eyes</label>
+                    </td></tr>
+                <tr><td><strong>Oral</strong></td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="oral_hyper" value="Aversion to certain food textures/tastes">Aversion to certain food textures or tastes</label><br>
+                        <label><input type="checkbox" name="oral_hyper" value="Gagging/vomiting to certain foods">Gagging or vomiting in response to certain foods</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="oral_hypo" value="Seeking out intense flavours">Seeking out intense flavours</label><br>
+                        <label><input type="checkbox" name="oral_hypo" value="Not noticing food temperature">Not noticing food temperature</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="oral_seeking" value="Chewing on non-food items">Chewing on non-food items</label><br>
+                        <label><input type="checkbox" name="oral_seeking" value="Preferring strong-tasting foods">Preferring strong-tasting foods</label>
+                    </td></tr>
+                <tr><td><strong>Tactile</strong></td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="tactile_hyper" value="Discomfort with certain textures">Discomfort with certain textures</label><br>
+                        <label><input type="checkbox" name="tactile_hyper" value="Avoiding specific clothing/touch">Avoiding specific clothing or refusing to touch certain materials</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="tactile_hypo" value="Seeking out intense tactile experiences">Seeking out intense tactile experiences</label><br>
+                        <label><input type="checkbox" name="tactile_hypo" value="Not noticing pain">Not noticing pain</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="tactile_seeking" value="Enjoying being touched/massaged">Enjoying being touched, massaged, tickled, and hugged</label><br>
+                        <label><input type="checkbox" name="tactile_seeking" value="Walking barefoot everywhere">Walking barefoot everywhere</label>
+                    </td></tr>
+                <tr><td><strong>Proprioception</strong></td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="proprioception_hyper" value="Discomfort with certain movements/positions">Discomfort with certain movements or positions</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="proprioception_hypo" value="Poor body awareness">Poor body awareness</label><br>
+                        <label><input type="checkbox" name="proprioception_hypo" value="Clumsiness in movement">Clumsiness in movement</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="proprioception_seeking" value="Pushing others or objects">Pushing others or objects</label><br>
+                        <label><input type="checkbox" name="proprioception_seeking" value="Crashing, falling, running">Crashing, falling, running</label>
+                    </td></tr>
+                <tr><td><strong>Vestibular</strong></td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="vestibular_hyper" value="Hypersensitivity to movement">Hypersensitivity to movement</label><br>
+                        <label><input type="checkbox" name="vestibular_hyper" value="Poor motor coordination/balance">Poor motor coordination and balance</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="vestibular_hypo" value="Seeking out intense movement experiences">Seeking out intense movement experiences</label><br>
+                        <label><input type="checkbox" name="vestibular_hypo" value="Delayed developmental milestones (sitting/walking)">Delayed developmental milestones like sitting/walking</label>
+                    </td>
+                    <td class="checkbox-group">
+                        <label><input type="checkbox" name="vestibular_seeking" value="Rocking back and forth">Rocking back and forth</label><br>
+                        <label><input type="checkbox" name="vestibular_seeking" value="Swinging their legs">Swinging their legs</label>
+                    </td></tr>
+            </tbody>
+        </table>
+        <label for="sensory_assessment_others">Others (Examples/Observations for report):</label>
+        <textarea id="sensory_assessment_others" name="sensory_assessment_others"></textarea>
+        <h4>Sensory Profile</h4>
+        <label for="sensory_profile_informant">Informant:</label>
+        <input type="text" id="sensory_profile_informant" name="sensory_profile_informant">
+        <div class="grid-container">
+            <div class="grid-item">
+                <label>Low Registration: <input type="number" id="sp_low_reg_score" name="sp_low_reg_score" style="width: 70px;" min="0" max="75" oninput="checkMinMax(this)"> /75</label>
+                <div class="checkbox-group">
+                    Less Than Others: <label><input type="checkbox" name="sp_low_reg_interpretation" value="Definite Difference (Less)">Definite Difference</label> <label><input type="checkbox" name="sp_low_reg_interpretation" value="Probable Difference (Less)">Probable Difference</label><br>
+                    <label><input type="checkbox" name="sp_low_reg_interpretation" value="Typical Performance">Typical Performance</label><br>
+                    More Than Others: <label><input type="checkbox" name="sp_low_reg_interpretation" value="Definite Difference (More)">Definite Difference</label> <label><input type="checkbox" name="sp_low_reg_interpretation" value="Probable Difference (More)">Probable Difference</label>
+                </div>
+            </div>
+            <div class="grid-item">
+                <label>Sensation Seeking: <input type="number" id="sp_sensation_seeking_score" name="sp_sensation_seeking_score" style="width: 70px;" min="0" max="75" oninput="checkMinMax(this)"> /75</label>
+                <div class="checkbox-group">
+                    Less Than Others: <label><input type="checkbox" name="sp_sensation_seeking_interpretation" value="Definite Difference (Less)">Definite Difference</label> <label><input type="checkbox" name="sp_sensation_seeking_interpretation" value="Probable Difference (Less)">Probable Difference</label><br>
+                    <label><input type="checkbox" name="sp_sensation_seeking_interpretation" value="Typical Performance">Typical Performance</label><br>
+                    More Than Others: <label><input type="checkbox" name="sp_sensation_seeking_interpretation" value="Definite Difference (More)">Definite Difference</label> <label><input type="checkbox" name="sp_sensation_seeking_interpretation" value="Probable Difference (More)">Probable Difference</label>
+                </div>
+            </div>
+            <div class="grid-item">
+                <label>Sensory Sensitive: <input type="number" id="sp_sensory_sensitive_score" name="sp_sensory_sensitive_score" style="width: 70px;" min="0" max="75" oninput="checkMinMax(this)"> /75</label>
+                <div class="checkbox-group">
+                    Less Than Others: <label><input type="checkbox" name="sp_sensory_sensitive_interpretation" value="Definite Difference (Less)">Definite Difference</label> <label><input type="checkbox" name="sp_sensory_sensitive_interpretation" value="Probable Difference (Less)">Probable Difference</label><br>
+                    <label><input type="checkbox" name="sp_sensory_sensitive_interpretation" value="Typical Performance">Typical Performance</label><br>
+                    More Than Others: <label><input type="checkbox" name="sp_sensory_sensitive_interpretation" value="Definite Difference (More)">Definite Difference</label> <label><input type="checkbox" name="sp_sensory_sensitive_interpretation" value="Probable Difference (More)">Probable Difference</label>
+                </div>
+            </div>
+            <div class="grid-item">
+                <label>Sensory Avoidance: <input type="number" id="sp_sensory_avoidance_score" name="sp_sensory_avoidance_score" style="width: 70px;" min="0" max="75" oninput="checkMinMax(this)"> /75</label>
+                <div class="checkbox-group">
+                    Less Than Others: <label><input type="checkbox" name="sp_sensory_avoidance_interpretation" value="Definite Difference (Less)">Definite Difference</label> <label><input type="checkbox" name="sp_sensory_avoidance_interpretation" value="Probable Difference (Less)">Probable Difference</label><br>
+                    <label><input type="checkbox" name="sp_sensory_avoidance_interpretation" value="Typical Performance">Typical Performance</label><br>
+                    More Than Others: <label><input type="checkbox" name="sp_sensory_avoidance_interpretation" value="Definite Difference (More)">Definite Difference</label> <label><input type="checkbox" name="sp_sensory_avoidance_interpretation" value="Probable Difference (More)">Probable Difference</label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <!-- 4. Behavioural Assessment -->
+    <fieldset>
+        <legend>4. Behavioural Assessment</legend>
+        <h4>Motivational Assessment Scale (MAS)</h4>
+        <label for="mas_target_behaviour_overall">Target Behaviour (Overall for MAS):</label>
+        <input type="text" id="mas_target_behaviour_overall" name="mas_target_behaviour_overall">
+        <div class="mas-function-group">
+            <h5>Sensory</h5>
+            <div><label for="mas_sensory_total">Total Score:</label> <input type="number" id="mas_sensory_total" class="mas-total-score" min="0" oninput="checkMinMax(this)"></div>
+            <div><label for="mas_sensory_average">Average Score:</label> <input type="text" id="mas_sensory_average" readonly></div>
+            <div><label for="mas_sensory_ranking">Relative Ranking:</label> <input type="text" id="mas_sensory_ranking" readonly></div>
+        </div>
+        <div class="mas-function-group">
+            <h5>Escape</h5>
+            <div><label for="mas_escape_total">Total Score:</label> <input type="number" id="mas_escape_total" class="mas-total-score" min="0" oninput="checkMinMax(this)"></div>
+            <div><label for="mas_escape_average">Average Score:</label> <input type="text" id="mas_escape_average" readonly></div>
+            <div><label for="mas_escape_ranking">Relative Ranking:</label> <input type="text" id="mas_escape_ranking" readonly></div>
+        </div>
+        <div class="mas-function-group">
+            <h5>Attention</h5>
+            <div><label for="mas_attention_total">Total Score:</label> <input type="number" id="mas_attention_total" class="mas-total-score" min="0" oninput="checkMinMax(this)"></div>
+            <div><label for="mas_attention_average">Average Score:</label> <input type="text" id="mas_attention_average" readonly></div>
+            <div><label for="mas_attention_ranking">Relative Ranking:</label> <input type="text" id="mas_attention_ranking" readonly></div>
+        </div>
+        <div class="mas-function-group">
+            <h5>Tangible</h5>
+            <div><label for="mas_tangible_total">Total Score:</label> <input type="number" id="mas_tangible_total" class="mas-total-score" min="0" oninput="checkMinMax(this)"></div>
+            <div><label for="mas_tangible_average">Average Score:</label> <input type="text" id="mas_tangible_average" readonly></div>
+            <div><label for="mas_tangible_ranking">Relative Ranking:</label> <input type="text" id="mas_tangible_ranking" readonly></div>
+        </div>
+        <h4>Challenging Behaviour Interview (CBI)</h4>
+        <label for="cbi_target_behaviour">Target Behaviour (Patient's major challenging behaviour):</label>
+        <input type="text" id="cbi_target_behaviour" name="cbi_target_behaviour">
+        <label for="cbi_total_score">Total Score: <input type="text" id="cbi_total_score" name="cbi_total_score" style="width: 70px;"> /55</label>
+    </fieldset>
+    <!-- 5. Environmental Assessment -->
+    <fieldset>
+        <legend>5. Environmental Assessment</legend>
+        <h4>Background</h4>
+        <label>Lives with:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="lives_with" value="Alone">Alone</label>
+            <label><input type="checkbox" name="lives_with" value="Parents">Parents</label>
+            <label><input type="checkbox" name="lives_with" value="Private Hostel">Private Hostel</label>
+            <label><input type="checkbox" name="lives_with" value="HWH">HWH</label>
+            <label><input type="checkbox" name="lives_with" value="HMMH">HMMH</label>
+            <label><input type="checkbox" name="lives_with" value="HSMH">HSMH</label>
+            <label><input type="checkbox" name="lives_with" value="Boarding School">Boarding School</label>
+        </div>
+        <label for="lives_with_others">Others:</label>
+        <input type="text" id="lives_with_others" name="lives_with_others">
+        <h4>Home visit / Hostel Environment</h4>
+        <div id="home_visit_env_content">
+            <div class="form-row">
+                <div>
+                    <label>Lighting:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="env_lighting" value="Adequate">Adequate</label>
+                        <label><input type="checkbox" name="env_lighting" value="Inadequate">Inadequate</label>
+                        <label><input type="checkbox" name="env_lighting" value="Over-lighting">Over-lighting</label>
+                    </div>
+                </div>
+                <div>
+                    <label>Noise:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="env_noise" value="Quiet">Quiet</label>
+                        <label><input type="checkbox" name="env_noise" value="Moderate noise">Moderate noise</label>
+                        <label><input type="checkbox" name="env_noise" value="High noise">High noise</label>
+                        <label><input type="checkbox" name="env_noise" value="Quiet zone/ Pad room available">Quiet zone/ Pad room available</label>
+                        <label><input type="checkbox" name="env_noise_not_available" value="Quiet zone/ Pad room was not available">Quiet zone/ Pad room NOT available</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>Safety Hazard:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="env_safety_hazard" value="Fall">Fall</label>
+                        <label><input type="checkbox" name="env_safety_hazard" value="Access to sharps">Access to sharps</label>
+                        <label><input type="checkbox" name="env_safety_hazard" value="Access to poison">Access to poison</label>
+                        <label><input type="checkbox" name="env_safety_hazard_not_presented" value="Not presented">Not presented</label>
+                    </div>
+                    <label for="env_safety_hazard_others">Others / Describe if +ve:</label>
+                    <input type="text" id="env_safety_hazard_others" name="env_safety_hazard_others">
+                </div>
+                <div>
+                    <label>Social stimulation:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="env_social_stimulation" value="Provocation from co-resident">Provocation from co-resident</label>
+                        <label><input type="checkbox" name="env_social_stimulation" value="Social isolation">Social isolation</label>
+                    </div>
+                    <label for="env_social_stimulation_others">Others (e.g. social over-stimulation):</label>
+                    <input type="text" id="env_social_stimulation_others" name="env_social_stimulation_others">
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>Change of environment:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="env_change" value="Change of physical environment">Change of physical environment</label>
+                        <label><input type="checkbox" name="env_change" value="Routine changes">Routine changes</label>
+                        <label><input type="checkbox" name="env_change" value="Carer changes">Carer changes</label>
+                    </div>
+                    <label for="env_change_others">Others / Specify:</label>
+                    <input type="text" id="env_change_others" name="env_change_others">
+                </div>
+            </div>
+            <h5>Staff / Parent Interaction</h5>
+             <div class="form-row">
+                <div>
+                    <label>Staff handling:</label>
+                     <div class="checkbox-group">
+                        <label><input type="checkbox" name="staff_handling_type" value="Inconsistent handling">Inconsistent handling</label>
+                        <label><input type="checkbox" name="staff_handling_type" value="Firm handling">Firm handling</label>
+                    </div>
+                    <label for="staff_handling_others">Others:</label>
+                    <input type="text" id="staff_handling_others" name="staff_handling_others">
+                </div>
+                <div>
+                    <label for="staff_expectation_behaviour">Staff's expectation on behaviour:</label>
+                    <input type="text" id="staff_expectation_behaviour" name="staff_expectation_behaviour">
+                </div>
+            </div>
+            <label for="staff_parents_concern">Hostel staff/ parents concerned about patient's behaviour of (most concerned behaviour):</label>
+            <input type="text" id="staff_parents_concern" name="staff_parents_concern">
+            <label for="staff_parents_response">In response to patient's challenging behaviours, hostel staff/ parents would (staff measures) with satisfactory/ suboptimal effect:</label>
+            <textarea id="staff_parents_response" name="staff_parents_response"></textarea>
+            <h5>Restrain Policy (if applicable)</h5>
+            <label>Restrain:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="restrain_policy" value="Yes">Yes</label>
+                <label><input type="radio" name="restrain_policy" value="No">No</label>
+            </div>
+            <div class="sub-section" id="restrain_details_section" style="display:none;">
+                <label>Restrain period:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="restrain_period" value="Daytime">Daytime</label>
+                    <label><input type="checkbox" name="restrain_period" value="Day training">Day training</label>
+                    <label><input type="checkbox" name="restrain_period" value="Nighttime">Nighttime</label>
+                    <label><input type="checkbox" name="restrain_period" value="Sleep">Sleep</label>
+                </div>
+                <label for="restrain_period_others">Others:</label>
+                <input type="text" id="restrain_period_others" name="restrain_period_others">
+                <label for="restrain_situation">Situation of restrain:</label>
+                <textarea id="restrain_situation" name="restrain_situation"></textarea>
+                <label>Body part on restrain:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="restrain_body_part" value="Waist">Waist</label>
+                    <label><input type="checkbox" name="restrain_body_part" value="Wrist">Wrist</label>
+                    <label><input type="checkbox" name="restrain_body_part" value="Hand">Hand</label>
+                    <label><input type="checkbox" name="restrain_body_part" value="Ankle">Ankle</label>
+                    <label><input type="checkbox" name="restrain_body_part" value="Upper body">Upper body</label>
+                    <label><input type="checkbox" name="restrain_body_part" value="Lower body">Lower body</label>
+                </div>
+                <label for="restrain_body_part_others">Others:</label>
+                <input type="text" id="restrain_body_part_others" name="restrain_body_part_others">
+                <label>Restrainer type:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="restrainer_type" value="Magnetic belt">Magnetic belt</label>
+                    <label><input type="checkbox" name="restrainer_type" value="Fabric belt">Fabric belt</label>
+                    <label><input type="checkbox" name="restrainer_type" value="Special garment (Upper/Lower)">Special garment (Upper/Lower)</label>
+                    <label><input type="checkbox" name="restrainer_type" value="Boxing gloves">Boxing gloves</label>
+                    <label><input type="checkbox" name="restrainer_type" value="Chair-table">Chair-table</label>
+                </div>
+                <label for="restrainer_type_others">Others:</label>
+                <input type="text" id="restrainer_type_others" name="restrainer_type_others">
+                <label for="restrain_other_info">Other information:</label>
+                <textarea id="restrain_other_info" name="restrain_other_info"></textarea>
+            </div>
+            <h5>Family Involvement</h5>
+            <label for="parent_visit_frequency">Parents would/ would not provide visit to hostel (frequency):</label>
+            <input type="text" id="parent_visit_frequency" name="parent_visit_frequency">
+            <label for="patient_behaviour_visit">Before/ after the visit, patient remained calm and settled/ showed agitation/ showed challenging behaviour of (problem behaviour):</label>
+            <input type="text" id="patient_behaviour_visit" name="patient_behaviour_visit">
+            <label>Parenting style:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="parenting_style" value="Authoritative">Authoritative</label>
+                <label><input type="checkbox" name="parenting_style" value="Authoritarian">Authoritarian</label>
+                <label><input type="checkbox" name="parenting_style" value="Permissive">Permissive</label>
+                <label><input type="checkbox" name="parenting_style" value="Uninvolved">Uninvolved</label>
+            </div>
+            <label for="parenting_style_other_info">Other information:</label>
+            <textarea id="parenting_style_other_info" name="parenting_style_other_info"></textarea>
+        </div>
+        <label for="env_others_layout">Others (e.g. Layout):</label>
+        <textarea id="env_others_layout" name="env_others_layout"></textarea>
+    </fieldset>
+    <!-- 6. Independent Function Assessment -->
+    <fieldset>
+        <legend>6. Independent Function Assessment</legend>
+        <h4>BADL Overall</h4>
+        <div class="radio-group">
+            <label><input type="radio" name="badl_overall" value="Independent">Independent</label>
+            <label><input type="radio" name="badl_overall" value="Supervised">Supervised</label>
+            <label><input type="radio" name="badl_overall" value="Assisted">Assisted</label>
+            <label><input type="radio" name="badl_overall" value="Dependent">Dependent</label>
+        </div>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="badl_poor_hygiene" value="Poor personal Hygiene">Poor personal Hygiene</label>
+            <label><input type="checkbox" name="badl_poor_habit" value="Poor habit in">Poor habit in</label>
+            <input type="text" id="badl_poor_habit_area" name="badl_poor_habit_area" placeholder="cue area of ADL">
+        </div>
+        <h4>BADL (MBI)</h4>
+        <div class="grid-container">
+            <div><label>Feeding: <input type="number" name="mbi_feeding" class="mbi-score-field" min="0" max="10" oninput="checkMinMax(this)"> /10</label></div>
+            <div><label>Grooming: <input type="number" name="mbi_grooming" class="mbi-score-field" min="0" max="5" oninput="checkMinMax(this)"> /5</label></div>
+            <div><label>Dressing: <input type="number" name="mbi_dressing" class="mbi-score-field" min="0" max="10" oninput="checkMinMax(this)"> /10</label></div>
+            <div><label>Toileting: <input type="number" name="mbi_toileting" class="mbi-score-field" min="0" max="10" oninput="checkMinMax(this)"> /10</label></div>
+            <div><label>Bathing: <input type="number" name="mbi_bathing" class="mbi-score-field" min="0" max="5" oninput="checkMinMax(this)"> /5</label></div>
+            <div><label>Transfer: <input type="number" name="mbi_transfer" class="mbi-score-field" min="0" max="15" oninput="checkMinMax(this)"> /15</label></div>
+            <div><label>Bladder: <input type="number" name="mbi_bladder" class="mbi-score-field" min="0" max="10" oninput="checkMinMax(this)"> /10</label></div>
+            <div><label>Bowel: <input type="number" name="mbi_bowel" class="mbi-score-field" min="0" max="10" oninput="checkMinMax(this)"> /10</label></div>
+            <div><label>Ambulation: <input type="number" name="mbi_ambulation" class="mbi-score-field" min="0" max="15" oninput="checkMinMax(this)"> /15</label></div>
+            <div><label>Stairs: <input type="number" name="mbi_stairs" class="mbi-score-field" min="0" max="10" oninput="checkMinMax(this)"> /10</label></div>
+        </div>
+        <label>Total MBI Score: <input type="text" id="mbi_total_score_display" name="mbi_total_score_display" readonly> /100</label>
+        <p><em>Qualitative BADL Levels:</em></p>
+        <div class="form-row">
+            <div>
+                <label for="badl_feeding_level">Feeding:</label>
+                <select id="badl_feeding_level" name="badl_feeding_level">
+                    <option value="">Select Level</option><option value="Independent">Independent</option><option value="Supervision">Supervision</option><option value="Mild Assist">Mild Assist</option><option value="Mod Assist">Mod Assist</option><option value="Max Assist">Max Assist</option><option value="Dependent">Dependent</option>
+                </select>
+            </div>
+            <div>
+                <label for="badl_grooming_level">Grooming:</label>
+                <select id="badl_grooming_level" name="badl_grooming_level">
+                    <option value="">Select Level</option><option value="Independent">Independent</option><option value="Supervision">Supervision</option><option value="Mild Assist">Mild Assist</option><option value="Mod Assist">Mod Assist</option><option value="Max Assist">Max Assist</option><option value="Dependent">Dependent</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label for="badl_dressing_level">Dressing:</label>
+                <select id="badl_dressing_level" name="badl_dressing_level">
+                    <option value="">Select Level</option><option value="Independent">Independent</option><option value="Supervision">Supervision</option><option value="Mild Assist">Mild Assist</option><option value="Mod Assist">Mod Assist</option><option value="Max Assist">Max Assist</option><option value="Dependent">Dependent</option>
+                </select>
+            </div>
+            <div>
+                <label for="badl_toileting_level">Toileting:</label>
+                <select id="badl_toileting_level" name="badl_toileting_level">
+                    <option value="">Select Level</option><option value="Independent">Independent</option><option value="Supervision">Supervision</option><option value="Mild Assist">Mild Assist</option><option value="Mod Assist">Mod Assist</option><option value="Max Assist">Max Assist</option><option value="Dependent">Dependent</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label for="badl_bathing_level">Bathing:</label>
+                <select id="badl_bathing_level" name="badl_bathing_level">
+                    <option value="">Select Level</option><option value="Independent">Independent</option><option value="Supervision">Supervision</option><option value="Mild Assist">Mild Assist</option><option value="Mod Assist">Mod Assist</option><option value="Max Assist">Max Assist</option><option value="Dependent">Dependent</option>
+                </select>
+            </div>
+             <div> <!-- Placeholder for alignment --> </div>
+        </div>
+        <label for="mbi_remarks">Remarks:</label>
+        <textarea id="mbi_remarks" name="mbi_remarks"></textarea>
+        <h4>IADL Overall</h4>
+        <div class="form-row">
+            <div>
+                <label><input type="radio" name="iadl_overall" value="Independent">Independent</label>
+            </div>
+            <div>
+                <label><input type="radio" name="iadl_overall" value="Supervised by">Supervised by</label>
+                <input type="text" name="iadl_supervised_by" placeholder="">
+            </div>
+            <div>
+                <label><input type="radio" name="iadl_overall" value="Assisted by">Assisted by</label>
+                <input type="text" name="iadl_assisted_by" placeholder="">
+            </div>
+            <div>
+                <label><input type="radio" name="iadl_overall" value="Dependent on">Dependent on</label>
+                <input type="text" name="iadl_dependent_on" placeholder="">
+            </div>
+            <div>
+                <label><input type="radio" name="iadl_overall" value="Shared with">Shared with</label>
+                <input type="text" name="iadl_shared_with" placeholder="">
+            </div>
+        </div>
+        <label>Responsible for</label>
+        <input type="text" id="iadl_responsible_tasks" name="iadl_responsible_tasks" placeholder="___ tasks">
+        <h4>IADL (SIB-R Short form)</h4>
+        <div class="form-row">
+            <div>
+                <label>Patient's Chronological Age:</label>
+                <input type="number" id="sibr_chron_age_year" name="sibr_chron_age_year" placeholder="Year" style="width: 80px;" min="0" oninput="checkMinMax(this)"> year(s)
+                <input type="number" id="sibr_chron_age_month" name="sibr_chron_age_month" placeholder="Month" style="width: 80px;" min="0" oninput="checkMinMax(this)"> month(s)
+            </div>
+            <div>
+                <label>Broad Independence Age Equivalent:</label>
+                <input type="number" id="sibr_indep_age_year" name="sibr_indep_age_year" placeholder="Year" style="width: 80px;" min="0" oninput="checkMinMax(this)"> year(s)
+                <input type="number" id="sibr_indep_age_month" name="sibr_indep_age_month" placeholder="Month" style="width: 80px;" min="0" oninput="checkMinMax(this)"> month(s)
+            </div>
+        </div>
+        <label>Maladaptive Behaviour Severity Level:</label>
+        <div class="radio-group">
+            <label><input type="radio" name="sibr_maladaptive_level" value="Normal">Normal</label>
+            <label><input type="radio" name="sibr_maladaptive_level" value="Marginally serious">Marginally serious</label>
+            <label><input type="radio" name="sibr_maladaptive_level" value="Moderately serious">Moderately serious</label>
+            <label><input type="radio" name="sibr_maladaptive_level" value="Serious">Serious</label>
+            <label><input type="radio" name="sibr_maladaptive_level" value="Very serious">Very serious</label>
+        </div>
+        <label>Support Score: <input type="number" id="sibr_support_score" name="sibr_support_score" min="1" max="100" oninput="checkMinMax(this); calculateSibrLevel()"> /100</label>
+        <label>Support Level:</label>
+        <div class="radio-group">
+            <label><input type="radio" id="sibr_pervasive" name="sibr_support_level" value="Pervasive (1-24)" disabled>Pervasive (1-24)</label>
+            <label><input type="radio" id="sibr_extensive" name="sibr_support_level" value="Extensive (25-39)" disabled>Extensive (25-39)</label>
+            <label><input type="radio" id="sibr_frequent" name="sibr_support_level" value="Frequent (40-54)" disabled>Frequent (40-54)</label>
+            <label><input type="radio" id="sibr_limited" name="sibr_support_level" value="Limited (55-69)" disabled>Limited (55-69)</label>
+            <label><input type="radio" id="sibr_intermittent" name="sibr_support_level" value="Intermittent (70-84)" disabled>Intermittent (70-84)</label>
+            <label><input type="radio" id="sibr_infrequent" name="sibr_support_level" value="Infrequent or No support (85-100)" disabled>Infrequent or No support (85-100)</label>
+        </div>
+        <label for="sibr_remarks">Remarks:</label>
+        <textarea id="sibr_remarks" name="sibr_remarks"></textarea>
+    </fieldset>
+    <!-- 7. Work Assessment -->
+    <fieldset>
+        <legend>7. Work Assessment</legend>
+        <h4>Premorbid</h4>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="premorbid_status" value="Unemployed">Unemployed</label>
+            <label><input type="checkbox" id="premorbid_student" name="premorbid_status" value="Student">Student</label>
+            <label><input type="checkbox" name="premorbid_status" value="DSC attendant">DSC attendant</label>
+            <label><input type="checkbox" name="premorbid_status" value="DAC attendant">DAC attendant</label>
+            <label><input type="checkbox" name="premorbid_status" value="SWS attendant">SWS attendant</label>
+            <label><input type="checkbox" name="premorbid_status" value="SE attendant">SE attendant</label>
+        </div>
+        <div id="student_details" style="display:none;">
+            <div class="radio-group">
+                <label><input type="radio" name="student_type" value="Mainstream">Mainstream</label>
+                <input type="text" id="mainstream_level" name="mainstream_level" placeholder="cue level">
+                <label><input type="radio" name="student_type" value="Special school">Special school</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div style="display: flex; align-items: center; width: 100%;">
+                <label style="margin-right: 5px; width: auto;"><input type="checkbox" id="premorbid_oe_job_status_cb" name="premorbid_status" value="OE"> OE (job):</label>
+                <input type="text" id="premorbid_oe_job_details" name="premorbid_oe_job_details" placeholder="Specify OE job" style="flex-grow: 1; margin-bottom: 0;">
+            </div>
+        </div>
+        <label for="premorbid_main_work_task">Main work task:</label>
+        <textarea id="premorbid_main_work_task" name="premorbid_main_work_task"></textarea>
+        <h4>BWAP-2</h4>
+        <div class="grid-container">
+            <div>
+                <label>Work Habits/ Attitudes Percentile:</label> <input type="text" id="bwap_wha_percentile" name="bwap_wha_percentile">
+                <label>Working Placement:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="bwap_wha_placement" value="Day Care">Day Care</label>
+                    <label><input type="checkbox" name="bwap_wha_placement" value="Work Activity">Work Activity</label>
+                    <label><input type="checkbox" name="bwap_wha_placement" value="Low Sheltered">Low Sheltered</label>
+                    <label><input type="checkbox" name="bwap_wha_placement" value="High Sheltered">High Sheltered</label>
+                    <label><input type="checkbox" name="bwap_wha_placement" value="Transitional Work">Transitional Work</label>
+                    <label><input type="checkbox" name="bwap_wha_placement" value="Competitive Work">Competitive Work</label>
+                </div>
+            </div>
+            <div>
+                <label>Interpersonal Relations Percentile:</label> <input type="text" id="bwap_ir_percentile" name="bwap_ir_percentile">
+                <label>Working Placement:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="bwap_ir_placement" value="Day Care">Day Care</label>
+                    <label><input type="checkbox" name="bwap_ir_placement" value="Work Activity">Work Activity</label>
+                    <label><input type="checkbox" name="bwap_ir_placement" value="Low Sheltered">Low Sheltered</label>
+                    <label><input type="checkbox" name="bwap_ir_placement" value="High Sheltered">High Sheltered</label>
+                    <label><input type="checkbox" name="bwap_ir_placement" value="Transitional Work">Transitional Work</label>
+                    <label><input type="checkbox" name="bwap_ir_placement" value="Competitive Work">Competitive Work</label>
+                </div>
+            </div>
+            <div>
+                <label>Cognitive Skills Percentile:</label> <input type="text" id="bwap_cs_percentile" name="bwap_cs_percentile">
+                <label>Working Placement:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="bwap_cs_placement" value="Day Care">Day Care</label>
+                    <label><input type="checkbox" name="bwap_cs_placement" value="Work Activity">Work Activity</label>
+                    <label><input type="checkbox" name="bwap_cs_placement" value="Low Sheltered">Low Sheltered</label>
+                    <label><input type="checkbox" name="bwap_cs_placement" value="High Sheltered">High Sheltered</label>
+                    <label><input type="checkbox" name="bwap_cs_placement" value="Transitional Work">Transitional Work</label>
+                    <label><input type="checkbox" name="bwap_cs_placement" value="Competitive Work">Competitive Work</label>
+                </div>
+            </div>
+            <div>
+                <label>Work Performance Skills Percentile:</label> <input type="text" id="bwap_wps_percentile" name="bwap_wps_percentile">
+                <label>Working Placement:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="bwap_wps_placement" value="Day Care">Day Care</label>
+                    <label><input type="checkbox" name="bwap_wps_placement" value="Work Activity">Work Activity</label>
+                    <label><input type="checkbox" name="bwap_wps_placement" value="Low Sheltered">Low Sheltered</label>
+                    <label><input type="checkbox" name="bwap_wps_placement" value="High Sheltered">High Sheltered</label>
+                    <label><input type="checkbox" name="bwap_wps_placement" value="Transitional Work">Transitional Work</label>
+                    <label><input type="checkbox" name="bwap_wps_placement" value="Competitive Work">Competitive Work</label>
+                </div>
+            </div>
+            <div>
+                <label>Broad Work Adjustment Percentile:</label> <input type="text" id="bwap_bwa_percentile" name="bwap_bwa_percentile">
+                <label>Working Placement:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="bwap_bwa_placement" value="Day Care">Day Care</label>
+                    <label><input type="checkbox" name="bwap_bwa_placement" value="Work Activity">Work Activity</label>
+                    <label><input type="checkbox" name="bwap_bwa_placement" value="Low Sheltered">Low Sheltered</label>
+                    <label><input type="checkbox" name="bwap_bwa_placement" value="High Sheltered">High Sheltered</label>
+                    <label><input type="checkbox" name="bwap_bwa_placement" value="Transitional Work">Transitional Work</label>
+                    <label><input type="checkbox" name="bwap_bwa_placement" value="Competitive Work">Competitive Work</label>
+                </div>
+            </div>
+        </div>
+        <label for="bwap_remarks">Remarks:</label>
+        <textarea id="bwap_remarks" name="bwap_remarks"></textarea>
+    </fieldset>
+    <!-- Psychiatric Assessment Note -->
+    <fieldset>
+        <legend>Psychiatric Assessment Note</legend>
+        <h4>Overall Level of Functioning</h4>
+        <label>Social and Occupational Functioning Assessment Scale (SOFAS)</label>
+        <div class="form-row">
+            <div>
+                <label for="sofas_date">Date:</label>
+                <input type="date" id="sofas_date" name="sofas_date">
+            </div>
+            <div>
+                <label for="sofas_score">Score:</label>
+                <input type="number" id="sofas_score" name="sofas_score" min="0" max="100" oninput="checkMinMax(this)"> /100
+            </div>
+        </div>
+    </fieldset>
+    <!-- Problems -->
+    <fieldset>
+        <legend>Problems</legend>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="problems" value="Deteriorated mental state">Deteriorated mental state</label>
+            <label><input type="checkbox" name="problems" value="Challenging behaviour">Challenging behaviour</label>
+            <label><input type="checkbox" name="problems" value="Unstable mood with violent act">Unstable mood with violent act</label>
+            <label><input type="checkbox" name="problems" value="Unstable mood with self-harm behaviour">Unstable mood with self-harm behaviour</label>
+            <label><input type="checkbox" name="problems" value="Limited insight and inadequate illness management skill">Limited insight and inadequate illness management skill</label>
+            <label><input type="checkbox" name="problems" value="Doubtful / Impaired functional performance in ADL / IADL / work / childcare">Doubtful / Impaired functional performance in ADL / IADL / work / childcare</label>
+            <label><input type="checkbox" name="problems" value="Loss of interest / Lack of motivation">Loss of interest / Lack of motivation</label>
+            <label><input type="checkbox" name="problems" value="Lack of daytime engagement / Lifestyle imbalance">Lack of daytime engagement / Lifestyle imbalance</label>
+            <label><input type="checkbox" name="problems_lack_of" value="Lack of">Lack of</label>
+            <label><input type="checkbox" name="problems_psychosocial" value="psychosocial">psychosocial</label>
+            <label><input type="checkbox" name="problems_community_support" value="community support">community support</label>
+            <label><input type="checkbox" name="problems" value="Subjective memory complain / Lack of insight on cognitive deficit">Subjective memory complain / Lack of insight on cognitive deficit</label>
+            <label><input type="checkbox" name="problems" value="Doubtful / Impaired cognitive function in ___">Doubtful / Impaired cognitive function in ___</label>
+            <label><input type="checkbox" name="problems" value="Ineffective stress coping skill">Ineffective stress coping skill</label>
+            <label><input type="checkbox" name="problems" value="Poor workshop behaviour">Poor workshop behaviour</label>
+            <label><input type="checkbox" name="problems" value="Poor work-related social skills">Poor work-related social skills</label>
+            <label><input type="checkbox" name="problems" value="Ineffective emotional regulation / Poor temper control">Ineffective emotional regulation / Poor temper control</label>
+            <label><input type="checkbox" name="problems" value="Poor interpersonal / social skills with limited social circle">Poor interpersonal / social skills with limited social circle</label>
+            <label><input type="checkbox" name="problems" value="Home environment barriers">Home environment barriers</label>
+            <label><input type="checkbox" name="problems" value="Heavy carer stress / Limited caregiver skills and support">Heavy carer stress / Limited caregiver skills and support</label>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Recommendation</legend>
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="rec_observe_mental" name="rec_observe_mental" value="Observe mental state and behaviour">Observe mental state and behaviour</label><br>
+            <label><input type="checkbox" id="rec_provide_general" name="rec_provide_general" value="Provide">Provide</label>
+            <label><input type="checkbox" id="rec_ward_ot" name="rec_ward_ot" value="ward OT">ward OT</label> /
+            <label><input type="checkbox" id="rec_main_ot" name="rec_main_ot" value="Main OT programme for structured daytime engagement"> Main OT programme for structured daytime engagement</label><br>
+            <h5>Self-management Training:</h5>
+            <label><input type="checkbox" id="rec_conduct_adl" name="rec_conduct_adl" value="Conduct ADL Assessment">Conduct ADL Assessment</label> /
+            <label><input type="checkbox" id="rec_review_adl" name="rec_review_adl" value="Review ADL Assessment">Review ADL Assessment</label><br>
+            <label><input type="checkbox" id="rec_provide_adl_training" name="rec_provide_adl_training" value="Provide ADL training">Provide ADL training</label><br>
+            <label><input type="checkbox" id="rec_conduct_iadl" name="rec_conduct_iadl" value="Conduct IADL Assessment">Conduct IADL Assessment</label> /
+            <label><input type="checkbox" id="rec_review_iadl" name="rec_review_iadl" value="Review IADL Assessment">Review IADL Assessment</label><br>
+            <label><input type="checkbox" id="rec_provide_iadl_training" name="rec_provide_iadl_training" value="Provide IADL training">Provide IADL training</label><br>
+            <label><input type="checkbox" id="rec_conduct_independent_living" name="rec_conduct_independent_living" value="Conduct independent living skill assessment">Conduct independent living skill assessment</label><br>
+            <label><input type="checkbox" id="rec_provide_psychoeducation" name="rec_provide_psychoeducation" value="Provide psychoeducation on">Provide psychoeducation on</label>
+            <label><input type="checkbox" id="rec_illness_management" name="rec_illness_management" value="illness management">illness management</label> /
+            <label><input type="checkbox" id="rec_stress_management" name="rec_stress_management" value="stress management">stress management</label> /
+            <label><input type="checkbox" id="rec_sleep_hygiene" name="rec_sleep_hygiene" value="sleep hygiene">sleep hygiene</label> /
+            <label><input type="checkbox" id="rec_balanced_lifestyle" name="rec_balanced_lifestyle" value="balanced lifestyle">balanced lifestyle</label><br>
+            <label><input type="checkbox" id="rec_educate_relaxation" name="rec_educate_relaxation" value="Educate on relaxation">Educate on relaxation</label><br>
+            <label><input type="checkbox" id="rec_explore_cultivate" name="rec_explore_cultivate" value="Explore and cultivate leisure, formulate activity scheduling">Explore and cultivate leisure, formulate activity scheduling</label><br>
+            <h5>Life Coaching:</h5>
+            <label><input type="checkbox" id="rec_provide_life" name="rec_provide_life" value="Provide">Provide</label>
+            <label><input type="checkbox" id="rec_wellness_program" name="rec_wellness_program" value="Wellness program">Wellness program</label> /
+            <label><input type="checkbox" id="rec_counseling" name="rec_counseling" value="counseling">counseling</label> /
+            <label><input type="checkbox" id="rec_cognitive_behavioral" name="rec_cognitive_behavioral" value="Cognitive behavioral therapy">Cognitive behavioral therapy</label> /
+            <label><input type="checkbox" id="rec_life_coaching" name="rec_life_coaching" value="life coaching">life coaching</label> /
+            <label><input type="checkbox" id="rec_motivational_interviewing" name="rec_motivational_interviewing" value="motivational interviewing">motivational interviewing</label><br>
+            <label><input type="checkbox" id="rec_educate_qigong" name="rec_educate_qigong" value="Educate on Health Qi-gong">Educate on Health Qi-gong</label><br>
+            <label><input type="checkbox" id="rec_provide_lifestyle_redesign" name="rec_provide_lifestyle_redesign" value="Provide lifestyle re-design program">Provide lifestyle re-design program</label><br>
+            <h5>Work Rehabilitation:</h5>
+            <label><input type="checkbox" id="rec_sws" name="rec_sws" value="SWS simulated training">SWS simulated training</label> /
+            <label><input type="checkbox" id="rec_dac_simulated" name="rec_dac_simulated" value="DAC simulated training">DAC simulated training</label><br>
+            <label><input type="checkbox" id="rec_conduct_job_coaching" name="rec_conduct_job_coaching" value="Conduct job coaching">Conduct job coaching</label><br>
+            <label><input type="checkbox" id="rec_conduct_work" name="rec_conduct_work" value="Conduct">Conduct</label>
+            <label><input type="checkbox" id="rec_work_capacity_evaluation" name="rec_work_capacity_evaluation" value="Work capacity evaluation">Work capacity evaluation</label> /
+            <label><input type="checkbox" id="rec_work_hardening" name="rec_work_hardening" value="Work Hardening">Work Hardening</label><br>
+            <label><input type="checkbox" id="rec_provide_job_post" name="rec_provide_job_post" value="Provide job-post training of">Provide job-post training of</label>
+            <label><input type="checkbox" id="rec_shop_assistant" name="rec_shop_assistant" value="shop assistant">shop assistant</label> /
+            <label><input type="checkbox" id="rec_cleansing_worker" name="rec_cleansing_worker" value="cleansing worker">cleansing worker</label> /
+            <label><input type="checkbox" id="rec_office_assistant" name="rec_office_assistant" value="office assistant">office assistant</label> /
+            <label><input type="checkbox" id="rec_clerical_worker" name="rec_clerical_worker" value="clerical worker">clerical worker</label> /
+            <label><input type="checkbox" id="rec_waiter" name="rec_waiter" value="waiter">waiter</label> /
+            <label><input type="checkbox" id="rec_waitress" name="rec_waitress" value="waitress">waitress</label> /
+            <label><input type="checkbox" id="rec_bartender" name="rec_bartender" value="bartender">bartender</label> /
+            <label><input type="checkbox" id="rec_coffee_barista" name="rec_coffee_barista" value="coffee barista">coffee barista</label><br>
+            <label><input type="checkbox" id="rec_provide_work" name="rec_provide_work" value="Provide">Provide</label>
+            <label><input type="checkbox" id="rec_prevocational_training" name="rec_prevocational_training" value="prevocational training">prevocational training</label> /
+            <label><input type="checkbox" id="rec_returning_to_work" name="rec_returning_to_work" value="returning to work program">returning to work program</label><br>
+            <label><input type="checkbox" id="rec_provide_work_social" name="rec_provide_work_social" value="Provide work-related social skill training">Provide work-related social skill training</label><br>
+            <label><input type="checkbox" id="rec_introduce_community" name="rec_introduce_community" value="Introduce community vocational support services (">Introduce community vocational support services (</label>
+            <label><input type="checkbox" id="rec_se" name="rec_se" value="SE">SE</label> /
+            <label><input type="checkbox" id="rec_ivrs" name="rec_ivrs" value="IVRSC">IVRSC</label> /
+            <label><input type="checkbox" id="rec_sws" name="rec_sws" value="SWS">SWS</label> /
+            <label><input type="checkbox" id="rec_dac" name="rec_dac" value="DAC">DAC</label> )<br>
+            <h5>Interpersonal / Social Skills Training:</h5>
+            <label><input type="checkbox" id="rec_provide_social_skills" name="rec_provide_social_skills" value="Provide social skills training">Provide social skills training</label><br>
+            <h5>Cognitive Rehabilitation:</h5>
+            <label><input type="checkbox" id="rec_conduct_cognitive" name="rec_conduct_cognitive" value="Conduct cognitive assessment">Conduct cognitive assessment</label> /
+            <label><input type="checkbox" id="rec_review_cognitive" name="rec_review_cognitive" value="Review cognitive assessment">Review cognitive assessment</label><br>
+            <label><input type="checkbox" id="rec_provide_cognitive" name="rec_provide_cognitive" value="Provide">Provide</label>
+            <label><input type="checkbox" id="rec_computer_assisted" name="rec_computer_assisted" value="computer-assisted">computer-assisted</label> /
+            <label><input type="checkbox" id="rec_paper_pencil" name="rec_paper_pencil" value="paper-and-pencil cognitive training on ____">paper-and-pencil cognitive training on ____</label><br>
+            <label><input type="checkbox" id="rec_provide_cognitive_stimulation" name="rec_provide_cognitive_stimulation" value="Provide cognitive stimulation activities">Provide cognitive stimulation activities</label><br>
+            <label><input type="checkbox" id="rec_educate_compensatory" name="rec_educate_compensatory" value="Educate on compensatory strategies">Educate on compensatory strategies</label><br>
+            <h5>Behavioral Management:</h5>
+            <label><input type="checkbox" id="rec_provide_sensory" name="rec_provide_sensory" value="Provide sensory based intervention">Provide sensory based intervention</label><br>
+            <label><input type="checkbox" id="rec_conduct_behavioral" name="rec_conduct_behavioral" value="Conduct behavorial modification">Conduct behavorial modification</label><br>
+            <label><input type="checkbox" id="rec_educate_behavior" name="rec_educate_behavior" value="Educate on">Educate on</label>
+            <label><input type="checkbox" id="rec_impulse_control" name="rec_impulse_control" value="impulse control">impulse control</label> /
+            <label><input type="checkbox" id="rec_temper_management" name="rec_temper_management" value="temper management">temper management</label><br>
+            <h5>UL & Hand Function Training:</h5>
+            <label><input type="checkbox" id="rec_provide_ul" name="rec_provide_ul" value="Provide">Provide</label>
+            <label><input type="checkbox" id="rec_fine_motor_training" name="rec_fine_motor_training" value="fine motor training">fine motor training</label> /
+            <label><input type="checkbox" id="rec_hand_function_training" name="rec_hand_function_training" value="hand function training">hand function training</label> /
+            <label><input type="checkbox" id="rec_upper_limbs_training" name="rec_upper_limbs_training" value="upper limbs functional training">upper limbs functional training</label><br>
+            <h5>Home Assessment and Modification:</h5>
+            <label><input type="checkbox" id="rec_conduct_home_assessment" name="rec_conduct_home_assessment" value="Conduct home assessment">Conduct home assessment</label> /
+            <label><input type="checkbox" id="rec_provide_home_visit" name="rec_provide_home_visit" value="Provide home visit">Provide home visit</label> /
+            <label><input type="checkbox" id="rec_provide_hostel_visit" name="rec_provide_hostel_visit" value="Provide hostel visit">Provide hostel visit</label><br>
+            <label><input type="checkbox" id="rec_educate_home_safety" name="rec_educate_home_safety" value="Educate on home safety hazards">Educate on home safety hazards</label><br>
+            <label><input type="checkbox" id="rec_advise_home_adaptation" name="rec_advise_home_adaptation" value="Advise on home adaptation advice and intervention">Advise on home adaptation advice and intervention</label><br>
+            <label><input type="checkbox" id="rec_conduct_home_resettlement" name="rec_conduct_home_resettlement" value="Conduct home resettlement">Conduct home resettlement</label><br>
+            <h5>Aids Prescription and Training:</h5>
+            <label><input type="checkbox" id="rec_provide_aids" name="rec_provide_aids" value="Provide">Provide</label>
+            <label><input type="checkbox" id="rec_aids_prescription" name="rec_aids_prescription" value="aids prescription and training">aids prescription and training</label> /
+            <label><input type="checkbox" id="rec_pressure_relieving" name="rec_pressure_relieving" value="pressure relieving devices">pressure relieving devices</label> /
+            <label><input type="checkbox" id="rec_pressure_therapy" name="rec_pressure_therapy" value="pressure therapy (garment)">pressure therapy (garment)</label> /
+            <label><input type="checkbox" id="rec_seating_assessment" name="rec_seating_assessment" value="seating assessment and prescription">seating assessment and prescription</label> /
+            <label><input type="checkbox" id="rec_splintage" name="rec_splintage" value="splintage">splintage</label> /
+            <label><input type="checkbox" id="rec_wheelchair_prescription" name="rec_wheelchair_prescription" value="wheelchair prescription and training">wheelchair prescription and training</label> /
+            <label><input type="checkbox" id="rec_special_garment" name="rec_special_garment" value="special garment">special garment</label> /
+            <label><input type="checkbox" id="rec_protective_aids" name="rec_protective_aids" value="protective aids">protective aids</label><br>
+            <h5>Caregiver Training:</h5>
+            <label><input type="checkbox" id="rec_caregiver_training" name="rec_caregiver_training" value="Provide caregiver training (on ">Provide caregiver training (on </label>
+            <input type="date" id="caregiver_training_date" name="caregiver_training_date"> )</label>
+        </div>
+    </fieldset>
+    <button type="button" id="generateReportBtn" onclick="generateReport()">Generate Report</button>
+    <div class="report-output">
+        <h3>Generated Report</h3>
+        <textarea id="reportTextArea" readonly></textarea>
+        <button type="button" id="copyReportBtn" onclick="copyReport()">Copy Report</button>
+        <button type="button" id="resetBtn" onclick="resetForm()">Reset</button>
+        <span id="copyMessage"></span>
+    </div>
+</div>
+<script>
+    // Global Min/Max Check Function
+    function checkMinMax(el) {
+        if (el.value === "") return;
+        const val = parseFloat(el.value);
+        const min = parseFloat(el.getAttribute('min'));
+        const max = parseFloat(el.getAttribute('max'));
+        if (!isNaN(min) && val < min) {
+            el.value = min;
+        }
+        if (!isNaN(max) && val > max) {
+            el.value = max;
+        }
+    }
+    // Restrain policy visibility
+    document.querySelectorAll('input[name="restrain_policy"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('restrain_details_section').style.display = this.value === 'Yes' ? 'block' : 'none';
+        });
+    });
+    // Student details visibility
+    document.getElementById('premorbid_student').addEventListener('change', function() {
+        document.getElementById('student_details').style.display = this.checked ? 'block' : 'none';
+    });
+    // Wound fields toggle
+    function toggleWoundFields(radio) {
+        const isNo = radio.value === 'N';
+        const sections = ['wound_type_section', 'wound_location_section', 'wound_dressing_section', 'general_other_section'];
+        sections.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('disabled', isNo);
+            }
+        });
+    }
+    // Initially disable since no radio is checked
+    toggleWoundFields({value: ''});
+    // MBI Total Score Calculation
+    const mbiScoreFields = document.querySelectorAll('.mbi-score-field');
+    mbiScoreFields.forEach(field => {
+        field.addEventListener('input', updateMbiTotal);
+    });
+    function updateMbiTotal() {
+        let total = 0;
+        let anyInput = false;
+        mbiScoreFields.forEach(field => {
+            if (field.value.trim() !== '') {
+                anyInput = true;
+                const val = parseInt(field.value) || 0;
+                total += val;
+            }
+        });
+        document.getElementById('mbi_total_score_display').value = anyInput ? total : '';
+    }
+    updateMbiTotal();
+    // SIB-R Score Logic
+    function calculateSibrLevel() {
+        const scoreInput = document.getElementById('sibr_support_score');
+        let score = parseInt(scoreInput.value);
+       
+        if (isNaN(score)) {
+             document.querySelectorAll('input[name="sibr_support_level"]').forEach(el => el.checked = false);
+             return;
+        }
+        let radioId = "";
+        if (score >= 1 && score <= 24) radioId = "sibr_pervasive";
+        else if (score >= 25 && score <= 39) radioId = "sibr_extensive";
+        else if (score >= 40 && score <= 54) radioId = "sibr_frequent";
+        else if (score >= 55 && score <= 69) radioId = "sibr_limited";
+        else if (score >= 70 && score <= 84) radioId = "sibr_intermittent";
+        else if (score >= 85 && score <= 100) radioId = "sibr_infrequent";
+        document.querySelectorAll('input[name="sibr_support_level"]').forEach(el => el.checked = false);
+       
+        if (radioId) {
+            document.getElementById(radioId).checked = true;
+        }
+    }
+    // MAS Average Score and Ranking Calculation
+    const masTotalScoreInputs = document.querySelectorAll('.mas-total-score');
+    masTotalScoreInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const functionKey = this.id.split('_')[1];
+            const total = parseFloat(this.value);
+            const averageField = document.getElementById(`mas_${functionKey}_average`);
+            if (averageField) {
+                if (!isNaN(total)) {
+                    averageField.value = (total / 4).toFixed(2);
+                } else {
+                    averageField.value = '';
+                }
+            }
+            updateMasRankings();
+        });
+    });
+    function updateMasRankings() {
+        const functions = ['sensory', 'escape', 'attention', 'tangible'];
+        let scoresData = functions.map(func => {
+            const totalVal = getVal(`mas_${func}_total`);
+            return {
+                name: func,
+                total: (totalVal !== '' && !isNaN(parseFloat(totalVal))) ? parseFloat(totalVal) : -Infinity,
+                rankInputId: `mas_${func}_ranking`
+            };
+        });
+        let rankedScores = scoresData.filter(s => s.total !== -Infinity);
+        rankedScores.sort((a, b) => b.total - a.total);
+        let currentRank = 0;
+        let lastScore = null;
+        for (let i = 0; i < rankedScores.length; i++) {
+            if (lastScore === null || rankedScores[i].total < lastScore) {
+                currentRank++;
+            }
+            document.getElementById(rankedScores[i].rankInputId).value = currentRank;
+            lastScore = rankedScores[i].total;
+        }
+        scoresData.forEach(s => {
+            if (s.total === -Infinity) {
+                document.getElementById(s.rankInputId).value = '';
+            }
+        });
+    }
+    function getVal(id) {
+        const el = document.getElementById(id);
+        return el ? el.value : '';
+    }
+    function isChecked(id) {
+        const el = document.getElementById(id);
+        return el ? el.checked : false;
+    }
+    function getCheckedValues(name) {
+        const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+        return Array.from(checkboxes).map(cb => cb.value);
+    }
+    function getRadioValue(name) {
+        const radio = document.querySelector(`input[name="${name}"]:checked`);
+        return radio ? radio.value : '';
+    }
+    function copyReport() {
+        const reportTextArea = document.getElementById('reportTextArea');
+        reportTextArea.select();
+        reportTextArea.setSelectionRange(0, 99999);
+        try {
+            document.execCommand('copy');
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.textContent = 'Text Copied!';
+            copyMessage.style.display = 'inline';
+            setTimeout(() => {
+                copyMessage.style.display = 'none';
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy text. Please copy manually.');
+        }
+        window.getSelection().removeAllRanges();
+    }
+   
+    function formatDate(dateString) {
+        if (!dateString) return "";
+        const parts = dateString.split("-");
+        if (parts.length !== 3) return dateString;
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    function formatTime(hour, minute) {
+        if (!hour || !minute) return "";
+        return `${hour}:${minute}`;
+    }
+    function getSofasDescription(score) {
+        if (score >= 91 && score <= 100) return "SUPERIOR FUNCTIONING in wide range of activities.";
+        if (score >= 81 && score <= 90) return "GOOD FUNCTIONING in all areas, occupationally and socially effective.";
+        if (score >= 71 && score <= 80) return "SLIGHT IMPAIRMENT in social or occupational or school functioning (e.g. infrequent interpersonal conflict, temporarily falling behind in schoolwork).";
+        if (score >= 61 && score <= 70) return "SOME DIFFICULTY in social, occupational, or school functioning, but generally functioning well, has some meaningful interpersonal relationships.";
+        if (score >= 51 && score <= 60) return "MODERATE DIFFICULTY in social, occupational, or school functioning (e.g. few friends, conflicts with peers, or co-workers)";
+        if (score >= 41 && score <= 50) return "SERIOUS IMPAIRMENT in social, occupational, or school functioning (e.g. no friends, unable to keep a job) in some areas.";
+        if (score >= 31 && score <= 40) return "MAJOR IMPAIRMENT IN SEVERAL AREAS, such as work or school, family relations (e.g. depressed man avoids friends, neglects family, and is unable to work; child frequently beats up younger children, is defiant at home, and failing at school).";
+        if (score >= 21 && score <= 30) return "INABILITY TO FUNCTION socially or occupationally in almost all areas (e.g. stays in bed all day, no job, home, or friends).";
+        if (score >= 11 && score <= 20) return "OCCASIONALLY HYGIENE PROBLEMS, fails to maintain minimal personal hygiene, unable to function independently.";
+        if (score >= 1 && score <= 10) return "PERSISTENT HYGIENE PROBLEMS, inability to maintain minimal personal hygiene. Unable to function without harming self or others or without considerable external support (e.g. nursing care and supervision).";
+        if (score === 0) return "Inadequate Information";
+        return "";
+    }
+    function resetForm() {
+        window.location.reload();
+    }
+    function generateReport() {
+        // Compulsory Time Check
+        const hour = getVal('patientSeenHour');
+        const minute = getVal('patientSeenMinute');
+        if (!hour || !minute) {
+            alert("Please select both hour and minute for Patient seen at.");
+            return;
+        }
+        let report = "Documentation:\n\n";
+       
+        // --- HELPER FUNCTIONS ---
+        const formatCheckboxList = (items) => items.join(' / ');
+        const formatLine = (label, value) => value && value.toString().trim() !== '' ? `${label}: ${value}\n` : '';
+        const formatMultiLine = (label, value) => value && value.trim() !== '' ? `${label}:\n${value}\n` : '';
+        // Clinical Information
+        let clinicalReport = "";
+       
+        // Dates
+        const admDate = formatDate(getVal('admissionDate'));
+        const refDate = formatDate(getVal('referralDate'));
+        const intakeDate = formatDate(getVal('intakeDate'));
+        clinicalReport += `Date of Admission/ Referral/ Intake: ${admDate || ''} / ${refDate || ''} / ${intakeDate || ''}\n`;
+       
+        clinicalReport += formatMultiLine("Reason of referral", getVal('referralReason'));
+       
+        let diagnosisItems = getCheckedValues('diagnosis');
+        let diagnosisOthers = getVal('diagnosis_others');
+        if (diagnosisOthers) diagnosisItems.push(diagnosisOthers);
+        clinicalReport += formatLine("Present Diagnosis", formatCheckboxList(diagnosisItems));
+       
+        clinicalReport += formatLine("SCS Status", getRadioValue('scs_status'));
+        clinicalReport += formatLine("Legal Status", getRadioValue('legal_status'));
+        clinicalReport += formatLine("Precautions", formatCheckboxList(getCheckedValues('precautions')));
+        clinicalReport += formatMultiLine("Reason of Admission", getVal('admissionReason'));
+        clinicalReport += formatMultiLine("Psychiatric History", getVal('psychiatricHistory'));
+        clinicalReport += formatMultiLine("Past Medical History", getVal('medicalHistory'));
+        if(clinicalReport.trim() !== "") {
+            report += "Clinical Information\n";
+            report += "---------------------\n";
+            report += clinicalReport + "\n";
+        }
+        // Common Assessment Note
+        let commonNote = "[Common Assessment Note]\n<Initial Assessment Report>\n";
+        commonNote += "Patient seen at " + formatTime(hour, minute) + "\n\n";
+        report += commonNote;
+        // 1. Mental State & Insight
+        let mseReport = "";
+        let generalItems = getCheckedValues('general_condition');
+        mseReport += formatLine("General Condition", formatCheckboxList(generalItems));
+        let moodItems = getCheckedValues('mood');
+        let moodOthers = getVal('mood_others');
+        if (moodOthers) moodItems.push(`Others - ${moodOthers}`);
+        mseReport += formatLine("Mood", formatCheckboxList(moodItems));
+        mseReport += formatLine("Affect", formatCheckboxList(getCheckedValues('affect')));
+        mseReport += formatLine("Speech", formatCheckboxList(getCheckedValues('expressive_speech')));
+        let receptiveSteps = getVal('receptive_steps');
+        let receptiveCommandType = getVal('receptive_command_type');
+        let receptiveOptions = getCheckedValues('receptive_speech_options');
+        let receptiveSpeechReport = "";
+        if (receptiveSteps) {
+            receptiveSpeechReport += `Follow ${receptiveSteps} step ${receptiveCommandType || 'verbal'} command. `;
+        }
+        if (receptiveOptions.length > 0) {
+            receptiveSpeechReport += receptiveOptions.join(', ') + ".";
+        }
+        mseReport += formatLine("Receptive Speech", receptiveSpeechReport.trim());
+        if (isChecked('hallucination_nil')) {
+            mseReport += "Hallucination: Denied hallucination\n";
+        } else {
+            let hallucinationItems = getCheckedValues('hallucination').filter(v => v !== 'Nil');
+            if(hallucinationItems.length > 0) mseReport += formatLine("Hallucination", formatCheckboxList(hallucinationItems));
+        }
+        if (isChecked('abnormal_thought_nil')) {
+            mseReport += "Abnormal Thought: Denied delusional thought\n";
+        } else {
+            let abnormalThoughtItems = getCheckedValues('abnormal_thought').filter(v => v !== 'Nil');
+            let abnormalThoughtOthers = getVal('abnormal_thought_others');
+            if (abnormalThoughtOthers) abnormalThoughtItems.push(abnormalThoughtOthers);
+            if (abnormalThoughtItems.length > 0) mseReport += formatLine("Abnormal Thought", formatCheckboxList(abnormalThoughtItems));
+        }
+        if (isChecked('suicidal_denied')) {
+            mseReport += "Suicidal / Negative Thought: Denied suicidal / negative thought\n";
+        } else {
+            let suicItems = getCheckedValues('suicidal_thought').filter(v => v !== 'Denied suicidal / negative thought');
+            if(suicItems.length > 0) mseReport += formatLine("Suicidal / Negative Thought", formatCheckboxList(suicItems));
+        }
+        let behaviourItems = getCheckedValues('behaviour');
+        let behaviourOthers = getVal('behaviour_others');
+        if (behaviourOthers) behaviourItems.push(behaviourOthers);
+        mseReport += formatLine("Behaviour", formatCheckboxList(behaviourItems));
+        let cognitiveStr = "";
+        const orientations = ['time', 'place', 'person'];
+        let orientedTo = [];
+        let disorientedTo = [];
+        orientations.forEach(ori => {
+            const val = getRadioValue(`cognitive_${ori}`);
+            if (val === 'Oriented') orientedTo.push(ori);
+            else if (val === 'Disoriented') disorientedTo.push(ori);
+        });
+        if (orientedTo.length > 0) cognitiveStr += `Oriented to ${orientedTo.join(', ')}. `;
+        if (disorientedTo.length > 0) cognitiveStr += `Disoriented to ${disorientedTo.join(', ')}.`;
+        mseReport += formatLine("Cognitive", cognitiveStr.trim());
+        let sleepStr = "";
+        if (isChecked('sleep_normal')) {
+            sleepStr = "Normal";
+        } else {
+            sleepStr = getVal('sleep_details') || '';
+        }
+        mseReport += formatLine("Sleep", sleepStr);
+        let appetiteStr = "";
+        if (isChecked('appetite_normal')) {
+            appetiteStr = "Normal";
+        } else {
+            appetiteStr = getVal('appetite_details') || '';
+        }
+        mseReport += formatLine("Appetite", appetiteStr);
+        if (isChecked('risk_nil')) {
+            mseReport += "Risk: Nil\n";
+        } else {
+            let riskItems = getCheckedValues('risk').filter(v => v !== 'Nil');
+            if (riskItems.length > 0) mseReport += formatLine("Risk", formatCheckboxList(riskItems));
+        }
+        mseReport += formatLine("Insight", formatCheckboxList(getCheckedValues('insight')));
+        mseReport += formatMultiLine("Remarks", getVal('mse_others_remarks'));
+        if(mseReport.trim() !== "") {
+            report += "Mental State & Insight\n";
+            report += "-----------------------\n";
+            report += mseReport + "\n";
+        }
+        // 2. Physical Assessment
+        let paReport = "";
+        let mmtVals = [getVal('rul_mmt'), getVal('lul_mmt'), getVal('rll_mmt'), getVal('lll_mmt')];
+        if (mmtVals.some(v => v && v.trim() !== '')) {
+            let powerStr = `RUL: ${getVal('rul_mmt') || 'N/A'} / LUL: ${getVal('lul_mmt') || 'N/A'} / RLL: ${getVal('rll_mmt') || 'N/A'} / LLL: ${getVal('lll_mmt') || 'N/A'}`;
+            paReport += formatLine("P/E: Power", powerStr);
+        }
+        let aromReportText = "";
+        let aromDataFound = false;
+        const limbs = ['rul', 'lul', 'rll', 'lll'];
+        limbs.forEach(limb => {
+            const aromVal = getVal(`${limb}_arom`);
+            const functional = isChecked(`${limb}_arom_functional`);
+            let aromText = "";
+            if (functional) {
+                aromText = "Functional";
+            } else if (aromVal && aromVal.trim() !== '') {
+                aromText = aromVal;
+            }
+            if (aromText) {
+                aromDataFound = true;
+                aromReportText += ` ${limb.toUpperCase()}: ${aromText}\n`;
+            }
+        });
+        if (aromDataFound) {
+             paReport += "AROM:\n" + aromReportText;
+        }
+        let fineMotorReportText = "";
+        let fmDataFound = false;
+        const fmCats = ['grasp', 'opposition', 'pinch_grip', 'hand_writing'];
+        ['rul', 'lul'].forEach(limb => {
+            let fmItems = [];
+            fmCats.forEach(cat => {
+                let val = getVal(`${limb}_${cat}`);
+                if (val) {
+                    fmDataFound = true;
+                    fmItems.push(`${cat.replace('_', ' ')} (${val})`);
+                }
+            });
+            if(fmItems.length > 0) {
+               fineMotorReportText += ` ${limb.toUpperCase()}: ` + fmItems.join(', ') + '\n';
+            }
+        });
+        if (fmDataFound) {
+            paReport += "Fine motor:\n" + fineMotorReportText;
+        }
+        let contractureReportText = "";
+        let anyContracture = false;
+        limbs.forEach(limb => {
+            if (getRadioValue(`${limb}_contracture`) === 'Y') {
+                contractureReportText += ` ${limb.toUpperCase()}: Yes\n`;
+                anyContracture = true;
+            }
+        });
+        if(anyContracture) {
+             const contractureDetails = getVal('pa_contracture_details');
+             if(contractureDetails) contractureReportText += ` Details: ${contractureDetails}\n`;
+             paReport += "Contracture / Deformity noted:\n" + contractureReportText;
+        }
+        const woundStatus = getRadioValue('wound_present');
+        if (woundStatus === 'Y') {
+            let woundTypes = getCheckedValues('wound_type').join(', ');
+            if (getVal('wound_type_others')) woundTypes += (woundTypes ? ', ' : '') + `Others: ${getVal('wound_type_others')}`;
+            let woundDressing = getRadioValue('wound_dressing') === 'Yes' ? 'on dressing' : 'no dressing';
+            paReport += `Wound: ${woundTypes || 'Type not specified'} at ${getVal('wound_location') || 'location not specified'}, ${woundDressing}.\n`;
+        } else if (woundStatus === 'N') {
+            paReport += "Wound: No\n";
+        }
+        paReport += formatMultiLine("Other observation", getVal('general_other_observation'));
+       
+        if(paReport.trim() !== "") {
+            report += "Physical Assessment\n";
+            report += "--------------------\n";
+            report += paReport + "\n";
+        }
+        // 3. Sensory Assessment
+        let sensoryReport = "";
+        let sensoryDesc = [];
+        const senses = ['auditory', 'visual', 'oral', 'tactile', 'proprioception', 'vestibular'];
+        senses.forEach(sense => {
+            if (getCheckedValues(`${sense}_hyper`).length > 0) sensoryDesc.push(`hypersensitivity in ${sense} sense`);
+            if (getCheckedValues(`${sense}_hypo`).length > 0) sensoryDesc.push(`hyposensitivity in ${sense} sense`);
+            if (getCheckedValues(`${sense}_seeking`).length > 0) sensoryDesc.push(`sensory seeking in ${sense} sense`);
+        });
+        const examples = getVal('sensory_assessment_others');
+        if (sensoryDesc.length > 0) {
+            sensoryReport += `Patient showed ${sensoryDesc.join(' / ')}.`;
+            if (examples) sensoryReport += ` With example of: ${examples}`;
+            sensoryReport += "\n";
+        } else if (examples) {
+            sensoryReport += `Observations: ${examples}\n`;
+        }
+        const informant = getVal('sensory_profile_informant');
+        let spReportContent = "";
+        const spCats = [
+            { key: 'low_reg', name: 'low registration' },
+            { key: 'sensation_seeking', name: 'sensory seeking' },
+            { key: 'sensory_sensitive', name: 'sensory sensitive' },
+            { key: 'sensory_avoidance', name: 'sensory avoidance' }
+        ];
+        spCats.forEach(cat => {
+            const score = getVal(`sp_${cat.key}_score`);
+            const interpretation = getCheckedValues(`sp_${cat.key}_interpretation`).join(', ');
+            if (score || interpretation) {
+                spReportContent += ` - ${cat.name}: Score ${score || 'N/A'}/75. Interpretation: ${interpretation || 'N/A'}\n`;
+            }
+        });
+        if (spReportContent) {
+            let assessmentDateFormatted = formatDate(getVal('dateOfAssessment')) || '(date not specified)';
+            sensoryReport += `Sensory profile done on: ${assessmentDateFormatted}, with ${informant || '(informant not specified)'} as informant. Results showed that patient showed:\n`;
+            sensoryReport += spReportContent;
+        }
+        if(sensoryReport.trim() !== "") {
+            report += "Sensory Assessment\n";
+            report += "-------------------\n";
+            report += sensoryReport + "\n";
+        }
+        // 4. Behavioural Assessment
+        let behaviourReport = "";
+        let masReportText = "";
+        const masFunctions = ['sensory', 'escape', 'attention', 'tangible'];
+        let masDataFound = false;
+        masFunctions.forEach(func => {
+            const total = getVal(`mas_${func}_total`);
+            const average = getVal(`mas_${func}_average`);
+            const ranking = getVal(`mas_${func}_ranking`);
+            if (total || average || ranking) {
+                masDataFound = true;
+                masReportText += ` - ${func.charAt(0).toUpperCase() + func.slice(1)}:\n Total Score: ${total || 'N/A'}\n Average Score: ${average || 'N/A'}\n Relative Ranking: ${ranking || 'N/A'}\n`;
+            }
+        });
+       
+        if (masDataFound) {
+            behaviourReport += "Motivational Assessment Scale results:\n";
+            behaviourReport += formatLine("Target Behaviour", getVal('mas_target_behaviour_overall'));
+            behaviourReport += masReportText;
+        }
+        const cbiTarget = getVal('cbi_target_behaviour');
+        const cbiScore = getVal('cbi_total_score');
+        if (cbiTarget || cbiScore) {
+             behaviourReport += "\nChallenging Behaviour Interview\n";
+             behaviourReport += formatLine("Target Behaviour (Patient's major challenging behaviour)", cbiTarget);
+             if (cbiScore) behaviourReport += formatLine("Score", `${cbiScore}/55`);
+        }
+        if(behaviourReport.trim() !== "") {
+            report += "Behavioural Assessment\n";
+            report += "-----------------------\n";
+            report += behaviourReport + "\n";
+        }
+        // 5. Environmental Assessment
+        let envReport = "";
+        let livesWith = getCheckedValues('lives_with');
+        if (getVal('lives_with_others')) livesWith.push(getVal('lives_with_others'));
+        if(livesWith.length > 0) envReport += `Patient was living with ${livesWith.join('/')}.\n`;
+        let homeVisitReport = "";
+        let envLightingItems = getCheckedValues('env_lighting');
+        let envNoiseItems = getCheckedValues('env_noise');
+        if (isChecked('env_noise_not_available')) envNoiseItems.push("Quiet zone/ Pad room was not available");
+        if (envLightingItems.length > 0 || envNoiseItems.length > 0) {
+            let envLighting = formatCheckboxList(envLightingItems) || 'not specified';
+            let envNoise = formatCheckboxList(envNoiseItems) || 'not specified';
+            homeVisitReport += ` The hostel/ home was ${envLighting}. Noise level was ${envNoise}.\n`;
+        }
+        let safetyHazards = getCheckedValues('env_safety_hazard');
+        let safetyHazardDesc = getVal('env_safety_hazard_others');
+        if(isChecked('env_safety_hazard_not_presented')) {
+             homeVisitReport += " Safety hazard was not presented.\n";
+        } else if (safetyHazards.length > 0 || safetyHazardDesc) {
+            homeVisitReport += ` Safety hazard: ${safetyHazards.join(', ')}`;
+            if(safetyHazardDesc) homeVisitReport += ` (${safetyHazardDesc}).\n`;
+            else homeVisitReport += '.\n';
+        }
+       
+        let socialItems = getCheckedValues('env_social_stimulation');
+        let socialOther = getVal('env_social_stimulation_others');
+        if (socialOther) socialItems.push(socialOther);
+        if (socialItems.length > 0) homeVisitReport += ` Social stimulation: ${socialItems.join(', ')}.\n`;
+       
+        let changeItems = getCheckedValues('env_change');
+        let changeOther = getVal('env_change_others');
+        if (changeOther) changeItems.push(changeOther);
+        if (changeItems.length > 0) homeVisitReport += ` Change of environment: ${changeItems.join(', ')}.\n`;
+       
+        let staffHandlingItems = getCheckedValues('staff_handling_type');
+        let staffHandlingOther = getVal('staff_handling_others');
+        if (staffHandlingOther) staffHandlingItems.push(staffHandlingOther);
+        if (staffHandlingItems.length > 0) homeVisitReport += ` Staff handling: ${staffHandlingItems.join(', ')}.\n`;
+       
+        let staffExpect = getVal('staff_expectation_behaviour');
+        if (staffExpect) homeVisitReport += ` Staff's expectation: ${staffExpect}.\n`;
+       
+        let staffConcern = getVal('staff_parents_concern');
+        if (staffConcern) homeVisitReport += ` Concerns: ${staffConcern}.\n`;
+       
+        let staffResponse = getVal('staff_parents_response');
+        if (staffResponse) homeVisitReport += ` Response to behaviours: ${staffResponse}\n`;
+       
+        if (getRadioValue('restrain_policy') === 'Yes') {
+             homeVisitReport += " Restrain policy: Yes.\n";
+             let rPeriod = getCheckedValues('restrain_period');
+             let rPeriodOther = getVal('restrain_period_others');
+             if (rPeriodOther) rPeriod.push(rPeriodOther);
+             if (rPeriod.length > 0) homeVisitReport += ` Restrain period: ${rPeriod.join(', ')}.\n`;
+            
+             let rSit = getVal('restrain_situation');
+             if(rSit) homeVisitReport += ` Situation: ${rSit}.\n`;
+            
+             let rBody = getCheckedValues('restrain_body_part');
+             let rBodyOther = getVal('restrain_body_part_others');
+             if (rBodyOther) rBody.push(rBodyOther);
+             if (rBody.length > 0) homeVisitReport += ` Body part: ${rBody.join(', ')}.\n`;
+            
+             let rType = getCheckedValues('restrainer_type');
+             let rTypeOther = getVal('restrainer_type_others');
+             if (rTypeOther) rType.push(rTypeOther);
+             if (rType.length > 0) homeVisitReport += ` Restrainer type: ${rType.join(', ')}.\n`;
+            
+             let rInfo = getVal('restrain_other_info');
+             if(rInfo) homeVisitReport += ` Other restrain info: ${rInfo}\n`;
+        }
+       
+        let parentVisit = getVal('parent_visit_frequency');
+        if (parentVisit) homeVisitReport += ` Parent visit frequency: ${parentVisit}.\n`;
+       
+        let patientBehavVisit = getVal('patient_behaviour_visit');
+        if (patientBehavVisit) homeVisitReport += ` Patient behaviour (visit): ${patientBehavVisit}.\n`;
+       
+        let pStyle = getCheckedValues('parenting_style');
+        if (pStyle.length > 0) homeVisitReport += ` Parenting style: ${pStyle.join(', ')}.\n`;
+       
+        let pInfo = getVal('parenting_style_other_info');
+        if (pInfo) homeVisitReport += ` Other parenting info: ${pInfo}\n`;
+        if (homeVisitReport.trim() !== "") {
+            envReport += "\nHome Visit / Hostel Environment:\n" + homeVisitReport;
+        }
+        envReport += formatMultiLine("\nOthers", getVal('env_others_layout'));
+        if(envReport.trim() !== "") {
+            report += "Environmental Assessment\n";
+            report += "-------------------------\n";
+            report += envReport + "\n";
+        }
+       
+        // 6. Independent Function Assessment
+        let funcReport = "";
+        let badlOverall = getRadioValue('badl_overall');
+        let badlPoorHygiene = getCheckedValues('badl_poor_hygiene').join(' ');
+        let badlPoorHabit = getCheckedValues('badl_poor_habit').join(' ');
+        let badlPoorHabitArea = getVal('badl_poor_habit_area');
+        if (badlOverall || badlPoorHygiene || badlPoorHabit) {
+            funcReport += "BADL overall: " + (badlOverall || '') + (badlPoorHygiene ? ' - ' + badlPoorHygiene : '') + (badlPoorHabit ? ' - ' + badlPoorHabit + ' ' + (badlPoorHabitArea || 'cue area of ADL') : '') + "\n";
+        }
+        let badlReportStr = "";
+        const badlActivities = ['feeding', 'grooming', 'dressing', 'toileting', 'bathing'];
+        let badlLevelsSpecified = false;
+        badlActivities.forEach(activity => {
+            const level = getVal(`badl_${activity}_level`);
+            if (level) {
+                badlLevelsSpecified = true;
+                badlReportStr += ` - ${activity.charAt(0).toUpperCase() + activity.slice(1)}: ${level}\n`;
+            }
+        });
+        if (badlLevelsSpecified) {
+            funcReport += "BADL:\n" + badlReportStr;
+        }
+        const mbiTotal = getVal('mbi_total_score_display');
+        if (mbiTotal) funcReport += formatLine("MBI Score", `${mbiTotal}/100`);
+        funcReport += formatMultiLine("MBI Remarks", getVal('mbi_remarks'));
+        let iadlOverall = getRadioValue('iadl_overall');
+        let iadlDetails = '';
+        if (iadlOverall === 'Supervised by') iadlDetails = getVal('iadl_supervised_by');
+        else if (iadlOverall === 'Assisted by') iadlDetails = getVal('iadl_assisted_by');
+        else if (iadlOverall === 'Dependent on') iadlDetails = getVal('iadl_dependent_on');
+        else if (iadlOverall === 'Shared with') iadlDetails = getVal('iadl_shared_with');
+        let iadlResponsible = getVal('iadl_responsible_tasks');
+        if (iadlOverall || iadlResponsible) {
+            funcReport += "IADL: - " + (iadlOverall || '') + (iadlDetails ? ' ' + iadlDetails : '') + (iadlResponsible ? ' - Responsible for ' + iadlResponsible : '') + "\n";
+        }
+        let sibrIndepAgeY = getVal('sibr_indep_age_year');
+        let sibrIndepAgeM = getVal('sibr_indep_age_month');
+        let sibrSupportScore = getVal('sibr_support_score');
+        let sibrSupportLevel = getRadioValue('sibr_support_level');
+       
+        if (sibrSupportLevel) {
+            sibrSupportLevel = sibrSupportLevel.replace(/\s*\(.*?\)\s*/g, '');
+        }
+        let chronAgeY = getVal('sibr_chron_age_year');
+        let chronAgeM = getVal('sibr_chron_age_month');
+        let maladaptive = getRadioValue('sibr_maladaptive_level');
+        if(sibrIndepAgeY || sibrIndepAgeM || sibrSupportScore || sibrSupportLevel){
+            let sibrIndepAge = `Year: ${sibrIndepAgeY || 'N/A'}, Month: ${sibrIndepAgeM || 'N/A'}`;
+            let chronAge = `Year: ${chronAgeY || 'N/A'}, Month: ${chronAgeM || 'N/A'}`;
+           
+            funcReport += `IADL: SIB-R: Patient's Chronological Age: ${chronAge}, Broad independence age equivalence: ${sibrIndepAge}, Maladaptive Behaviour Severity Level: ${maladaptive || 'N/A'}, Support score: ${sibrSupportScore || 'N/A'}/100, Support level: ${sibrSupportLevel || 'N/A'}.\n`;
+        }
+        funcReport += formatMultiLine("SIB-R Remarks", getVal('sibr_remarks'));
+        if(funcReport.trim() !== "") {
+            report += "Functional Assessment\n";
+            report += "----------------------\n";
+            report += funcReport + "\n";
+        }
+        // 7. Work Assessment
+        let workReport = "";
+        let premorbidParts = [];
+        getCheckedValues('premorbid_status').forEach(val => {
+            if (val === "OE" && isChecked('premorbid_oe_job_status_cb')) {
+                const oeDetails = getVal('premorbid_oe_job_details');
+                premorbidParts.push(oeDetails ? `OE (${oeDetails})` : 'OE');
+            } else if (val === "Student" ) {
+                const studentType = getRadioValue('student_type');
+                if (studentType === "Mainstream") {
+                    const level = getVal('mainstream_level');
+                    premorbidParts.push(`Student - Mainstream (${level || 'cue level'})`);
+                } else if (studentType === "Special school") {
+                    premorbidParts.push("Student - Special school");
+                } else {
+                    premorbidParts.push(val);
+                }
+            } else if (val !== "OE") {
+                premorbidParts.push(val);
+            }
+        });
+        let premorbidStr = premorbidParts.join(' / ');
+        const mainWorkTask = getVal('premorbid_main_work_task');
+        if (mainWorkTask) {
+            premorbidStr += (premorbidStr ? ", " : "") + `Main work task: ${mainWorkTask}`;
+        }
+        workReport += formatLine("Premorbid", premorbidStr);
+        let bwaReport = "";
+        const bwapDomainKeys = ['wha', 'ir', 'cs', 'wps', 'bwa'];
+        const bwapDomainNames = {'wha': 'Work Habits/ Attitudes', 'ir': 'Interpersonal Relations', 'cs': 'Cognitive Skills', 'wps': 'Work Performance Skills', 'bwa': 'Broad Work Adjustment'};
+        bwapDomainKeys.forEach(key => {
+            const percentile = getVal(`bwap_${key}_percentile`);
+            const placements = getCheckedValues(`bwap_${key}_placement`);
+            if (percentile || placements.length > 0) {
+                bwaReport += ` ${bwapDomainNames[key]} percentile: ${percentile || 'N/A'}. `;
+                if (placements.length > 0) {
+                    bwaReport += `Working Placement: ${placements.join(', ')}.\n`;
+                } else {
+                    bwaReport += "\n";
+                }
+            }
+        });
+        if(bwaReport) {
+            workReport += "BWAP-2:\n" + bwaReport;
+        }
+        workReport += formatMultiLine("BWAP-2 Remarks", getVal('bwap_remarks'));
+        if(workReport.trim() !== "") {
+            report += "Work Assessment\n";
+            report += "----------------\n";
+            report += workReport + "\n";
+        }
+        // Psychiatric Assessment Note
+        let psychReport = "";
+        let sofasDate = formatDate(getVal('sofas_date'));
+        let sofasScore = getVal('sofas_score');
+        let sofasDesc = getSofasDescription(sofasScore ? parseInt(sofasScore) : 0);
+        if (sofasDate || sofasScore) {
+            psychReport += "[Psychiatric Assessment Note]\n";
+            psychReport += "<Overall Level of Functioning>\n";
+            psychReport += "Social and Occupational Functioning Assessment Scale (SOFAS)\n";
+            psychReport += `Date: ${sofasDate || ''} Score: ${sofasScore ? sofasScore + '/100' : ''}\n`;
+            if (sofasDesc) psychReport += `Description: ${sofasDesc}\n`;
+        }
+        if(psychReport.trim() !== "") {
+            report += psychReport + "\n";
+        }
+        // Problems
+        let problemsReport = "";
+        let problemsItems = getCheckedValues('problems');
+        let lackOf = isChecked('problems_lack_of') ? 'Lack of' : '';
+        let psychosocial = isChecked('problems_psychosocial') ? 'psychosocial' : '';
+        let communitySupport = isChecked('problems_community_support') ? 'community support' : '';
+        if (lackOf || psychosocial || communitySupport) {
+            problemsItems.push(`${lackOf} ${psychosocial} ${communitySupport}`.trim());
+        }
+        if (problemsItems.length > 0) {
+            problemsReport += "Problems:\n" + problemsItems.map(p => "- " + p).join("\n") + "\n";
+        }
+        if(problemsReport.trim() !== "") {
+            report += problemsReport + "\n";
+        }
+        // Recommendation
+        let recReport = "";
+        // General
+        let generalRecItems = [];
+        if (isChecked('rec_observe_mental')) generalRecItems.push('- Observe mental state and behaviour');
+        let provideGeneral = isChecked('rec_provide_general') ? 'Provide' : '';
+        let wardOt = isChecked('rec_ward_ot') ? 'ward OT' : '';
+        let mainOt = isChecked('rec_main_ot') ? 'Main OT programme for structured daytime engagement' : '';
+        if (provideGeneral || wardOt || mainOt) generalRecItems.push(`- ${[provideGeneral, wardOt, mainOt].filter(Boolean).join(' ')}`.trim());
+        if (generalRecItems.length > 0) {
+            recReport += generalRecItems.join('\n') + '\n';
+        }
+        // Self-management Training
+        let selfManagementItems = [];
+        let conductAdl = isChecked('rec_conduct_adl') ? 'Conduct ADL Assessment' : '';
+        let reviewAdl = isChecked('rec_review_adl') ? 'Review ADL Assessment' : '';
+        if (conductAdl || reviewAdl) selfManagementItems.push(`- ${[conductAdl, reviewAdl].filter(Boolean).join(' / ')}`.trim());
+        if (isChecked('rec_provide_adl_training')) selfManagementItems.push('- Provide ADL training');
+        let conductIadl = isChecked('rec_conduct_iadl') ? 'Conduct IADL Assessment' : '';
+        let reviewIadl = isChecked('rec_review_iadl') ? 'Review IADL Assessment' : '';
+        if (conductIadl || reviewIadl) selfManagementItems.push(`- ${[conductIadl, reviewIadl].filter(Boolean).join(' / ')}`.trim());
+        if (isChecked('rec_provide_iadl_training')) selfManagementItems.push('- Provide IADL training');
+        if (isChecked('rec_conduct_independent_living')) selfManagementItems.push('- Conduct independent living skill assessment');
+        let providePsycho = isChecked('rec_provide_psychoeducation') ? 'Provide psychoeducation on' : '';
+        let illnessMgmt = isChecked('rec_illness_management') ? 'illness management' : '';
+        let stressMgmt = isChecked('rec_stress_management') ? 'stress management' : '';
+        let sleepHygiene = isChecked('rec_sleep_hygiene') ? 'sleep hygiene' : '';
+        let balancedLifestyle = isChecked('rec_balanced_lifestyle') ? 'balanced lifestyle' : '';
+        if (providePsycho || illnessMgmt || stressMgmt || sleepHygiene || balancedLifestyle) selfManagementItems.push(`- ${[providePsycho, illnessMgmt, stressMgmt, sleepHygiene, balancedLifestyle].filter(Boolean).join(' / ')}`.trim());
+        if (isChecked('rec_educate_relaxation')) selfManagementItems.push('- Educate on relaxation');
+        if (isChecked('rec_explore_cultivate')) selfManagementItems.push('- Explore and cultivate leisure, formulate activity scheduling');
+        if (selfManagementItems.length > 0) {
+            recReport += "Self-management Training:\n" + selfManagementItems.join('\n') + '\n';
+        }
+        // Life Coaching
+        let lifeCoachingItems = [];
+        let provideLife = isChecked('rec_provide_life') ? 'Provide' : '';
+        let wellnessProgram = isChecked('rec_wellness_program') ? 'Wellness program' : '';
+        let counseling = isChecked('rec_counseling') ? 'counseling' : '';
+        let cognitiveBehavioral = isChecked('rec_cognitive_behavioral') ? 'Cognitive behavioral therapy' : '';
+        let lifeCoachingCb = isChecked('rec_life_coaching') ? 'life coaching' : '';
+        let motivationalInterviewing = isChecked('rec_motivational_interviewing') ? 'motivational interviewing' : '';
+        if (provideLife || wellnessProgram || counseling || cognitiveBehavioral || lifeCoachingCb || motivationalInterviewing) lifeCoachingItems.push(`- ${[provideLife, wellnessProgram, counseling, cognitiveBehavioral, lifeCoachingCb, motivationalInterviewing].filter(Boolean).join(' / ')}`.trim());
+        if (isChecked('rec_educate_qigong')) lifeCoachingItems.push('- Educate on Health Qi-gong');
+        if (isChecked('rec_provide_lifestyle_redesign')) lifeCoachingItems.push('- Provide lifestyle re-design program');
+        if (lifeCoachingItems.length > 0) {
+            recReport += "Life Coaching:\n" + lifeCoachingItems.join('\n') + '\n';
+        }
+        // Work Rehabilitation
+        let workRehabItems = [];
+        let sws = isChecked('rec_sws') ? 'SWS simulated training' : '';
+        let dacSimulated = isChecked('rec_dac_simulated') ? 'DAC simulated training' : '';
+        if (sws || dacSimulated) workRehabItems.push(`- ${[sws, dacSimulated].filter(Boolean).join(' / ')}`.trim());
+        if (isChecked('rec_conduct_job_coaching')) workRehabItems.push('- Conduct job coaching');
+        let conductWork = isChecked('rec_conduct_work') ? 'Conduct' : '';
+        let workCapacityEvaluation = isChecked('rec_work_capacity_evaluation') ? 'Work capacity evaluation' : '';
+        let workHardening = isChecked('rec_work_hardening') ? 'Work Hardening' : '';
+        if (conductWork || workCapacityEvaluation || workHardening) workRehabItems.push(`- ${[conductWork, workCapacityEvaluation, workHardening].filter(Boolean).join(' ')}`.trim());
+        let provideJobPost = isChecked('rec_provide_job_post') ? 'Provide job-post training of' : '';
+        let shopAssistant = isChecked('rec_shop_assistant') ? 'shop assistant' : '';
+        let cleansingWorker = isChecked('rec_cleansing_worker') ? 'cleansing worker' : '';
+        let officeAssistant = isChecked('rec_office_assistant') ? 'office assistant' : '';
+        let clericalWorker = isChecked('rec_clerical_worker') ? 'clerical worker' : '';
+        let waiter = isChecked('rec_waiter') ? 'waiter' : '';
+        let waitress = isChecked('rec_waitress') ? 'waitress' : '';
+        let bartender = isChecked('rec_bartender') ? 'bartender' : '';
+        let coffeeBarista = isChecked('rec_coffee_barista') ? 'coffee barista' : '';
+        if (provideJobPost || shopAssistant || cleansingWorker || officeAssistant || clericalWorker || waiter || waitress || bartender || coffeeBarista) workRehabItems.push(`- ${[provideJobPost, shopAssistant, cleansingWorker, officeAssistant, clericalWorker, waiter, waitress, bartender, coffeeBarista].filter(Boolean).join(' / ')}`.trim());
+        let provideWork = isChecked('rec_provide_work') ? 'Provide' : '';
+        let prevocationalTraining = isChecked('rec_prevocational_training') ? 'prevocational training' : '';
+        let returningToWork = isChecked('rec_returning_to_work') ? 'returning to work program' : '';
+        if (provideWork || prevocationalTraining || returningToWork) workRehabItems.push(`- ${[provideWork, prevocationalTraining, returningToWork].filter(Boolean).join(' / ')}`.trim());
+        if (isChecked('rec_provide_work_social')) workRehabItems.push('- Provide work-related social skill training');
+        let introduceCommunity = isChecked('rec_introduce_community') ? 'Introduce community vocational support services (' : '';
+        let se = isChecked('rec_se') ? 'SE' : '';
+        let ivrs = isChecked('rec_ivrs') ? 'IVRSC' : '';
+        let sws2 = isChecked('rec_sws') ? 'SWS' : '';
+        let dac = isChecked('rec_dac') ? 'DAC' : '';
+        if (introduceCommunity || se || ivrs || sws2 || dac) workRehabItems.push(`- ${introduceCommunity} ${[se, ivrs, sws2, dac].filter(Boolean).join(' / ')} )`.trim());
+        if (workRehabItems.length > 0) {
+            recReport += "Work Rehabilitation:\n" + workRehabItems.join('\n') + '\n';
+        }
+        // Interpersonal / Social Skills Training
+        let socialSkillsItems = [];
+        if (isChecked('rec_provide_social_skills')) socialSkillsItems.push('- Provide social skills training');
+        if (socialSkillsItems.length > 0) {
+            recReport += "Interpersonal / Social Skills Training:\n" + socialSkillsItems.join('\n') + '\n';
+        }
+        // Cognitive Rehabilitation
+        let cognitiveRehabItems = [];
+        let conductCognitive = isChecked('rec_conduct_cognitive') ? 'Conduct cognitive assessment' : '';
+        let reviewCognitive = isChecked('rec_review_cognitive') ? 'Review cognitive assessment' : '';
+        if (conductCognitive || reviewCognitive) cognitiveRehabItems.push(`- ${[conductCognitive, reviewCognitive].filter(Boolean).join(' / ')}`.trim());
+        let provideCognitive = isChecked('rec_provide_cognitive') ? 'Provide' : '';
+        let computerAssisted = isChecked('rec_computer_assisted') ? 'computer-assisted' : '';
+        let paperPencil = isChecked('rec_paper_pencil') ? 'paper-and-pencil cognitive training on ____' : '';
+        if (provideCognitive || computerAssisted || paperPencil) cognitiveRehabItems.push(`- ${[provideCognitive, computerAssisted, paperPencil].filter(Boolean).join(' ')}`.trim());
+        if (isChecked('rec_provide_cognitive_stimulation')) cognitiveRehabItems.push('- Provide cognitive stimulation activities');
+        if (isChecked('rec_educate_compensatory')) cognitiveRehabItems.push('- Educate on compensatory strategies');
+        if (cognitiveRehabItems.length > 0) {
+            recReport += "Cognitive Rehabilitation:\n" + cognitiveRehabItems.join('\n') + '\n';
+        }
+        // Behavioral Management
+        let behavioralMgmtItems = [];
+        if (isChecked('rec_provide_sensory')) behavioralMgmtItems.push('- Provide sensory based intervention');
+        if (isChecked('rec_conduct_behavioral')) behavioralMgmtItems.push('- Conduct behavorial modification');
+        let educateBehavior = isChecked('rec_educate_behavior') ? 'Educate on' : '';
+        let impulseControl = isChecked('rec_impulse_control') ? 'impulse control' : '';
+        let temperManagement = isChecked('rec_temper_management') ? 'temper management' : '';
+        if (educateBehavior || impulseControl || temperManagement) behavioralMgmtItems.push(`- ${[educateBehavior, impulseControl, temperManagement].filter(Boolean).join(' ')}`.trim());
+        if (behavioralMgmtItems.length > 0) {
+            recReport += "Behavioral Management:\n" + behavioralMgmtItems.join('\n') + '\n';
+        }
+        // UL & Hand Function Training
+        let ulHandItems = [];
+        let provideUl = isChecked('rec_provide_ul') ? 'Provide' : '';
+        let fineMotorTraining = isChecked('rec_fine_motor_training') ? 'fine motor training' : '';
+        let handFunctionTraining = isChecked('rec_hand_function_training') ? 'hand function training' : '';
+        let upperLimbsTraining = isChecked('rec_upper_limbs_training') ? 'upper limbs functional training' : '';
+        if (provideUl || fineMotorTraining || handFunctionTraining || upperLimbsTraining) ulHandItems.push(`- ${[provideUl, fineMotorTraining, handFunctionTraining, upperLimbsTraining].filter(Boolean).join(' / ')}`.trim());
+        if (ulHandItems.length > 0) {
+            recReport += "UL & Hand Function Training:\n" + ulHandItems.join('\n') + '\n';
+        }
+        // Home Assessment and Modification
+        let homeAssessItems = [];
+        let conductHome = isChecked('rec_conduct_home_assessment') ? 'Conduct home assessment' : '';
+        let provideHomeVisit = isChecked('rec_provide_home_visit') ? 'Provide home visit' : '';
+        let provideHostelVisit = isChecked('rec_provide_hostel_visit') ? 'Provide hostel visit' : '';
+        if (conductHome || provideHomeVisit || provideHostelVisit) homeAssessItems.push(`- ${[conductHome, provideHomeVisit, provideHostelVisit].filter(Boolean).join(' / ')}`.trim());
+        if (isChecked('rec_educate_home_safety')) homeAssessItems.push('- Educate on home safety hazards');
+        if (isChecked('rec_advise_home_adaptation')) homeAssessItems.push('- Advise on home adaptation advice and intervention');
+        if (isChecked('rec_conduct_home_resettlement')) homeAssessItems.push('- Conduct home resettlement');
+        if (homeAssessItems.length > 0) {
+            recReport += "Home Assessment and Modification:\n" + homeAssessItems.join('\n') + '\n';
+        }
+        // Aids Prescription and Training
+        let aidsPrescriptionItems = [];
+        let provideAids = isChecked('rec_provide_aids') ? 'Provide' : '';
+        let aidsPrescriptionTraining = isChecked('rec_aids_prescription') ? 'aids prescription and training' : '';
+        let pressureRelieving = isChecked('rec_pressure_relieving') ? 'pressure relieving devices' : '';
+        let pressureTherapy = isChecked('rec_pressure_therapy') ? 'pressure therapy (garment)' : '';
+        let seatingAssessment = isChecked('rec_seating_assessment') ? 'seating assessment and prescription' : '';
+        let splintage = isChecked('rec_splintage') ? 'splintage' : '';
+        let wheelchairPrescription = isChecked('rec_wheelchair_prescription') ? 'wheelchair prescription and training' : '';
+        let specialGarment = isChecked('rec_special_garment') ? 'special garment' : '';
+        let protectiveAids = isChecked('rec_protective_aids') ? 'protective aids' : '';
+        if (provideAids || aidsPrescriptionTraining || pressureRelieving || pressureTherapy || seatingAssessment || splintage || wheelchairPrescription || specialGarment || protectiveAids) aidsPrescriptionItems.push(`- ${[provideAids, aidsPrescriptionTraining, pressureRelieving, pressureTherapy, seatingAssessment, splintage, wheelchairPrescription, specialGarment, protectiveAids].filter(Boolean).join(' / ')}`.trim());
+        if (aidsPrescriptionItems.length > 0) {
+            recReport += "Aids Prescription and Training:\n" + aidsPrescriptionItems.join('\n') + '\n';
+        }
+        // Caregiver Training
+        let caregiverItems = [];
+        if (isChecked('rec_caregiver_training')) {
+            let cgDate = formatDate(getVal('caregiver_training_date'));
+            caregiverItems.push('- Provide caregiver training (on ' + (cgDate || '') + ' )');
+        }
+        if (caregiverItems.length > 0) {
+            recReport += "Caregiver Training:\n" + caregiverItems.join('\n') + '\n';
+        }
+        if (recReport.trim() !== "") {
+            report += "Recommendation:\n";
+            report += "---------------\n";
+            report += recReport + "\n";
+        }
+        document.getElementById('reportTextArea').value = report;
+    }
+    updateMasRankings();
+</script>
+</body>
+</html>

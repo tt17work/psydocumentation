@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Referral Details Form & Report Generator</title>
+<title>Adult Initial Report</title>
 <style>
 body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; font-size: 16px; }
 .container { background-color: #fff; padding: 15px; margin: 10px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -34,17 +34,12 @@ button#resetBtn:hover { background-color: #cc0000; }
 .sub-section { margin-left: 10px; border-left: 2px solid #eee; padding-left: 10px; }
 .required-asterisk { color: red; margin-left: 2px; }
 .small-note { color: #666; font-size: 0.92em; margin-top: -6px; }
-.choice-line { display: block; margin: 0 0 10px 0; font-weight: normal; }
-.choice-line select { width: auto; min-width: 140px; padding: 6px; margin: 0 5px 0 5px; }
-.choice-line .subchoices { display: inline-flex; flex-wrap: wrap; gap: 8px; margin-left: 6px; vertical-align: middle; }
-.choice-line .subchoices label { margin: 0 6px 0 0; display: inline-block; }
-.choice-line input[type="text"] { width: auto; min-width: 180px; padding: 6px; margin: 0 5px; }
 @media (max-width: 768px) { .container { margin: 5px; padding: 10px;} .form-row > div { min-width: 100%; } .checkbox-group label, .radio-group label { display: block; margin-right: 0;} }
 </style>
 </head>
 <body>
 <div class="container">
-<h1>Referral Details Form</h1>
+<h1>Adult Initial Report</h1>
 <form id="referralForm">
 
 <fieldset>
@@ -91,9 +86,9 @@ button#resetBtn:hover { background-color: #cc0000; }
 <label><input type="checkbox" name="precautions" value="Violence">Violence</label>
 </div>
 <label for="reasonAdmission">Reason of Admission:</label><textarea id="reasonAdmission"></textarea>
-<label for="psychiatricHistory">Past Psychiatric History:</label>
-<textarea id="psychiatricHistory" placeholder="New to Mental Health Service / Known to Mental Health Service since ___ / No past psychiatric admission / __ psychiatric admission / Last admission to ___ during ___"></textarea>
-<label for="medicalHistory">Past Medical History:</label><textarea id="medicalHistory"></textarea>
+<label for="psychHistoryText">Past Psychiatric History:</label>
+<textarea id="psychHistoryText" placeholder="New to Mental Health Service / Known to Mental Health Service since ___ / No past psychiatric admission / __ psychiatric admission / Last admission to ___ during ___"></textarea>
+<label for="medicalHistory">Past Medical History:</label><textarea id="medicalHistory" placeholder="Past Medical History"></textarea>
 </fieldset>
 
 <fieldset>
@@ -130,15 +125,23 @@ button#resetBtn:hover { background-color: #cc0000; }
 <label for="rtwReadiness">Readiness in returning to work / study:</label><textarea id="rtwReadiness"></textarea>
 
 <h5>Childcare Performance</h5>
-<label for="childBackground">Child's Background:</label><textarea id="childBackground"></textarea>
-<label for="childcareRole">Childcare Role:</label><input type="text" id="childcareRole" placeholder="Major / supported role in childcare">
-<label for="childcareStressBarrier">Childcare Stress / Barrier:</label><textarea id="childcareStressBarrier"></textarea>
-<label for="childcareSupport">Childcare Support:</label><textarea id="childcareSupport"></textarea>
+<div class="form-row">
+<div><label for="childBackground">Child's Background:</label><textarea id="childBackground"></textarea></div>
+<div><label for="childcareRole">Childcare Role:</label><textarea id="childcareRole" placeholder="Major / supported role in childcare"></textarea></div>
+</div>
+<div class="form-row">
+<div><label for="childcareStress">Childcare Stress / Barrier:</label><textarea id="childcareStress"></textarea></div>
+<div><label for="childcareSupport">Childcare Support:</label><textarea id="childcareSupport"></textarea></div>
+</div>
 <h5>Leisure</h5>
-<label for="hobbies">Hobbies:</label><textarea id="hobbies"></textarea>
-<label for="interest">Interest:</label><textarea id="interest"></textarea>
-<label for="daytimeEngagement">Daytime engagement:</label><textarea id="daytimeEngagement" placeholder="Types of activities / Frequency / Duration / Enjoyment level"></textarea>
-<label for="leisureBarriers">Barriers:</label><textarea id="leisureBarriers"></textarea>
+<div class="form-row">
+<div><label for="hobbies">Hobbies:</label><textarea id="hobbies"></textarea></div>
+<div><label for="interest">Interest:</label><textarea id="interest"></textarea></div>
+</div>
+<div class="form-row">
+<div><label for="daytimeEngagement">Daytime engagement:</label><textarea id="daytimeEngagement" placeholder="Types of activities / Frequency / Duration / Enjoyment level"></textarea></div>
+<div><label for="leisureBarriers">Barriers:</label><textarea id="leisureBarriers"></textarea></div>
+</div>
 <h5>Social</h5>
 <textarea id="social" placeholder="Relationship with family / peer / barriers"></textarea>
 <h5>Stress Coping</h5>
@@ -159,18 +162,18 @@ button#resetBtn:hover { background-color: #cc0000; }
 
 <h4>4. Home Environment</h4>
 <div class="form-row"><div><label>Accommodation:</label><select id="accommodation"><option value=""></option><option>PHU</option><option>HOS Flat</option><option>Private flat</option><option>OAH</option><option>C&A Home</option><option>Village House or Hut</option><option>Other</option></select></div></div>
-<label>Accessibility:</label><div class="checkbox-group"><label><input type="checkbox" name="accessibility" value="G/F">G/F</label><label><input type="checkbox" name="accessibility" value="Direct lift-landing">Direct lift-landing</label><label><input type="checkbox" name="accessibility" value="Non-direct lift-landing FOS">Non-direct lift-landing FOS</label><label><input type="checkbox" name="accessibility" value="Non-lift landing FOS">Non-lift landing FOS</label><label><input type="checkbox" name="accessibility" value="Slopes">Slopes</label><label><input type="checkbox" name="accessibility" value="Uneven ground">Uneven ground</label></div><input type="text" id="accessibilityDetails" placeholder="_ steps / other accessibility details">
-<label>Toilet:</label><div class="checkbox-group"><label><input type="checkbox" name="toilet" value="Sitting">Sitting</label><label><input type="checkbox" name="toilet" value="Squatting">Squatting</label><label><input type="checkbox" name="toilet" value="Commode">Commode</label><label><input type="checkbox" name="toilet" value="Urinal or bedpan">Urinal or bedpan</label><label><input type="checkbox" name="toilet" value="Napkin">Napkin</label></div><input type="text" id="toiletDetails" placeholder="Other toilet details">
-<label>Bathroom:</label><div class="checkbox-group"><label><input type="checkbox" name="bathroom" value="Shower">Shower</label><label><input type="checkbox" name="bathroom" value="Bathtub">Bathtub</label><label><input type="checkbox" name="bathroom" value="Shower Tub">Shower Tub</label><label><input type="checkbox" name="bathroom" value="Basin">Basin</label><label><input type="checkbox" name="bathroom" value="Bucket">Bucket</label><label><input type="checkbox" name="bathroom" value="Shower chair">Shower chair</label><label><input type="checkbox" name="bathroom" value="Hot water system">Hot water system</label></div><input type="text" id="bathroomDetails" placeholder="Other bathroom details">
-<div class="form-row"><div><label>Aid/Equipment:</label><input type="text" id="aidEquipment" placeholder="Handrail / Bedrail / Commode Chair / Others"></div></div>
+<label>Accessibility:</label><div class="checkbox-group"><label><input type="checkbox" name="accessibility" value="G/F">G/F</label><label><input type="checkbox" name="accessibility" value="Direct lift-landing">Direct lift-landing</label><label><input type="checkbox" name="accessibility" value="Non-direct lift-landing FOS">Non-direct lift-landing FOS</label><label><input type="checkbox" name="accessibility" value="Non-lift landing FOS">Non-lift landing FOS</label><label><input type="checkbox" name="accessibility" value="Steps">Steps</label><label><input type="checkbox" name="accessibility" value="Slopes">Slopes</label><label><input type="checkbox" name="accessibility" value="Uneven ground">Uneven ground</label></div><input type="text" id="accessibilityOther" placeholder="Other accessibility / number of steps">
+<label>Toilet:</label><div class="checkbox-group"><label><input type="checkbox" name="toilet" value="Sitting">Sitting</label><label><input type="checkbox" name="toilet" value="Squatting">Squatting</label><label><input type="checkbox" name="toilet" value="Commode">Commode</label><label><input type="checkbox" name="toilet" value="Urinal or bedpan">Urinal or bedpan</label><label><input type="checkbox" name="toilet" value="Napkin">Napkin</label></div><input type="text" id="toiletOther" placeholder="Other toilet details">
+<label>Bathroom:</label><div class="checkbox-group"><label><input type="checkbox" name="bathroom" value="Shower">Shower</label><label><input type="checkbox" name="bathroom" value="Bathtub">Bathtub</label><label><input type="checkbox" name="bathroom" value="Shower Tub">Shower Tub</label><label><input type="checkbox" name="bathroom" value="Basin">Basin</label><label><input type="checkbox" name="bathroom" value="Bucket">Bucket</label><label><input type="checkbox" name="bathroom" value="Shower chair">Shower chair</label><label><input type="checkbox" name="bathroom" value="Hot water system">Hot water system</label></div><input type="text" id="bathroomOther" placeholder="Other bathroom details">
+<label for="aidEquipment">Aid/Equipment:</label><input type="text" id="aidEquipment" placeholder="Handrail / Bedrail / Commode Chair / Others">
 
 <h4>5. Caregiver's Concern</h4>
 <textarea id="caregiverConcern" placeholder="ADL/IADL/Childcare/Cognitive/Social/Financial/Lifestyle/Illness management/Behavioral aspects; own health issue"></textarea>
 
 <h4>6. Family's / Client's Goals</h4>
-<h5>Illness Management</h5><div class="checkbox-group"><label><input type="checkbox" name="goalIllness" value="Symptom control">Symptom control</label><label><input type="checkbox" name="goalIllness" value="Medication adherence">Medication adherence</label></div>
-<h5>Functional Independence</h5><div class="checkbox-group"><label><input type="checkbox" name="goalFunctional" value="ADL independence">ADL independence</label><label><input type="checkbox" name="goalFunctional" value="IADL competence">IADL competence</label><label><input type="checkbox" name="goalFunctional" value="Work Capability">Work Capability</label><label><input type="checkbox" name="goalFunctional" value="Childcare Competence">Childcare Competence</label></div>
-<h5>Psychosocial Well-being</h5><div class="checkbox-group"><label><input type="checkbox" name="goalPsychosocial" value="Reduce isolation">Reduce isolation</label><label><input type="checkbox" name="goalPsychosocial" value="Engage socially">Engage socially</label><label><input type="checkbox" name="goalPsychosocial" value="Improve mood">Improve mood</label><label><input type="checkbox" name="goalPsychosocial" value="Maintain hobbies">Maintain hobbies</label></div>
+<h5>Illness Management</h5><div class="checkbox-group"><label><input type="checkbox" name="goals_illness" value="Symptom control">Symptom control</label><label><input type="checkbox" name="goals_illness" value="Medication adherence">Medication adherence</label></div>
+<h5>Functional Independence</h5><div class="checkbox-group"><label><input type="checkbox" name="goals_functional" value="ADL independence">ADL independence</label><label><input type="checkbox" name="goals_functional" value="IADL competence">IADL competence</label><label><input type="checkbox" name="goals_functional" value="Work Capability">Work Capability</label><label><input type="checkbox" name="goals_functional" value="Childcare Competence">Childcare Competence</label></div>
+<h5>Psychosocial Well-being</h5><div class="checkbox-group"><label><input type="checkbox" name="goals_psychosocial" value="Reduce isolation">Reduce isolation</label><label><input type="checkbox" name="goals_psychosocial" value="Engage socially">Engage socially</label><label><input type="checkbox" name="goals_psychosocial" value="Improve mood">Improve mood</label><label><input type="checkbox" name="goals_psychosocial" value="Maintain hobbies">Maintain hobbies</label></div>
 <input type="text" id="goalDetails" placeholder="Other goals / details">
 </fieldset>
 
@@ -198,98 +201,13 @@ button#resetBtn:hover { background-color: #cc0000; }
 </form>
 
 <div class="report-output">
-<h2>Generated Referral Details Report</h2>
+<h2>Generated Adult Initial Report</h2>
 <textarea id="reportOutput" readonly></textarea>
 <button id="copyReportBtn" onclick="copyReport()">Copy Report</button><span id="copyMessage">Copied!</span>
 </div>
 </div>
 
 <script>
-function addCheckboxes(containerId, name, values) {
-    const container = document.getElementById(containerId);
-    values.forEach(v => {
-        const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" name="${name}" value="${escapeHtml(v)}">${v}`;
-        container.appendChild(label);
-    });
-}
-function renderChoiceSpecs(containerId, namePrefix, specs) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    renderChoiceSpecsForContainer(container, namePrefix, specs);
-}
-function renderRecommendationSpecs(containerId, categories) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    categories.forEach((category, categoryIndex) => {
-        if (category.heading) {
-            const heading = document.createElement('h5');
-            heading.textContent = category.heading;
-            container.appendChild(heading);
-        }
-        renderChoiceSpecsForContainer(container, `recommendationChoice_${categoryIndex}`, category.items);
-    });
-}
-function renderChoiceSpecsForContainer(container, namePrefix, specs) {
-    specs.forEach((spec, index) => {
-        spec._id = `${namePrefix}_${index}`;
-        const row = document.createElement('div');
-        row.className = 'choice-line';
-        const checkbox = `<input type="checkbox" id="${spec._id}_enabled" data-choice-id="${spec._id}">`;
-        let html = checkbox;
-        if (spec.type === 'simple') html += escapeHtml(spec.text);
-        else if (spec.type === 'select') {
-            html += spec.prefix ? escapeHtml(spec.prefix) + ' ' : '';
-            html += `<select id="${spec._id}_select">${spec.options.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}</select>`;
-            html += spec.suffix ? ' ' + escapeHtml(spec.suffix) : '';
-        } else if (spec.type === 'selectOnly') {
-            html += `<select id="${spec._id}_select">${spec.options.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}</select>`;
-        } else if (spec.type === 'multi') {
-            html += spec.prefix ? escapeHtml(spec.prefix) + ' ' : '';
-            html += `<span class="subchoices">${spec.options.map(o => `<label><input type="checkbox" name="${spec._id}_multi" value="${escapeHtml(o)}">${escapeHtml(o)}</label>`).join('')}</span>`;
-        } else if (spec.type === 'selectMulti') {
-            html += `<select id="${spec._id}_select">${spec.selectOptions.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}</select> `;
-            html += escapeHtml(spec.middle) + ' ';
-            html += `<span class="subchoices">${spec.options.map(o => `<label><input type="checkbox" name="${spec._id}_multi" value="${escapeHtml(o)}">${escapeHtml(o)}</label>`).join('')}</span>`;
-        } else if (spec.type === 'textSuffix') {
-            html += escapeHtml(spec.prefix) + ` <input type="text" id="${spec._id}_text" placeholder="${escapeHtml(spec.placeholder || '')}">`;
-        }
-        row.innerHTML = html;
-        container.appendChild(row);
-    });
-}
-function getMultiValues(id) {
-    return Array.from(document.querySelectorAll(`input[name="${id}_multi"]:checked`)).map(cb => cb.value);
-}
-function collectChoiceSpecs(specs) {
-    const items = [];
-    specs.forEach(spec => {
-        const enabled = document.getElementById(`${spec._id}_enabled`);
-        if (!enabled || !enabled.checked) return;
-        let text = '';
-        if (spec.type === 'simple') text = spec.text;
-        else if (spec.type === 'select') {
-            const selected = document.getElementById(`${spec._id}_select`)?.value || '';
-            text = [spec.prefix, selected, spec.suffix].filter(Boolean).join(' ');
-        } else if (spec.type === 'selectOnly') {
-            text = document.getElementById(`${spec._id}_select`)?.value || '';
-        } else if (spec.type === 'multi') {
-            const selected = getMultiValues(spec._id);
-            const values = selected.length ? selected : spec.options;
-            text = [spec.prefix, values.join(' / ')].filter(Boolean).join(' ');
-        } else if (spec.type === 'selectMulti') {
-            const selectedPrefix = document.getElementById(`${spec._id}_select`)?.value || '';
-            const selected = getMultiValues(spec._id);
-            const values = selected.length ? selected : spec.options;
-            text = `${selectedPrefix} ${spec.middle} ${values.join(' / ')}`;
-        } else if (spec.type === 'textSuffix') {
-            const detail = document.getElementById(`${spec._id}_text`)?.value.trim() || '_____';
-            text = `${spec.prefix} ${detail}`;
-        }
-        if (text.trim()) items.push(text.trim().replace(/\s+/g, ' '));
-    });
-    return items;
-}
 function escapeHtml(str) { return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 function getVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
 function getCheckedValues(name) { return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value); }
@@ -298,9 +216,57 @@ function formatDate(dateString) { if (!dateString) return ''; const [y, m, d] = 
 function line(label, value) { return value ? `${label}: ${value}\n` : ''; }
 function bullet(value) { return value ? `- ${value}\n` : ''; }
 function listOrBlank(arr, other) { const items = [...arr]; if (other) items.push(other); return items.join(' / '); }
+function addCheckboxes(containerId, name, values) {
+    const container = document.getElementById(containerId);
+    values.forEach(v => {
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" name="${name}" value="${escapeHtml(v)}">${v}`;
+        container.appendChild(label);
+    });
+}
+function formatHallucination(values) {
+    const reported = [];
+    values.forEach(v => {
+        if (v === 'Denied hallucination') return;
+        const type = v.replace(/^Reported\s+/i, '').replace(/\s+hallucination$/i, '').trim();
+        if (type) reported.push(type);
+    });
+    const parts = [];
+    if (reported.length) parts.push(`Reported ${reported.join(', ')} hallucination`);
+    if (values.includes('Denied hallucination')) parts.push('Denied hallucination');
+    return parts.join(' / ');
+}
+function formatThought(values) {
+    const simpleThoughtTypes = [];
+    const otherThoughtPhrases = [];
+
+    values.forEach(v => {
+        if (v === 'Denied delusional thoughts') return;
+        let cleaned = v.replace(/^Reported\s+/i, '').trim();
+
+        // Combine choices such as "Reported persecutory thought" and
+        // "Reported paranoid thought" into one phrase:
+        // "Reported persecutory, paranoid thought".
+        const simpleMatch = cleaned.match(/^(persecutory|paranoid|delusional|somatic) thought$/i);
+        if (simpleMatch) {
+            simpleThoughtTypes.push(simpleMatch[1].toLowerCase());
+            return;
+        }
+
+        if (cleaned) otherThoughtPhrases.push(cleaned);
+    });
+
+    const reportedBits = [];
+    if (simpleThoughtTypes.length) reportedBits.push(`${simpleThoughtTypes.join(', ')} thought`);
+    reportedBits.push(...otherThoughtPhrases);
+
+    const parts = [];
+    if (reportedBits.length) parts.push(`Reported ${reportedBits.join(', ')}`);
+    if (values.includes('Denied delusional thoughts')) parts.push('Denied delusional thoughts');
+    return parts.join(' / ');
+}
 function sofasDescriptor(score) {
-    const n = Number(score);
-    if (Number.isNaN(n)) return '';
+    const n = Number(score); if (Number.isNaN(n)) return '';
     if (n >= 91) return 'SUPERIOR FUNCTIONING in wide range of activities.';
     if (n >= 81) return 'GOOD FUNCTIONING in all areas, occupationally and socially effective.';
     if (n >= 71) return 'SLIGHT IMPAIRMENT in social or occupational or school functioning (e.g. infrequent interpersonal conflict, temporarily failing behind in schoolwork).';
@@ -315,17 +281,16 @@ function sofasDescriptor(score) {
     return '';
 }
 function cgasDescriptor(score) {
-    const n = Number(score);
-    if (Number.isNaN(n)) return '';
+    const n = Number(score); if (Number.isNaN(n)) return '';
     if (n >= 91) return 'Superior functioning in all areas (at home, at school and with peers); involved in a wide range of activities and has many interests; likeable, confident; everyday worries never get out of hand; doing well in school; no symptoms.';
     if (n >= 81) return 'Good functioning in all areas; secure in family, school, and with peers; there may be transient difficulties and everyday worries that occasionally get out of hand.';
-    if (n >= 71) return 'No more than slight impairments in functioning at home, at school, or with peers; disturbance of behaviour or emotional distress may be present in response to life stresses, but interference with functioning is transient.';
-    if (n >= 61) return 'Some difficulty in single area but generally functioning pretty well; has some meaningful interpersonal relationships; familiar people might express concern.';
-    if (n >= 51) return 'Variable functioning with sporadic difficulties or symptoms in several but not all social areas; disturbance would be apparent to those who encounter the child in a dysfunctional setting or time.';
-    if (n >= 41) return 'Moderate degree of interference in functioning in most social areas or severe impairment of functioning in one area, such as suicidal preoccupations, school refusal, anxiety, obsessive rituals, conversion symptoms, anxiety attacks, poor social skills, or frequent aggressive or antisocial behaviour with some preservation of meaningful social relationships.';
-    if (n >= 31) return 'Major impairment of functioning in several areas and unable to function in one of these areas, such as disturbed at home, at school, with peers, or in society at large; such children are likely to require special schooling and/or hospitalisation or withdrawal from school.';
-    if (n >= 21) return 'Unable to function in almost all areas e.g., stays at home, in ward, or in bed all day without taking part in social activities or severe impairment in reality testing or serious impairment in communication.';
-    if (n >= 11) return 'Needs considerable supervision to prevent hurting others or self or to maintain personal hygiene, or has gross impairment in all forms of communication.';
+    if (n >= 71) return 'No more than slight impairments in functioning at home, at school, or with peers; some disturbance of behaviour or emotional distress may be present in response to life stresses, but these are brief and interference with functioning is transient.';
+    if (n >= 61) return 'Some difficulty in single area but generally functioning pretty well; has some meaningful interpersonal relationships.';
+    if (n >= 51) return 'Variable functioning with sporadic difficulties or symptoms in several but not all social areas; disturbance would be apparent to those who encounter the child in a dysfunctional setting or time but not to those who see the child in other settings.';
+    if (n >= 41) return 'Moderate degree of interference in functioning in most social areas or severe impairment of functioning in one area, such as suicidal preoccupations and ruminations, school refusal, anxiety, obsessive rituals, major conversion symptoms, frequent anxiety attacks, poor to inappropriate social skills, or frequent episodes of aggressive or other antisocial behaviour with some preservation of meaningful social relationships.';
+    if (n >= 31) return 'Major impairment of functioning in several areas and unable to function in one of these areas, such as being disturbed at home, at school, with peers, or in society at large; such children are likely to require special schooling and/or hospitalisation or withdrawal from school.';
+    if (n >= 21) return 'Unable to function in almost all areas e.g. stays at home, in ward, or in bed all day without taking part in social activities or severe impairment in reality testing or serious impairment in communication.';
+    if (n >= 11) return 'Needs considerable supervision to prevent hurting others or self or to maintain personal hygiene or gross impairment in all forms of communication.';
     if (n >= 1) return 'Needs constant supervision (24-hour care) due to severely aggressive or self-destructive behaviour or gross impairment in reality testing, communication, cognition, affect or personal hygiene.';
     return '';
 }
@@ -336,108 +301,175 @@ addCheckboxes('affectGroup', 'affect', ['congruent','incongruent','labile','shal
 addCheckboxes('speechGroup', 'speech', ['relevant and coherent','irrelevant','incoherent','spontaneous','forthcoming','brief and scanty','pressured','slurred','circumstantial','tangential','hesitated','confabulated','disorganized','jumpy','perseverated','in slow tempo','in fast tempo']);
 addCheckboxes('hallucinationGroup', 'hallucination', ['Reported auditory hallucination','Reported visual hallucination','Reported olfactory hallucination','Reported tactile hallucination','Reported gustatory hallucination','Denied hallucination']);
 addCheckboxes('thoughtGroup', 'thought', ['Reported persecutory thought','Reported paranoid thought','Reported delusional thought','Reported somatic thought','Reported grandiose thought with idea of reference','Reported thought broadcasting','Reported being control','Reported grandeur','Denied delusional thoughts']);
-const problemSpecs = [
-    { type: 'simple', text: 'Deteriorated mental state' },
-    { type: 'select', prefix: 'Unstable mood with suicidal', options: ['attempt', 'ideation'] },
-    { type: 'simple', text: 'Limited insight and inadequate illness management skill' },
-    { type: 'selectMulti', selectOptions: ['Doubtful', 'Impaired'], middle: 'functional performance in', options: ['ADL', 'IADL', 'work', 'childcare'] },
-    { type: 'selectOnly', options: ['Loss of interest', 'Lack of motivation'] },
-    { type: 'selectOnly', options: ['Lack of daytime engagement', 'Lifestyle imbalance'] },
-    { type: 'simple', text: 'Lack of psychosocial / community support' },
-    { type: 'selectOnly', options: ['Subjective memory complain', 'Lack of insight on cognitive deficit'] },
-    { type: 'selectMulti', selectOptions: ['Doubtful', 'Impaired'], middle: 'cognitive function in', options: ['visuospatial', 'executive function', 'attention', 'language', 'abstract thinking', 'delayed recall', 'orientation', 'working memory', 'long term memory'] },
-    { type: 'simple', text: 'Ineffective stress coping skill' },
-    { type: 'simple', text: 'Lack of worker role' },
-    { type: 'selectOnly', options: ['Inadequate work skills', 'Poor work habits'] },
-    { type: 'simple', text: 'Limited knowledge on social resources on vocational training' },
-    { type: 'simple', text: 'Poor work-related social skills' },
-    { type: 'selectOnly', options: ['Ineffective emotional regulation', 'Poor temper control'] },
-    { type: 'simple', text: 'Poor interpersonal / social skills with limited social circle' },
-    { type: 'simple', text: 'Home environment barriers' },
-    { type: 'simple', text: 'Heavy carer stress / Limited caregiver skills and support' }
+
+const problemItems = [
+ {type:'plain', text:'Deteriorated mental state'},
+ {type:'dropdown', prefix:'Unstable mood with suicidal', options:['attempt','ideation']},
+ {type:'plain', text:'Limited insight and inadequate illness management skill'},
+ {type:'multi', prefix:'Doubtful / Impaired functional performance in', options:['ADL','IADL','work','childcare']},
+ {type:'dropdown', prefix:'', options:['Loss of interest','Lack of motivation']},
+ {type:'dropdown', prefix:'', options:['Lack of daytime engagement','Lifestyle imbalance']},
+ {type:'dropdown', prefix:'', options:['Lack of psychosocial support','Lack of community support']},
+ {type:'dropdown', prefix:'', options:['Subjective memory complain','Lack of insight on cognitive deficit']},
+ {type:'multi', prefix:'Doubtful / Impaired cognitive function in', options:['visuospatial','executive function','attention','language','abstract thinking','delayed recall','orientation','working memory','long term memory']},
+ {type:'plain', text:'Ineffective stress coping skill'},
+ {type:'plain', text:'Lack of worker role'},
+ {type:'dropdown', prefix:'', options:['Inadequate work skills','Poor work habits']},
+ {type:'plain', text:'Limited knowledge on social resources on vocational training'},
+ {type:'plain', text:'Poor work-related social skills'},
+ {type:'dropdown', prefix:'', options:['Ineffective emotional regulation','Poor temper control']},
+ {type:'multi', prefix:'Poor interpersonal / social skills with', options:['limited social circle']},
+ {type:'plain', text:'Home environment barriers'},
+ {type:'dropdown', prefix:'', options:['Heavy carer stress','Limited caregiver skills and support']}
 ];
-
-const recommendationCategories = [
-    { heading: '', items: [
-        { type: 'simple', text: 'Observe mental state and behaviour' },
-        { type: 'simple', text: 'Provide ward OT / Main OT programme for structured daytime engagement' }
-    ]},
-    { heading: '<Self-management Program>', items: [
-        { type: 'select', prefix: '', options: ['Conduct', 'Review'], suffix: 'ADL Assessment' },
-        { type: 'simple', text: 'Provide ADL training' },
-        { type: 'select', prefix: '', options: ['Conduct', 'Review'], suffix: 'IADL Assessment' },
-        { type: 'simple', text: 'Provide IADL training' },
-        { type: 'simple', text: 'Conduct independent living skill assessment' },
-        { type: 'multi', prefix: 'Provide psychoeducation on', options: ['illness management', 'stress management', 'sleep hygiene'] },
-        { type: 'simple', text: 'Educate on relaxation' },
-        { type: 'simple', text: 'Conduct childcare assessment & training' },
-        { type: 'textSuffix', prefix: 'Introduce community reintegration service of', placeholder: 'service name' }
-    ]},
-    { heading: '<Life Coaching>', items: [
-        { type: 'multi', prefix: 'Provide', options: ['Wellness program', 'counseling', 'Cognitive behavioral therapy', 'life coaching', 'motivational interviewing'] },
-        { type: 'simple', text: 'Explore and cultivate leisure, formulate activity scheduling' },
-        { type: 'simple', text: 'Educate on Health Qi-gong' },
-        { type: 'simple', text: 'Provide lifestyle re-design program, educate on balanced lifestyle' }
-    ]},
-    { heading: '<Work Rehabilitation>', items: [
-        { type: 'multi', prefix: 'Conduct', options: ['job analysis', 'vocational counselling', 'job coaching'] },
-        { type: 'simple', text: 'Provide Work Motivational Enhancement (ME) package' },
-        { type: 'select', prefix: 'Conduct', options: ['Work capacity evaluation', 'Work Hardening'] },
-        { type: 'multi', prefix: 'Provide job-post training of', options: ['shop assistant', 'cleansing worker', 'office assistant', 'clerical worker', 'waiter', 'waitress', 'bartender', 'coffee barista'] },
-        { type: 'selectOnly', options: ['Provide prevocational training', 'Provide returning to work program'] },
-        { type: 'simple', text: 'Provide work-related social skill training' },
-        { type: 'simple', text: 'Provide CBT in work program' },
-        { type: 'multi', prefix: 'Introduce community vocational support services', options: ['SE', 'ERB', 'OT OPD', 'SWS'] }
-    ]},
-    { heading: '<Interpersonal / Social Skills Training>', items: [
-        { type: 'select', prefix: 'Provide', options: ['social', 'assertiveness'], suffix: 'skills training' }
-    ]},
-    { heading: '<Cognitive Rehabilitation>', items: [
-        { type: 'select', prefix: '', options: ['Conduct', 'Review'], suffix: 'cognitive assessment' },
-        { type: 'select', prefix: 'Provide', options: ['computer-assisted', 'paper-and-pencil'], suffix: 'cognitive training' },
-        { type: 'simple', text: 'Provide cognitive stimulation activities' },
-        { type: 'simple', text: 'Educate on compensatory strategies' }
-    ]},
-    { heading: '<Behavioral Management>', items: [
-        { type: 'simple', text: 'Provide education and intervention on multi-sensory stimulation' },
-        { type: 'simple', text: 'Conduct behavioral modification' },
-        { type: 'select', prefix: 'Educate on', options: ['impulse control', 'temper management'] }
-    ]},
-    { heading: '<Upper Limbs & Hand Function Training>', items: [
-        { type: 'multi', prefix: 'Provide', options: ['fine motor training', 'hand function training', 'upper limbs functional training'] }
-    ]},
-    { heading: '<Home Assessment and Modification>', items: [
-        { type: 'selectOnly', options: ['Conduct home assessment', 'Provide home visit'] },
-        { type: 'simple', text: 'Educate on home safety hazards' },
-        { type: 'simple', text: 'Advise on home adaptation advice and intervention' },
-        { type: 'simple', text: 'Conduct home resettlement' }
-    ]},
-    { heading: '<Aids Prescription and Training>', items: [
-        { type: 'multi', prefix: 'Provide', options: ['aids prescription and training', 'pressure relieving devices', 'pressure therapy (garment)', 'seating assessment and prescription', 'splintage', 'wheelchair prescription and training'] }
-    ]},
-    { heading: '<Caregiver Training>', items: [
-        { type: 'textSuffix', prefix: 'Provide caregiver training on', placeholder: 'topic' }
-    ]}
+const recommendationGroups = [
+ {header:'', items:[{type:'plain', text:'Observe mental state and behaviour'}, {type:'plain', text:'Provide ward OT / Main OT programme for structured daytime engagement'}]},
+ {header:'Self-management Program', items:[
+    {type:'dropdown', prefix:'', options:['Conduct ADL Assessment','Review ADL Assessment']},
+    {type:'plain', text:'Provide ADL training'},
+    {type:'dropdown', prefix:'', options:['Conduct IADL Assessment','Review IADL Assessment']},
+    {type:'multi', prefix:'Provide IADL training in', options:['cooking','medication packaging']},
+    {type:'plain', text:'Conduct independent living skill assessment'},
+    {type:'multi', prefix:'Provide psychoeducation on', options:['illness management','stress management','sleep hygiene']},
+    {type:'plain', text:'Educate on relaxation'},
+    {type:'plain', text:'Conduct childcare assessment & training'},
+    {type:'text', prefix:'Introduce community reintegration service of'}]},
+ {header:'Life Coaching', items:[
+    {type:'multi', prefix:'Provide', options:['Wellness program','counseling','Cognitive behavioral therapy','life coaching','motivational interviewing']},
+    {type:'plain', text:'Explore and cultivate leisure, formulate activity scheduling'},
+    {type:'plain', text:'Educate on Health Qi-gong'},
+    {type:'plain', text:'Provide lifestyle re-design program, educate on balanced lifestyle'}]},
+ {header:'Work Rehabilitation', items:[
+    {type:'multi', prefix:'Conduct', options:['job analysis','vocational counselling','job coaching']},
+    {type:'plain', text:'Provide Work Motivational Enhancement (ME) package'},
+    {type:'dropdown', prefix:'', options:['Conduct Work capacity evaluation','Conduct Work Hardening']},
+    {type:'multi', prefix:'Provide job-post training of', options:['shop assistant','cleansing worker','office assistant','clerical worker','waiter','waitress','bartender','coffee barista']},
+    {type:'dropdown', prefix:'Provide', options:['prevocational training','returning to work program']},
+    {type:'plain', text:'Provide work-related social skill training'},
+    {type:'plain', text:'Provide CBT in work program'},
+    {type:'multi', prefix:'Introduce community vocational support services', options:['SE','ERB','OT OPD','SWS']}]},
+ {header:'Interpersonal / Social Skills Training', items:[{type:'dropdown', prefix:'Provide', options:['social skills training','assertiveness skills training']}]},
+ {header:'Cognitive Rehabilitation', items:[
+    {type:'dropdown', prefix:'', options:['Conduct cognitive assessment','Review cognitive assessment']},
+    {type:'multi', prefix:'Provide', options:['computer-assisted cognitive training','paper-and-pencil cognitive training']},
+    {type:'plain', text:'Provide cognitive stimulation activities'},
+    {type:'plain', text:'Educate on compensatory strategies'}]},
+ {header:'Behavioral Management', items:[
+    {type:'plain', text:'Provide education and intervention on multi-sensory stimulation'},
+    {type:'plain', text:'Conduct behavioral modification'},
+    {type:'dropdown', prefix:'Educate on', options:['impulse control','temper management']}]},
+ {header:'Upper Limbs & Hand Function Training', items:[{type:'multi', prefix:'Provide', options:['fine motor training','hand function training','upper limbs functional training']}]},
+ {header:'Home Assessment and Modification', items:[
+    {type:'dropdown', prefix:'', options:['Conduct home assessment','Provide home visit']},
+    {type:'plain', text:'Educate on home safety hazards'},
+    {type:'plain', text:'Advise on home adaptation advice and intervention'},
+    {type:'plain', text:'Conduct home resettlement'}]},
+ {header:'Aids Prescription and Training', items:[{type:'multi', prefix:'Provide', options:['aids prescription and training','pressure relieving devices','pressure therapy (garment)','seating assessment and prescription','splintage','wheelchair prescription and training']}]},
+ {header:'Caregiver Training', items:[{type:'text', prefix:'Provide caregiver training on'}]}
 ];
+function renderStructuredItems(containerId, source, prefixName) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    const groups = Array.isArray(source[0]?.items) ? source : [{header:'', items:source}];
+    let idx = 0;
+    groups.forEach(group => {
+        if (group.header) {
+            const h = document.createElement('h5'); h.textContent = `<${group.header}>`; container.appendChild(h);
+        }
+        group.items.forEach(item => {
+            const wrap = document.createElement('div'); wrap.className = 'structured-item'; wrap.dataset.type = item.type; wrap.dataset.prefix = item.prefix || ''; wrap.dataset.text = item.text || ''; wrap.dataset.header = group.header || ''; wrap.dataset.name = `${prefixName}_${idx}`;
+            if (item.type === 'plain') {
+                wrap.innerHTML = `<label><input type="checkbox" name="${prefixName}_${idx}" value="${escapeHtml(item.text)}">${item.text}</label>`;
+            } else if (item.type === 'dropdown') {
+                const prefix = item.prefix ? `${item.prefix} ` : '';
+                wrap.innerHTML = `<label>${prefix}<select name="${prefixName}_${idx}"><option value=""></option>${item.options.map(o=>`<option value="${escapeHtml(o)}">${o}</option>`).join('')}</select></label>`;
+            } else if (item.type === 'multi') {
+                wrap.innerHTML = `<div>${item.prefix ? item.prefix + ':' : ''}</div>` + item.options.map(o=>`<label><input type="checkbox" name="${prefixName}_${idx}" value="${escapeHtml(o)}">${o}</label>`).join('');
+            } else if (item.type === 'text') {
+                wrap.innerHTML = `<label>${item.prefix}: <input type="text" name="${prefixName}_${idx}" placeholder="details"></label>`;
+            }
+            container.appendChild(wrap); idx++;
+        });
+    });
+}
+function collectStructuredItems(containerId) {
+    const rows = [];
+    document.querySelectorAll(`#${containerId} .structured-item`).forEach(wrap => {
+        const type = wrap.dataset.type, prefix = wrap.dataset.prefix || '', text = wrap.dataset.text || '', header = wrap.dataset.header || '', name = wrap.dataset.name;
+        let value = '';
+        if (type === 'plain') {
+            const cb = wrap.querySelector('input[type="checkbox"]:checked'); if (cb) value = cb.value;
+        } else if (type === 'dropdown') {
+            const sel = wrap.querySelector('select'); if (sel && sel.value) value = prefix ? `${prefix} ${sel.value}` : sel.value;
+        } else if (type === 'multi') {
+            const vals = Array.from(wrap.querySelectorAll('input[type="checkbox"]:checked')).map(cb=>cb.value);
+            if (vals.length) value = prefix ? `${prefix} ${vals.join(' / ')}` : vals.join(' / ');
+        } else if (type === 'text') {
+            const inp = wrap.querySelector('input[type="text"]'); if (inp && inp.value.trim()) value = `${prefix} ${inp.value.trim()}`;
+        }
+        if (value) rows.push({header, value});
+    });
+    return rows;
+}
+renderStructuredItems('problemsGroup', problemItems, 'problemItem');
+renderStructuredItems('recommendationsGroup', recommendationGroups, 'recItem');
 
-renderChoiceSpecs('problemsGroup', 'problemChoice', problemSpecs);
-renderRecommendationSpecs('recommendationsGroup', recommendationCategories);
-
+function addNumberedSection(sections, title, body) { if (body && body.trim()) sections.push({title, body: body.trimEnd()}); }
+function assessmentBody() {
+    let body = '';
+    const wellbeingFields = ['wellbeingDate','wellbeingScore','optimism','usefulness','relaxation','problemSolving','clarity','connectedness','autonomy'];
+    const cognitiveFields = ['bmccbDate','tmt','bacs','fluency','processingSpeed','otherAssessment'];
+    const hasWellbeing = wellbeingFields.some(id => getVal(id));
+    const hasCog = cognitiveFields.some(id => getVal(id));
+    if (!hasWellbeing && !hasCog) return '';
+    if (hasWellbeing) {
+        body += '<Well-being>\nThe Chinese Version of The Short Warwick-Edinburgh Mental Well-being Scale (C-SWEMWBS)\n';
+        body += `Date: ${formatDate(getVal('wellbeingDate')) || ''} ${getVal('wellbeingScore') ? getVal('wellbeingScore') + '/35' : ''}\n\nDescription:\n`;
+        [['Optimism and Future Orientation','optimism'],['Sense of Usefulness and Purpose','usefulness'],['Relaxation and Stress Management','relaxation'],['Problem Solving and Coping','problemSolving'],['Clarity of Thinking','clarity'],['Connectedness and Relationships','connectedness'],['Autonomy and Self Determination','autonomy']].forEach(([labelText, id]) => { body += line(labelText, getVal(id)); });
+    }
+    if (hasCog) {
+        body += (body ? '\n' : '') + '<Cognitive Function>\nBrief MATRICS Consensus Cognitive Battery (B-MCCB) was done on ' + (formatDate(getVal('bmccbDate')) || '___') + '\n';
+        body += line('- Trail Making Test (TMT): Part A', getVal('tmt'));
+        body += line('- BACS: Symbol Coding', getVal('bacs'));
+        body += line('- Category Fluency: Animal Naming', getVal('fluency'));
+        body += line('- Overall Performance in Speeding of Processing', getVal('processingSpeed'));
+        body += line('Other assessment templates / results', getVal('otherAssessment'));
+    }
+    return body;
+}
+function homeBody() {
+    let body='';
+    body += line('Accommodation', getVal('accommodation'));
+    body += line('Accessibility', listOrBlank(getCheckedValues('accessibility'), getVal('accessibilityOther')));
+    body += line('Toilet', listOrBlank(getCheckedValues('toilet'), getVal('toiletOther')));
+    body += line('Bathroom', listOrBlank(getCheckedValues('bathroom'), getVal('bathroomOther')));
+    body += line('Aid/Equipment', getVal('aidEquipment'));
+    return body;
+}
+function goalsBody() {
+    let body = '';
+    const illness = getCheckedValues('goals_illness');
+    const functional = getCheckedValues('goals_functional');
+    const psychosocial = getCheckedValues('goals_psychosocial');
+    if (illness.length) body += `Illness Management: ${illness.join(' / ')}\n`;
+    if (functional.length) body += `Functional Independence: ${functional.join(' / ')}\n`;
+    if (psychosocial.length) body += `Psychosocial Well-being: ${psychosocial.join(' / ')}\n`;
+    if (getVal('goalDetails')) body += `Others: ${getVal('goalDetails')}\n`;
+    return body;
+}
 function generateReport() {
     let report = '';
+    report += '[Adult Initial Report]\n\n';
     report += '[Referral Details]\n';
     report += `Date of Admission / Referral / Intake: ${formatDate(getVal('admissionDate')) || '_____'} / ${formatDate(getVal('referralDate')) || '_____'} / ${formatDate(getVal('intakeDate')) || '_____'}\n\n`;
-
-    report += '[Reason for Referral]\n';
-    report += `${getVal('reasonReferral') || '(according to referral letter)'}\n\n`;
-
+    report += '[Reason for Referral]\n' + `${getVal('reasonReferral') || '(according to referral letter)'}\n\n`;
     report += '[Clinical Information]\n';
     report += line('Present Diagnosis', listOrBlank(getCheckedValues('diagnosis'), getVal('diagnosisOther')) || '_____');
     report += line('SCS Status', getRadioValue('scs'));
     report += line('Legal Status', getRadioValue('legal'));
     report += line('Precautions', listOrBlank(getCheckedValues('precautions')));
     report += line('Reason of Admission', getVal('reasonAdmission'));
-    report += line('Past Psychiatric History', getVal('psychiatricHistory'));
+    report += line('Past Psychiatric History', getVal('psychHistoryText'));
     report += line('Past Medical History', getVal('medicalHistory')) + '\n';
 
     report += '[Common Assessment Note]\n<<Initial Assessment Report>>\n';
@@ -447,8 +479,8 @@ function generateReport() {
     report += bullet(getCheckedValues('mood').length ? `Mood ${getCheckedValues('mood').join(' / ')}` : '');
     report += bullet(getCheckedValues('affect').length ? `Affect ${getCheckedValues('affect').join(' / ')}` : '');
     report += bullet(getCheckedValues('speech').length ? `Speech ${getCheckedValues('speech').join(' / ')}` : '');
-    report += bullet(getCheckedValues('hallucination').join(' / '));
-    report += bullet(getCheckedValues('thought').join(' / '));
+    report += bullet(formatHallucination(getCheckedValues('hallucination')));
+    report += bullet(formatThought(getCheckedValues('thought')));
     report += bullet(getCheckedValues('suicidalNegative').join(' / '));
     const sleepApp = [getVal('sleep') ? `${getVal('sleep')} sleep` : '', getVal('appetite') ? `${getVal('appetite')} appetite` : ''].filter(Boolean).join(' and ');
     report += bullet(sleepApp ? `Reported of ${sleepApp}` : '');
@@ -462,11 +494,9 @@ function generateReport() {
     report += line('Role', getCheckedValues('role').join(' / '));
     report += line('Community Service', getCheckedValues('communityService').join(' / '));
     report += line('Financial Support', getCheckedValues('financialSupport').join(' / '));
-
     report += '\n<Functional Performance>\n';
     report += line('<ADL>', [getVal('adlLevel'), getVal('adlIssues')].filter(Boolean).join(' - '));
     report += line('<IADL>', [getVal('iadlLevel'), getVal('iadlDetails')].filter(Boolean).join(' - '));
-
     report += '\n<Education and Work>\n';
     report += line('Education', [getVal('education') ? `Educated up to ${getVal('education')} level` : '', getVal('educationQuitReason') ? `quitted due to ${getVal('educationQuitReason')}` : ''].filter(Boolean).join('; '));
     report += line('Employment Status', getVal('employmentStatus'));
@@ -475,67 +505,29 @@ function generateReport() {
     report += line('Reason on quitting the job', getVal('quitReason'));
     report += line('Vocational training received', getCheckedValues('vocTraining').join(' / '));
     report += line('Readiness in returning to work / study', getVal('rtwReadiness'));
-
-    const childcareLines = [
-        line("Child's Background", getVal('childBackground')),
-        line('Childcare Role', getVal('childcareRole')),
-        line('Childcare Stress / Barrier', getVal('childcareStressBarrier')),
-        line('Childcare Support', getVal('childcareSupport'))
-    ].join('');
-    if (childcareLines) report += '\n<Childcare Performance>\n' + childcareLines;
-
-    const leisureLines = [
-        line('Hobbies', getVal('hobbies')),
-        line('Interest', getVal('interest')),
-        line('Daytime engagement', getVal('daytimeEngagement')),
-        line('Barriers', getVal('leisureBarriers'))
-    ].join('');
-    if (leisureLines) report += '\n<Leisure>\n' + leisureLines;
+    report += '\n<Childcare Performance>\n';
+    report += line("Child's Background", getVal('childBackground'));
+    report += line('Childcare Role', getVal('childcareRole'));
+    report += line('Childcare Stress / Barrier', getVal('childcareStress'));
+    report += line('Childcare Support', getVal('childcareSupport'));
+    report += '\n<Leisure>\n';
+    report += line('Hobbies', getVal('hobbies'));
+    report += line('Interest', getVal('interest'));
+    report += line('Daytime engagement', getVal('daytimeEngagement'));
+    report += line('Barriers', getVal('leisureBarriers'));
     report += line('\n<Social>', getVal('social'));
     report += line('\n<Stress Coping>', listOrBlank(getCheckedValues('coping'), getVal('copingDetails')));
 
-    let sectionNo = 3;
-    const assessmentFields = ['wellbeingDate','wellbeingScore','optimism','usefulness','relaxation','problemSolving','clarity','connectedness','autonomy','bmccbDate','tmt','bacs','fluency','processingSpeed','otherAssessment'];
-    const hasAssessment = assessmentFields.some(id => getVal(id));
-    if (hasAssessment) {
-        report += `\n${sectionNo++}. Assessment Result\n`;
-        if (['wellbeingDate','wellbeingScore','optimism','usefulness','relaxation','problemSolving','clarity','connectedness','autonomy'].some(id => getVal(id))) {
-            report += '<Well-being>\nThe Chinese Version of The Short Warwick-Edinburgh Mental Well-being Scale (C-SWEMWBS)\n';
-            report += `Date: ${formatDate(getVal('wellbeingDate')) || ''} ${getVal('wellbeingScore') ? getVal('wellbeingScore') + '/35' : ''}\n\nDescription:\n`;
-            [['Optimism and Future Orientation','optimism'],['Sense of Usefulness and Purpose','usefulness'],['Relaxation and Stress Management','relaxation'],['Problem Solving and Coping','problemSolving'],['Clarity of Thinking','clarity'],['Connectedness and Relationships','connectedness'],['Autonomy and Self Determination','autonomy']].forEach(([labelText, id]) => { report += line(labelText, getVal(id)); });
-        }
-        if (['bmccbDate','tmt','bacs','fluency','processingSpeed','otherAssessment'].some(id => getVal(id))) {
-            report += '\n<Cognitive Function>\nBrief MATRICS Consensus Cognitive Battery (B-MCCB) was done on ' + (formatDate(getVal('bmccbDate')) || '___') + '\n';
-            report += line('- Trail Making Test (TMT): Part A', getVal('tmt'));
-            report += line('- BACS: Symbol Coding', getVal('bacs'));
-            report += line('- Category Fluency: Animal Naming', getVal('fluency'));
-            report += line('- Overall Performance in Speeding of Processing', getVal('processingSpeed'));
-            report += line('Other assessment templates / results', getVal('otherAssessment'));
-        }
-    }
+    const sections = [];
+    addNumberedSection(sections, 'Assessment Result', assessmentBody());
+    addNumberedSection(sections, 'Home Environment', homeBody());
+    addNumberedSection(sections, 'Caregiver’s Concern', getVal('caregiverConcern'));
+    addNumberedSection(sections, "Family’s / Client’s Goals", goalsBody());
+    sections.forEach((sec, i) => { report += `\n${i+3}. ${sec.title}\n${sec.body}\n`; });
 
-    const homeLines = [
-        line('Accommodation', getVal('accommodation')),
-        line('Accessibility', listOrBlank(getCheckedValues('accessibility'), getVal('accessibilityDetails'))),
-        line('Toilet', listOrBlank(getCheckedValues('toilet'), getVal('toiletDetails'))),
-        line('Bathroom', listOrBlank(getCheckedValues('bathroom'), getVal('bathroomDetails'))),
-        line('Aid/Equipment', getVal('aidEquipment'))
-    ].join('');
-    if (homeLines) report += `\n${sectionNo++}. Home Environment\n` + homeLines;
-
-    if (getVal('caregiverConcern')) report += `\n${sectionNo++}. Caregiver’s Concern\n` + getVal('caregiverConcern') + '\n';
-
-    const goalLines = [];
-    if (getCheckedValues('goalIllness').length) goalLines.push('Illness Management: ' + getCheckedValues('goalIllness').join(' / '));
-    if (getCheckedValues('goalFunctional').length) goalLines.push('Functional Independence: ' + getCheckedValues('goalFunctional').join(' / '));
-    if (getCheckedValues('goalPsychosocial').length) goalLines.push('Psychosocial Well-being: ' + getCheckedValues('goalPsychosocial').join(' / '));
-    if (getVal('goalDetails')) goalLines.push('Other goals / details: ' + getVal('goalDetails'));
-    if (goalLines.length) report += `\n${sectionNo++}. Family’s / Client’s Goals\n` + goalLines.join('\n') + '\n\n';
-
-    const sofas = getVal('sofasScore');
-    const cgas = getVal('cgasScore');
+    const sofas = getVal('sofasScore'), cgas = getVal('cgasScore');
     if (sofas || cgas || getVal('sofasDate') || getVal('cgasDate')) {
-        report += '[Psychiatric Assessment Note]\n<Overall Level of Functioning>\n';
+        report += '\n[Psychiatric Assessment Note]\n<Overall Level of Functioning>\n';
         if (sofas || getVal('sofasDate')) {
             report += `Social and Occupational Functioning Assessment Scale (SOFAS)\nDate: ${formatDate(getVal('sofasDate')) || ''} ${sofas ? sofas + '/100' : ''}\n`;
             if (sofas) report += `Description: ${sofasDescriptor(sofas)}\n`;
@@ -544,48 +536,34 @@ function generateReport() {
             report += `Children’s Global Assessment Scale (CGAS)\nDate: ${formatDate(getVal('cgasDate')) || ''} ${cgas ? cgas + '/100' : ''}\n`;
             if (cgas) report += `Description: ${cgasDescriptor(cgas)}\n`;
         }
-        report += '\n';
     }
 
-    report += '[Problem(s)]\n';
-    const problemItems = collectChoiceSpecs(problemSpecs);
-    if (getVal('problemOthers')) {
-        problemItems.push(...getVal('problemOthers').split(/\n+/).map(x => x.trim()).filter(Boolean));
-    }
-    report += problemItems.length ? problemItems.map(p => '- ' + p).join('\n') + '\n\n' : '\n';
+    report += '\n[Problem(s)]\n';
+    const selectedProblems = collectStructuredItems('problemsGroup').map(x => x.value);
+    if (getVal('problemOthers')) selectedProblems.push(getVal('problemOthers'));
+    report += selectedProblems.length ? selectedProblems.map(p => '- ' + p).join('\n') + '\n' : '';
 
-    report += '[Recommendation(s)]\n';
-    let recommendationOutput = '';
-    recommendationCategories.forEach(category => {
-        const selectedItems = collectChoiceSpecs(category.items);
-        if (selectedItems.length) {
-            if (category.heading) recommendationOutput += category.heading + '\n';
-            recommendationOutput += selectedItems.map(item => '- ' + item).join('\n') + '\n';
+    report += '\n[Recommendation(s)]\n';
+    const recs = collectStructuredItems('recommendationsGroup');
+    if (getVal('recommendationOthers')) recs.push({header:'Others', value:getVal('recommendationOthers')});
+    let currentHeader = null;
+    recs.forEach(r => {
+        if (r.header !== currentHeader) {
+            if (r.header) report += `<${r.header}>\n`;
+            currentHeader = r.header;
         }
+        report += `- ${r.value}\n`;
     });
-    if (getVal('recommendationOthers')) {
-        recommendationOutput += '<Other Recommendation(s)>\n';
-        recommendationOutput += getVal('recommendationOthers').split(/\n+/).map(x => x.trim()).filter(Boolean).map(item => '- ' + item).join('\n') + '\n';
-    }
-    report += recommendationOutput;
 
     document.getElementById('reportOutput').value = report.replace(/\n{3,}/g, '\n\n');
 }
 function copyReport() {
     const reportOutput = document.getElementById('reportOutput');
-    reportOutput.select();
-    reportOutput.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(reportOutput.value).then(() => {
-        const msg = document.getElementById('copyMessage');
-        msg.style.display = 'inline';
-        setTimeout(() => msg.style.display = 'none', 2000);
-    });
+    reportOutput.select(); reportOutput.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(reportOutput.value).then(() => { const msg = document.getElementById('copyMessage'); msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2000); });
 }
 function resetForm() {
-    if (confirm('Reset all fields?')) {
-        document.getElementById('referralForm').reset();
-        document.getElementById('reportOutput').value = '';
-    }
+    if (confirm('Reset all fields?')) { document.getElementById('referralForm').reset(); document.getElementById('reportOutput').value = ''; }
 }
 </script>
 </body>

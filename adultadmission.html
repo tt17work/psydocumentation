@@ -34,6 +34,11 @@ button#resetBtn:hover { background-color: #cc0000; }
 .sub-section { margin-left: 10px; border-left: 2px solid #eee; padding-left: 10px; }
 .required-asterisk { color: red; margin-left: 2px; }
 .small-note { color: #666; font-size: 0.92em; margin-top: -6px; }
+.choice-line { display: block; margin: 0 0 10px 0; font-weight: normal; }
+.choice-line select { width: auto; min-width: 140px; padding: 6px; margin: 0 5px 0 5px; }
+.choice-line .subchoices { display: inline-flex; flex-wrap: wrap; gap: 8px; margin-left: 6px; vertical-align: middle; }
+.choice-line .subchoices label { margin: 0 6px 0 0; display: inline-block; }
+.choice-line input[type="text"] { width: auto; min-width: 180px; padding: 6px; margin: 0 5px; }
 @media (max-width: 768px) { .container { margin: 5px; padding: 10px;} .form-row > div { min-width: 100%; } .checkbox-group label, .radio-group label { display: block; margin-right: 0;} }
 </style>
 </head>
@@ -208,6 +213,83 @@ function addCheckboxes(containerId, name, values) {
         container.appendChild(label);
     });
 }
+function renderChoiceSpecs(containerId, namePrefix, specs) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    renderChoiceSpecsForContainer(container, namePrefix, specs);
+}
+function renderRecommendationSpecs(containerId, categories) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    categories.forEach((category, categoryIndex) => {
+        if (category.heading) {
+            const heading = document.createElement('h5');
+            heading.textContent = category.heading;
+            container.appendChild(heading);
+        }
+        renderChoiceSpecsForContainer(container, `recommendationChoice_${categoryIndex}`, category.items);
+    });
+}
+function renderChoiceSpecsForContainer(container, namePrefix, specs) {
+    specs.forEach((spec, index) => {
+        spec._id = `${namePrefix}_${index}`;
+        const row = document.createElement('div');
+        row.className = 'choice-line';
+        const checkbox = `<input type="checkbox" id="${spec._id}_enabled" data-choice-id="${spec._id}">`;
+        let html = checkbox;
+        if (spec.type === 'simple') html += escapeHtml(spec.text);
+        else if (spec.type === 'select') {
+            html += spec.prefix ? escapeHtml(spec.prefix) + ' ' : '';
+            html += `<select id="${spec._id}_select">${spec.options.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}</select>`;
+            html += spec.suffix ? ' ' + escapeHtml(spec.suffix) : '';
+        } else if (spec.type === 'selectOnly') {
+            html += `<select id="${spec._id}_select">${spec.options.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}</select>`;
+        } else if (spec.type === 'multi') {
+            html += spec.prefix ? escapeHtml(spec.prefix) + ' ' : '';
+            html += `<span class="subchoices">${spec.options.map(o => `<label><input type="checkbox" name="${spec._id}_multi" value="${escapeHtml(o)}">${escapeHtml(o)}</label>`).join('')}</span>`;
+        } else if (spec.type === 'selectMulti') {
+            html += `<select id="${spec._id}_select">${spec.selectOptions.map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}</select> `;
+            html += escapeHtml(spec.middle) + ' ';
+            html += `<span class="subchoices">${spec.options.map(o => `<label><input type="checkbox" name="${spec._id}_multi" value="${escapeHtml(o)}">${escapeHtml(o)}</label>`).join('')}</span>`;
+        } else if (spec.type === 'textSuffix') {
+            html += escapeHtml(spec.prefix) + ` <input type="text" id="${spec._id}_text" placeholder="${escapeHtml(spec.placeholder || '')}">`;
+        }
+        row.innerHTML = html;
+        container.appendChild(row);
+    });
+}
+function getMultiValues(id) {
+    return Array.from(document.querySelectorAll(`input[name="${id}_multi"]:checked`)).map(cb => cb.value);
+}
+function collectChoiceSpecs(specs) {
+    const items = [];
+    specs.forEach(spec => {
+        const enabled = document.getElementById(`${spec._id}_enabled`);
+        if (!enabled || !enabled.checked) return;
+        let text = '';
+        if (spec.type === 'simple') text = spec.text;
+        else if (spec.type === 'select') {
+            const selected = document.getElementById(`${spec._id}_select`)?.value || '';
+            text = [spec.prefix, selected, spec.suffix].filter(Boolean).join(' ');
+        } else if (spec.type === 'selectOnly') {
+            text = document.getElementById(`${spec._id}_select`)?.value || '';
+        } else if (spec.type === 'multi') {
+            const selected = getMultiValues(spec._id);
+            const values = selected.length ? selected : spec.options;
+            text = [spec.prefix, values.join(' / ')].filter(Boolean).join(' ');
+        } else if (spec.type === 'selectMulti') {
+            const selectedPrefix = document.getElementById(`${spec._id}_select`)?.value || '';
+            const selected = getMultiValues(spec._id);
+            const values = selected.length ? selected : spec.options;
+            text = `${selectedPrefix} ${spec.middle} ${values.join(' / ')}`;
+        } else if (spec.type === 'textSuffix') {
+            const detail = document.getElementById(`${spec._id}_text`)?.value.trim() || '_____';
+            text = `${spec.prefix} ${detail}`;
+        }
+        if (text.trim()) items.push(text.trim().replace(/\s+/g, ' '));
+    });
+    return items;
+}
 function escapeHtml(str) { return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 function getVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
 function getCheckedValues(name) { return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value); }
@@ -254,8 +336,92 @@ addCheckboxes('affectGroup', 'affect', ['congruent','incongruent','labile','shal
 addCheckboxes('speechGroup', 'speech', ['relevant and coherent','irrelevant','incoherent','spontaneous','forthcoming','brief and scanty','pressured','slurred','circumstantial','tangential','hesitated','confabulated','disorganized','jumpy','perseverated','in slow tempo','in fast tempo']);
 addCheckboxes('hallucinationGroup', 'hallucination', ['Reported auditory hallucination','Reported visual hallucination','Reported olfactory hallucination','Reported tactile hallucination','Reported gustatory hallucination','Denied hallucination']);
 addCheckboxes('thoughtGroup', 'thought', ['Reported persecutory thought','Reported paranoid thought','Reported delusional thought','Reported somatic thought','Reported grandiose thought with idea of reference','Reported thought broadcasting','Reported being control','Reported grandeur','Denied delusional thoughts']);
-addCheckboxes('problemsGroup', 'problems', ['Deteriorated mental state','Unstable mood with suicidal attempt / ideation','Limited insight and inadequate illness management skill','Doubtful / Impaired functional performance in ADL / IADL / work / childcare','Loss of interest / Lack of motivation','Lack of daytime engagement / Lifestyle imbalance','Lack of psychosocial / community support','Subjective memory complain / Lack of insight on cognitive deficit','Doubtful / Impaired cognitive function in visuospatial / executive function / attention / language / abstract thinking / delayed recall / orientation / working memory / long term memory','Ineffective stress coping skill','Lack of worker role','Inadequate work skills / Poor work habits','Limited knowledge on social resources on vocational training','Poor work-related social skills','Ineffective emotional regulation / Poor temper control','Poor interpersonal / social skills with limited social circle','Home environment barriers','Heavy carer stress / Limited caregiver skills and support']);
-addCheckboxes('recommendationsGroup', 'recommendations', ['Observe mental state and behaviour','Provide ward OT / Main OT programme for structured daytime engagement','Conduct / Review ADL Assessment','Provide ADL training','Conduct / Review IADL Assessment','Provide IADL training','Conduct independent living skill assessment','Provide psychoeducation on illness management / stress management / sleep hygiene','Educate on relaxation','Conduct childcare assessment & training','Introduce community reintegration service','Provide Wellness program / counseling / Cognitive behavioral therapy / life coaching / motivational interviewing','Explore and cultivate leisure, formulate activity scheduling','Educate on Health Qi-gong','Provide lifestyle re-design program, educate on balanced lifestyle','Conduct job analysis / vocational counselling / job coaching','Provide Work Motivational Enhancement (ME) package','Conduct Work capacity evaluation / Work Hardening','Provide job-post training','Provide prevocational training / returning to work program','Provide work-related social skill training','Provide CBT in work program','Introduce community vocational support services','Provide social / assertiveness skills training','Conduct / Review cognitive assessment','Provide computer-assisted / paper-and-pencil cognitive training','Provide cognitive stimulation activities','Educate on compensatory strategies','Provide education and intervention on multi-sensory stimulation','Conduct behavioral modification','Educate on impulse control / temper management','Provide fine motor training / hand function training / upper limbs functional training','Conduct home assessment / Provide home visit','Educate on home safety hazards','Advise on home adaptation advice and intervention','Conduct home resettlement','Provide aids prescription and training','Provide caregiver training']);
+const problemSpecs = [
+    { type: 'simple', text: 'Deteriorated mental state' },
+    { type: 'select', prefix: 'Unstable mood with suicidal', options: ['attempt', 'ideation'] },
+    { type: 'simple', text: 'Limited insight and inadequate illness management skill' },
+    { type: 'selectMulti', selectOptions: ['Doubtful', 'Impaired'], middle: 'functional performance in', options: ['ADL', 'IADL', 'work', 'childcare'] },
+    { type: 'selectOnly', options: ['Loss of interest', 'Lack of motivation'] },
+    { type: 'selectOnly', options: ['Lack of daytime engagement', 'Lifestyle imbalance'] },
+    { type: 'simple', text: 'Lack of psychosocial / community support' },
+    { type: 'selectOnly', options: ['Subjective memory complain', 'Lack of insight on cognitive deficit'] },
+    { type: 'selectMulti', selectOptions: ['Doubtful', 'Impaired'], middle: 'cognitive function in', options: ['visuospatial', 'executive function', 'attention', 'language', 'abstract thinking', 'delayed recall', 'orientation', 'working memory', 'long term memory'] },
+    { type: 'simple', text: 'Ineffective stress coping skill' },
+    { type: 'simple', text: 'Lack of worker role' },
+    { type: 'selectOnly', options: ['Inadequate work skills', 'Poor work habits'] },
+    { type: 'simple', text: 'Limited knowledge on social resources on vocational training' },
+    { type: 'simple', text: 'Poor work-related social skills' },
+    { type: 'selectOnly', options: ['Ineffective emotional regulation', 'Poor temper control'] },
+    { type: 'simple', text: 'Poor interpersonal / social skills with limited social circle' },
+    { type: 'simple', text: 'Home environment barriers' },
+    { type: 'simple', text: 'Heavy carer stress / Limited caregiver skills and support' }
+];
+
+const recommendationCategories = [
+    { heading: '', items: [
+        { type: 'simple', text: 'Observe mental state and behaviour' },
+        { type: 'simple', text: 'Provide ward OT / Main OT programme for structured daytime engagement' }
+    ]},
+    { heading: '<Self-management Program>', items: [
+        { type: 'select', prefix: '', options: ['Conduct', 'Review'], suffix: 'ADL Assessment' },
+        { type: 'simple', text: 'Provide ADL training' },
+        { type: 'select', prefix: '', options: ['Conduct', 'Review'], suffix: 'IADL Assessment' },
+        { type: 'simple', text: 'Provide IADL training' },
+        { type: 'simple', text: 'Conduct independent living skill assessment' },
+        { type: 'multi', prefix: 'Provide psychoeducation on', options: ['illness management', 'stress management', 'sleep hygiene'] },
+        { type: 'simple', text: 'Educate on relaxation' },
+        { type: 'simple', text: 'Conduct childcare assessment & training' },
+        { type: 'textSuffix', prefix: 'Introduce community reintegration service of', placeholder: 'service name' }
+    ]},
+    { heading: '<Life Coaching>', items: [
+        { type: 'multi', prefix: 'Provide', options: ['Wellness program', 'counseling', 'Cognitive behavioral therapy', 'life coaching', 'motivational interviewing'] },
+        { type: 'simple', text: 'Explore and cultivate leisure, formulate activity scheduling' },
+        { type: 'simple', text: 'Educate on Health Qi-gong' },
+        { type: 'simple', text: 'Provide lifestyle re-design program, educate on balanced lifestyle' }
+    ]},
+    { heading: '<Work Rehabilitation>', items: [
+        { type: 'multi', prefix: 'Conduct', options: ['job analysis', 'vocational counselling', 'job coaching'] },
+        { type: 'simple', text: 'Provide Work Motivational Enhancement (ME) package' },
+        { type: 'select', prefix: 'Conduct', options: ['Work capacity evaluation', 'Work Hardening'] },
+        { type: 'multi', prefix: 'Provide job-post training of', options: ['shop assistant', 'cleansing worker', 'office assistant', 'clerical worker', 'waiter', 'waitress', 'bartender', 'coffee barista'] },
+        { type: 'selectOnly', options: ['Provide prevocational training', 'Provide returning to work program'] },
+        { type: 'simple', text: 'Provide work-related social skill training' },
+        { type: 'simple', text: 'Provide CBT in work program' },
+        { type: 'multi', prefix: 'Introduce community vocational support services', options: ['SE', 'ERB', 'OT OPD', 'SWS'] }
+    ]},
+    { heading: '<Interpersonal / Social Skills Training>', items: [
+        { type: 'select', prefix: 'Provide', options: ['social', 'assertiveness'], suffix: 'skills training' }
+    ]},
+    { heading: '<Cognitive Rehabilitation>', items: [
+        { type: 'select', prefix: '', options: ['Conduct', 'Review'], suffix: 'cognitive assessment' },
+        { type: 'select', prefix: 'Provide', options: ['computer-assisted', 'paper-and-pencil'], suffix: 'cognitive training' },
+        { type: 'simple', text: 'Provide cognitive stimulation activities' },
+        { type: 'simple', text: 'Educate on compensatory strategies' }
+    ]},
+    { heading: '<Behavioral Management>', items: [
+        { type: 'simple', text: 'Provide education and intervention on multi-sensory stimulation' },
+        { type: 'simple', text: 'Conduct behavioral modification' },
+        { type: 'select', prefix: 'Educate on', options: ['impulse control', 'temper management'] }
+    ]},
+    { heading: '<Upper Limbs & Hand Function Training>', items: [
+        { type: 'multi', prefix: 'Provide', options: ['fine motor training', 'hand function training', 'upper limbs functional training'] }
+    ]},
+    { heading: '<Home Assessment and Modification>', items: [
+        { type: 'selectOnly', options: ['Conduct home assessment', 'Provide home visit'] },
+        { type: 'simple', text: 'Educate on home safety hazards' },
+        { type: 'simple', text: 'Advise on home adaptation advice and intervention' },
+        { type: 'simple', text: 'Conduct home resettlement' }
+    ]},
+    { heading: '<Aids Prescription and Training>', items: [
+        { type: 'multi', prefix: 'Provide', options: ['aids prescription and training', 'pressure relieving devices', 'pressure therapy (garment)', 'seating assessment and prescription', 'splintage', 'wheelchair prescription and training'] }
+    ]},
+    { heading: '<Caregiver Training>', items: [
+        { type: 'textSuffix', prefix: 'Provide caregiver training on', placeholder: 'topic' }
+    ]}
+];
+
+renderChoiceSpecs('problemsGroup', 'problemChoice', problemSpecs);
+renderRecommendationSpecs('recommendationsGroup', recommendationCategories);
 
 function generateReport() {
     let report = '';
@@ -382,12 +548,26 @@ function generateReport() {
     }
 
     report += '[Problem(s)]\n';
-    const problems = listOrBlank(getCheckedValues('problems'), getVal('problemOthers'));
-    report += problems ? problems.split(' / ').map(p => '- ' + p).join('\n') + '\n\n' : '\n';
+    const problemItems = collectChoiceSpecs(problemSpecs);
+    if (getVal('problemOthers')) {
+        problemItems.push(...getVal('problemOthers').split(/\n+/).map(x => x.trim()).filter(Boolean));
+    }
+    report += problemItems.length ? problemItems.map(p => '- ' + p).join('\n') + '\n\n' : '\n';
 
     report += '[Recommendation(s)]\n';
-    const recs = listOrBlank(getCheckedValues('recommendations'), getVal('recommendationOthers'));
-    report += recs ? recs.split(' / ').map(r => '- ' + r).join('\n') + '\n' : '';
+    let recommendationOutput = '';
+    recommendationCategories.forEach(category => {
+        const selectedItems = collectChoiceSpecs(category.items);
+        if (selectedItems.length) {
+            if (category.heading) recommendationOutput += category.heading + '\n';
+            recommendationOutput += selectedItems.map(item => '- ' + item).join('\n') + '\n';
+        }
+    });
+    if (getVal('recommendationOthers')) {
+        recommendationOutput += '<Other Recommendation(s)>\n';
+        recommendationOutput += getVal('recommendationOthers').split(/\n+/).map(x => x.trim()).filter(Boolean).map(item => '- ' + item).join('\n') + '\n';
+    }
+    report += recommendationOutput;
 
     document.getElementById('reportOutput').value = report.replace(/\n{3,}/g, '\n\n');
 }

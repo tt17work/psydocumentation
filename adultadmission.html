@@ -244,9 +244,6 @@ function formatThought(values) {
         if (v === 'Denied delusional thoughts') return;
         let cleaned = v.replace(/^Reported\s+/i, '').trim();
 
-        // Combine choices such as "Reported persecutory thought" and
-        // "Reported paranoid thought" into one phrase:
-        // "Reported persecutory, paranoid thought".
         const simpleMatch = cleaned.match(/^(persecutory|paranoid|delusional|somatic) thought$/i);
         if (simpleMatch) {
             simpleThoughtTypes.push(simpleMatch[1].toLowerCase());
@@ -457,6 +454,7 @@ function goalsBody() {
     if (getVal('goalDetails')) body += `Others: ${getVal('goalDetails')}\n`;
     return body;
 }
+
 function generateReport() {
     let report = '';
     report += '[Adult Initial Report]\n\n';
@@ -488,36 +486,65 @@ function generateReport() {
     report += bullet(getRadioValue('insight') ? `Insight ${getRadioValue('insight')}` : '');
     report += getVal('mseRemarks') ? `Remarks: ${getVal('mseRemarks')}\n` : '';
 
-    report += '\n2. Psychosocial Status and Functional Performance\n<Psychosocial Status>\n';
-    report += line('Marital Status', getVal('marital'));
-    report += line('Living with', listOrBlank(getCheckedValues('livingWith'), getVal('livingDetails')));
-    report += line('Role', getCheckedValues('role').join(' / '));
-    report += line('Community Service', getCheckedValues('communityService').join(' / '));
-    report += line('Financial Support', getCheckedValues('financialSupport').join(' / '));
-    report += '\n<Functional Performance>\n';
-    report += line('<ADL>', [getVal('adlLevel'), getVal('adlIssues')].filter(Boolean).join(' - '));
-    report += line('<IADL>', [getVal('iadlLevel'), getVal('iadlDetails')].filter(Boolean).join(' - '));
-    report += '\n<Education and Work>\n';
-    report += line('Education', [getVal('education') ? `Educated up to ${getVal('education')} level` : '', getVal('educationQuitReason') ? `quitted due to ${getVal('educationQuitReason')}` : ''].filter(Boolean).join('; '));
-    report += line('Employment Status', getVal('employmentStatus'));
-    report += line('Current Employment', getVal('currentEmployment'));
-    report += line('Work History', getVal('workHistory'));
-    report += line('Reason on quitting the job', getVal('quitReason'));
-    report += line('Vocational training received', getCheckedValues('vocTraining').join(' / '));
-    report += line('Readiness in returning to work / study', getVal('rtwReadiness'));
-    report += '\n<Childcare Performance>\n';
-    report += line("Child's Background", getVal('childBackground'));
-    report += line('Childcare Role', getVal('childcareRole'));
-    report += line('Childcare Stress / Barrier', getVal('childcareStress'));
-    report += line('Childcare Support', getVal('childcareSupport'));
-    report += '\n<Leisure>\n';
-    report += line('Hobbies', getVal('hobbies'));
-    report += line('Interest', getVal('interest'));
-    report += line('Daytime engagement', getVal('daytimeEngagement'));
-    report += line('Barriers', getVal('leisureBarriers'));
-    report += line('\n<Social>', getVal('social'));
-    report += line('\n<Stress Coping>', listOrBlank(getCheckedValues('coping'), getVal('copingDetails')));
+    // === SECTION 2: All subsection headers are now CONDITIONAL (only shown when content exists) ===
+    report += '\n2. Psychosocial Status and Functional Performance\n';
 
+    // Psychosocial Status
+    let psy = '';
+    psy += line('Marital Status', getVal('marital'));
+    psy += line('Living with', listOrBlank(getCheckedValues('livingWith'), getVal('livingDetails')));
+    psy += line('Role', getCheckedValues('role').join(' / '));
+    psy += line('Community Service', getCheckedValues('communityService').join(' / '));
+    psy += line('Financial Support', getCheckedValues('financialSupport').join(' / '));
+    if (psy.trim()) report += '<Psychosocial Status>\n' + psy;
+
+    // Functional Performance
+    let func = '';
+    func += line('<ADL>', [getVal('adlLevel'), getVal('adlIssues')].filter(Boolean).join(' - '));
+    func += line('<IADL>', [getVal('iadlLevel'), getVal('iadlDetails')].filter(Boolean).join(' - '));
+    if (func.trim()) report += '<Functional Performance>\n' + func;
+
+    // Education and Work
+    let edu = '';
+    edu += line('Education', [getVal('education') ? `Educated up to ${getVal('education')} level` : '', getVal('educationQuitReason') ? `quitted due to ${getVal('educationQuitReason')}` : ''].filter(Boolean).join('; '));
+    edu += line('Employment Status', getVal('employmentStatus'));
+    edu += line('Current Employment', getVal('currentEmployment'));
+    edu += line('Work History', getVal('workHistory'));
+    edu += line('Reason on quitting the job', getVal('quitReason'));
+    edu += line('Vocational training received', getCheckedValues('vocTraining').join(' / '));
+    edu += line('Readiness in returning to work / study', getVal('rtwReadiness'));
+    if (edu.trim()) report += '<Education and Work>\n' + edu;
+
+    // Childcare Performance
+    let childcare = '';
+    childcare += line("Child's Background", getVal('childBackground'));
+    childcare += line('Childcare Role', getVal('childcareRole'));
+    childcare += line('Childcare Stress / Barrier', getVal('childcareStress'));
+    childcare += line('Childcare Support', getVal('childcareSupport'));
+    if (childcare.trim()) report += '<Childcare Performance>\n' + childcare;
+
+    // Leisure
+    let leisure = '';
+    leisure += line('Hobbies', getVal('hobbies'));
+    leisure += line('Interest', getVal('interest'));
+    leisure += line('Daytime engagement', getVal('daytimeEngagement'));
+    leisure += line('Barriers', getVal('leisureBarriers'));
+    if (leisure.trim()) report += '<Leisure>\n' + leisure;
+
+    // Social
+    const socialVal = getVal('social');
+    if (socialVal) {
+        report += '<Social>\n' + socialVal + '\n';
+    }
+
+    // Stress Coping
+    const copingVal = listOrBlank(getCheckedValues('coping'), getVal('copingDetails'));
+    if (copingVal) {
+        report += '<Stress Coping>\n' + copingVal + '\n';
+    }
+
+    // Numbered sections (Assessment Result, Home Environment, Caregiver’s Concern, Family’s / Client’s Goals)
+    // These are already fully conditional via addNumberedSection + assessmentBody()/homeBody()/goalsBody()
     const sections = [];
     addNumberedSection(sections, 'Assessment Result', assessmentBody());
     addNumberedSection(sections, 'Home Environment', homeBody());
